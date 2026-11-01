@@ -123,7 +123,9 @@
 <main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
 
   <!-- ============ LOGIN ============ -->
-  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter">
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter relative">
+    
+    <!-- Card Principal de Login -->
     <div class="glass rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow"></div>
       <div class="inline-flex p-4 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-cyan-400 animate-float">
@@ -148,6 +150,14 @@
         <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Autenticando com o Google...
       </p>
     </div>
+
+    <!-- RODAPÉ DE DIREITOS E CRÉDITOS ESTRATÉGICO -->
+    <footer class="mt-8 text-center text-[10px] text-slate-500 space-y-1.5 z-10">
+      <p>© Direitos reservados <span class="text-cyan-400 font-bold tracking-wider">PlanilhaViva Pro</span>.</p>
+      <p>Programador: <span class="text-slate-300 font-medium">Gilnei Laurindo</span></p>
+      <p>Ideias e dedicatória: <span class="text-slate-400">Samuel Danilo</span></p>
+    </footer>
+
   </section>
 
   <!-- ============ APP DASHBOARD ============ -->
@@ -156,7 +166,6 @@
     <!-- CABEÇALHO -->
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3 min-w-0">
-        <!-- O container da imagem agora é rígido e não amassa (shrink-0) -->
         <div id="avatar" class="w-10 h-10 shrink-0 rounded-full bg-slate-800 border border-cyan-400/50 overflow-hidden flex items-center justify-center"></div>
         <div class="min-w-0">
           <h2 id="user-name" class="text-sm font-bold text-white truncate"></h2>
@@ -237,7 +246,6 @@
       <!-- ---- CONFIGURAÇÕES ---- -->
       <div id="view-config" class="view space-y-5">
         
-        <!-- PERFIL DO USUÁRIO ISOLADO (O texto não invade mais a imagem) -->
         <div class="glass rounded-2xl p-5 flex items-center gap-4 border border-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.1)]">
           <div id="cfg-avatar" class="w-14 h-14 shrink-0 rounded-full bg-slate-800 border-2 border-cyan-400/40 overflow-hidden flex items-center justify-center"></div>
           <div class="flex-1 min-w-0">
@@ -247,7 +255,6 @@
           </div>
         </div>
 
-        <!-- CONFIGURAÇÕES DA PLANILHA -->
         <div class="glass rounded-2xl p-5 space-y-4">
           <h3 class="section-title"><i data-lucide="sliders" class="w-4 h-4"></i> Estrutura da Planilha</h3>
           <div>
@@ -257,7 +264,6 @@
           </div>
         </div>
 
-        <!-- BOTÕES DE AÇÃO: Baixar App SEMPRE visível agora -->
         <button id="btnInstall" class="btn-primary w-full py-3 rounded-xl flex items-center justify-center gap-2">
           <i data-lucide="download" class="w-4 h-4 animate-bounce"></i> Instalar Aplicativo (App)
         </button>
@@ -267,7 +273,8 @@
         </button>
 
         <footer class="text-center text-[10px] text-slate-500 space-y-1 pt-4 pb-6">
-          <p>© PlanilhaViva Pro. Programador: <span class="text-cyan-400 font-medium">Gilnei Laurindo</span></p>
+          <p>© Direitos reservados <span class="text-cyan-400 font-bold tracking-wider">PlanilhaViva Pro</span>.</p>
+          <p>Programador: <span class="text-slate-300 font-medium">Gilnei Laurindo</span></p>
           <p>Ideias e dedicatória: <span class="text-slate-400">Samuel Danilo</span></p>
         </footer>
       </div>
@@ -440,11 +447,10 @@ function go(name) {
     btn.setAttribute("aria-current", on ? "page" : "false");
     btn.classList.toggle("text-cyan-300", on); btn.classList.toggle("text-slate-400", !on);
     
-    // Adiciona o efeito pop animado no ícone quando clicado
     if (on) {
       $("nav-pill").style.transform = `translateX(${i * 100}%)`;
       btn.classList.remove("icon-pop");
-      void btn.offsetWidth; // Força reflow
+      void btn.offsetWidth;
       btn.classList.add("icon-pop");
     }
   });
@@ -474,13 +480,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
   }));
 
-  // EVENTO DE INSTALAÇÃO DO APP (PWA)
   window.addEventListener("beforeinstallprompt", e => {
     e.preventDefault(); 
     state.deferredPrompt = e;
   });
   
-  // Agora o botão responde avisando o que fazer se o celular bloquear o evento direto
   $("btnInstall").addEventListener("click", async () => {
     if (state.deferredPrompt) { 
       state.deferredPrompt.prompt(); 
