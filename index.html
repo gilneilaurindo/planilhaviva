@@ -2,8 +2,19 @@
 <html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FluxoCaixaPro - Dashboard Premium</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Meta Tags (Open Graph) para Compartilhamento no WhatsApp/Redes Sociais -->
+    <title>PlanilhaViva - Dashboard Financeiro</title>
+    <meta name="description" content="Gestão financeira inteligente, rápida e responsiva. Acompanhe seu fluxo de caixa de qualquer lugar com uma interface premium.">
+    <meta property="og:title" content="PlanilhaViva - Dashboard Premium">
+    <meta property="og:description" content="Sua nova forma de gerenciar finanças. Acesse agora o seu fluxo de caixa inteligente!">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200">
+    <meta property="og:url" content="https://planilhaviva.app">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon dinâmico (Emoji) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,11 +31,13 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        background: '#070A11',
+                        // Utilizando slate-950 como base conforme solicitado
+                        background: '#020617', 
                     },
                     animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out forwards',
-                        'slide-up': 'slideUp 0.4s ease-out forwards',
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         fadeIn: {
@@ -32,7 +45,7 @@
                             '100%': { opacity: '1' },
                         },
                         slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
@@ -45,22 +58,22 @@
         /* Custom scrollbar for a premium feel */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(34, 211, 238, 0.5); }
         
-        body { background-color: #070A11; color: #f1f5f9; }
+        body { background-color: #020617; color: #f1f5f9; }
         
         /* Glassmorphism utility classes */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
         
         .glass-input {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             transition: all 0.3s ease;
@@ -69,114 +82,151 @@
             border-color: #22d3ee;
             box-shadow: 0 0 0 1px #22d3ee;
             outline: none;
+            background: rgba(0, 0, 0, 0.5);
         }
         
         /* Dark mode select options fix */
         select option { background-color: #0f172a; color: white; }
     </style>
 </head>
-<body class="min-h-screen font-sans antialiased pb-12 relative overflow-x-hidden">
+<body class="min-h-screen font-sans antialiased pb-12 relative overflow-x-hidden bg-slate-950">
     
+    <!-- SPLASH SCREEN / LOADING -->
+    <div id="splash-screen" class="fixed inset-0 z-[999] bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-700 ease-in-out">
+        <div class="relative">
+            <div class="absolute inset-0 bg-cyan-500 blur-2xl opacity-20 animate-pulse-fast rounded-full"></div>
+            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_40px_rgba(34,211,238,0.4)] animate-bounce mb-6 relative z-10">
+                <i data-lucide="activity" class="w-10 h-10 text-slate-950"></i>
+            </div>
+        </div>
+        <h1 class="text-3xl font-bold text-white tracking-wide mb-2">Planilha<span class="text-cyan-400">Viva</span></h1>
+        <p class="text-slate-400 text-sm flex items-center space-x-2">
+            <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-cyan-400"></i>
+            <span>Sincronizando ambiente...</span>
+        </p>
+        <div class="mt-8 w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
+            <div class="w-full h-full bg-gradient-to-r from-cyan-400 to-blue-500 animate-[pulse_1s_infinite] origin-left scale-x-0" style="animation: loadBar 2s ease-in-out forwards;"></div>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes loadBar { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+    </style>
+
     <!-- Background Ambient Glow -->
     <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-cyan-900/20 blur-[120px]"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/10 blur-[120px]"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-900/10 blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/10 blur-[120px]"></div>
     </div>
 
     <!-- Topbar -->
-    <div class="sticky top-0 z-40 bg-[#0B0F19]/80 backdrop-blur-xl border-b border-white/5 px-4 py-3">
+    <div class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 px-4 py-3">
         <div class="max-w-6xl mx-auto flex justify-between items-center relative z-10">
             <div class="flex items-center space-x-3 group cursor-pointer">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-300">
                     <i data-lucide="zap" class="w-5 h-5"></i>
                 </div>
-                <span class="font-bold text-white tracking-wide text-lg">
-                    FluxoCaixa<span class="text-cyan-400">Pro</span>
+                <span class="font-bold text-white tracking-wide text-lg hidden sm:inline-block">
+                    Planilha<span class="text-cyan-400">Viva</span>
                 </span>
             </div>
             
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <div class="hidden sm:flex items-center space-x-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
                     <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
                     <span class="text-xs font-medium text-slate-300">Sistema Online</span>
                 </div>
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="User" class="w-8 h-8 rounded-full border border-cyan-500/50 object-cover cursor-pointer hover:border-cyan-400 transition-colors">
+                <button class="p-2 sm:hidden rounded-lg bg-white/5 border border-white/10 text-cyan-400 hover:bg-white/10 transition-colors">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="User" class="w-9 h-9 rounded-full border-2 border-cyan-500/50 object-cover cursor-pointer hover:border-cyan-400 transition-colors shadow-lg">
             </div>
         </div>
     </div>
 
     <!-- Main Content -->
-    <div class="max-w-6xl mx-auto px-4 pt-8 space-y-8 relative z-10 animate-fade-in">
+    <div class="max-w-6xl mx-auto px-4 pt-6 sm:pt-8 space-y-6 sm:space-y-8 relative z-10">
         
         <!-- Header Info -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-slide-up" style="animation-delay: 0.1s; opacity: 0;">
             <div>
-                <h1 class="text-2xl font-bold text-white">Dashboard Financeiro</h1>
+                <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center space-x-2">
+                    <i data-lucide="layout-dashboard" class="w-6 h-6 text-cyan-400"></i>
+                    <span>Dashboard Financeiro</span>
+                </h1>
                 <p class="text-slate-400 text-sm mt-1">Gestão de caixa e projeção de resultados.</p>
             </div>
-            <button class="glass-panel px-4 py-2 rounded-xl text-sm text-cyan-400 font-medium hover:bg-white/5 transition-colors flex items-center space-x-2">
-                <i data-lucide="download" class="w-4 h-4"></i>
+            <button class="w-full sm:w-auto glass-panel px-4 py-2.5 rounded-xl text-sm text-cyan-400 font-medium hover:bg-white/10 transition-all active:scale-95 flex items-center justify-center space-x-2 shadow-lg hover:shadow-cyan-500/20">
+                <i data-lucide="download-cloud" class="w-4 h-4"></i>
                 <span>Exportar Relatório</span>
             </button>
         </div>
 
         <!-- KPIs Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             <!-- Saldo -->
-            <div class="glass-panel rounded-2xl p-6 hover:shadow-cyan-500/5 transition-all duration-300 group">
+            <div class="glass-panel rounded-2xl p-5 sm:p-6 hover:-translate-y-1 transition-all duration-300 group animate-slide-up" style="animation-delay: 0.2s; opacity: 0;">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Saldo Atual</span>
-                    <div class="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 transition-colors">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center">
+                        <i data-lucide="wallet" class="w-3.5 h-3.5 mr-1.5 opacity-70"></i> Saldo Atual
+                    </span>
+                    <div class="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 transition-colors shadow-inner">
                         <i data-lucide="dollar-sign" class="w-4 h-4"></i>
                     </div>
                 </div>
-                <div class="text-3xl font-bold text-white tracking-tight" id="kpi-balance">R$ 0,00</div>
+                <div class="text-2xl sm:text-3xl font-bold text-white tracking-tight" id="kpi-balance">R$ 0,00</div>
                 <div class="mt-4 inline-flex items-center px-2.5 py-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-medium" id="kpi-status">
                     <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mr-1.5"></i> Saudável
                 </div>
             </div>
 
             <!-- Entradas -->
-            <div class="glass-panel rounded-2xl p-6 hover:shadow-emerald-500/5 transition-all duration-300 group">
+            <div class="glass-panel rounded-2xl p-5 sm:p-6 hover:-translate-y-1 transition-all duration-300 group animate-slide-up" style="animation-delay: 0.3s; opacity: 0;">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Entradas (Mês)</span>
-                    <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20 transition-colors">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center">
+                        <i data-lucide="arrow-up-circle" class="w-3.5 h-3.5 mr-1.5 opacity-70"></i> Entradas
+                    </span>
+                    <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20 transition-colors shadow-inner">
                         <i data-lucide="trending-up" class="w-4 h-4"></i>
                     </div>
                 </div>
-                <div class="text-3xl font-bold text-emerald-400 tracking-tight" id="kpi-income">R$ 0,00</div>
+                <div class="text-2xl sm:text-3xl font-bold text-emerald-400 tracking-tight" id="kpi-income">R$ 0,00</div>
             </div>
 
             <!-- Saídas -->
-            <div class="glass-panel rounded-2xl p-6 hover:shadow-rose-500/5 transition-all duration-300 group">
+            <div class="glass-panel rounded-2xl p-5 sm:p-6 hover:-translate-y-1 transition-all duration-300 group animate-slide-up" style="animation-delay: 0.4s; opacity: 0;">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Saídas (Mês)</span>
-                    <div class="p-2 rounded-lg bg-rose-500/10 text-rose-400 group-hover:bg-rose-500/20 transition-colors">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center">
+                        <i data-lucide="arrow-down-circle" class="w-3.5 h-3.5 mr-1.5 opacity-70"></i> Saídas
+                    </span>
+                    <div class="p-2 rounded-lg bg-rose-500/10 text-rose-400 group-hover:bg-rose-500/20 transition-colors shadow-inner">
                         <i data-lucide="trending-down" class="w-4 h-4"></i>
                     </div>
                 </div>
-                <div class="text-3xl font-bold text-rose-400 tracking-tight" id="kpi-expense">R$ 0,00</div>
+                <div class="text-2xl sm:text-3xl font-bold text-rose-400 tracking-tight" id="kpi-expense">R$ 0,00</div>
             </div>
 
             <!-- Limite -->
-            <div class="glass-panel rounded-2xl p-6 hover:shadow-amber-500/5 transition-all duration-300 group">
+            <div class="glass-panel rounded-2xl p-5 sm:p-6 hover:-translate-y-1 transition-all duration-300 group animate-slide-up" style="animation-delay: 0.5s; opacity: 0;">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Limite Alerta</span>
-                    <div class="p-2 rounded-lg bg-amber-500/10 text-amber-400 group-hover:bg-amber-500/20 transition-colors">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center">
+                        <i data-lucide="target" class="w-3.5 h-3.5 mr-1.5 opacity-70"></i> Alvo Mínimo
+                    </span>
+                    <div class="p-2 rounded-lg bg-amber-500/10 text-amber-400 group-hover:bg-amber-500/20 transition-colors shadow-inner">
                         <i data-lucide="alert-triangle" class="w-4 h-4"></i>
                     </div>
                 </div>
-                <div class="text-3xl font-bold text-amber-400 tracking-tight">R$ 500,00</div>
-                <p class="mt-4 text-[11px] text-slate-500">Alvo mínimo de segurança</p>
+                <div class="text-2xl sm:text-3xl font-bold text-amber-400 tracking-tight">R$ 500,00</div>
+                <p class="mt-4 text-[11px] text-slate-500 flex items-center"><i data-lucide="info" class="w-3 h-3 mr-1"></i> Abaixo disso gera alerta</p>
             </div>
         </div>
 
         <!-- Main Content Area -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up" style="animation-delay: 0.1s;">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <!-- Left Col: Form -->
-            <div class="glass-panel rounded-2xl p-6 h-fit lg:col-span-1">
-                <h3 class="font-bold text-white mb-6 flex items-center">
+            <div class="glass-panel rounded-2xl p-5 sm:p-6 h-fit lg:col-span-1 animate-slide-up" style="animation-delay: 0.6s; opacity: 0;">
+                <h3 class="font-bold text-white mb-5 sm:mb-6 flex items-center text-lg">
                     <i data-lucide="plus-circle" class="w-5 h-5 mr-2 text-cyan-400"></i> 
                     Novo Registro
                 </h3>
@@ -184,67 +234,87 @@
                 <form id="transaction-form" class="space-y-4">
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1.5">Descrição</label>
-                        <input type="text" id="tx-desc" required placeholder="Ex: Pagamento Fornecedor" class="glass-input w-full rounded-xl px-4 py-3 text-sm">
+                        <div class="relative">
+                            <i data-lucide="pen-tool" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5"></i>
+                            <input type="text" id="tx-desc" required placeholder="Ex: Pagamento Fornecedor" class="glass-input w-full rounded-xl pl-10 pr-4 py-3 text-sm">
+                        </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1.5">Valor (R$)</label>
-                            <input type="number" id="tx-amount" step="0.01" required placeholder="0.00" class="glass-input w-full rounded-xl px-4 py-3 text-sm">
+                            <div class="relative">
+                                <i data-lucide="coins" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5"></i>
+                                <input type="number" id="tx-amount" step="0.01" required placeholder="0.00" class="glass-input w-full rounded-xl pl-10 pr-4 py-3 text-sm">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1.5">Tipo</label>
-                            <select id="tx-type" class="glass-input w-full rounded-xl px-4 py-3 text-sm appearance-none">
-                                <option value="in">Entrada (+)</option>
-                                <option value="out">Saída (-)</option>
-                            </select>
+                            <div class="relative">
+                                <i data-lucide="arrow-right-left" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5"></i>
+                                <select id="tx-type" class="glass-input w-full rounded-xl pl-10 pr-4 py-3 text-sm appearance-none">
+                                    <option value="in">Entrada (+)</option>
+                                    <option value="out">Saída (-)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 absolute right-3.5 top-3.5 pointer-events-none"></i>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1.5">Categoria</label>
-                            <select id="tx-category" class="glass-input w-full rounded-xl px-4 py-3 text-sm appearance-none">
-                                <option value="Receita">Receita</option>
-                                <option value="Fixos">Fixos</option>
-                                <option value="Pessoal">Pessoal</option>
-                                <option value="Saúde">Saúde</option>
-                                <option value="Investimento">Investimento</option>
-                                <option value="Outros">Outros</option>
-                            </select>
+                            <div class="relative">
+                                <i data-lucide="tag" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5"></i>
+                                <select id="tx-category" class="glass-input w-full rounded-xl pl-10 pr-4 py-3 text-sm appearance-none">
+                                    <option value="Receita">Receita</option>
+                                    <option value="Fixos">Fixos</option>
+                                    <option value="Pessoal">Pessoal</option>
+                                    <option value="Saúde">Saúde</option>
+                                    <option value="Investimento">Investimento</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 absolute right-3.5 top-3.5 pointer-events-none"></i>
+                            </div>
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1.5">Data</label>
-                            <input type="date" id="tx-date" required class="glass-input w-full rounded-xl px-4 py-3 text-sm">
+                            <div class="relative">
+                                <i data-lucide="calendar" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5"></i>
+                                <input type="date" id="tx-date" required class="glass-input w-full rounded-xl pl-10 pr-4 py-3 text-sm [color-scheme:dark]">
+                            </div>
                         </div>
                     </div>
                     
-                    <button type="submit" class="w-full mt-4 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-[0_0_20px_rgba(34,211,238,0.2)] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] active:scale-[0.98] flex items-center justify-center space-x-2">
-                        <i data-lucide="plus" class="w-4 h-4"></i>
-                        <span>Adicionar Lançamento</span>
+                    <button type="submit" class="w-full mt-2 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] active:scale-[0.97] flex items-center justify-center space-x-2">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span>Gravar Lançamento</span>
                     </button>
                 </form>
             </div>
 
             <!-- Right Col: Table -->
-            <div class="glass-panel rounded-2xl p-6 lg:col-span-2 flex flex-col">
+            <div class="glass-panel rounded-2xl p-5 sm:p-6 lg:col-span-2 flex flex-col animate-slide-up" style="animation-delay: 0.7s; opacity: 0;">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <h3 class="font-bold text-white text-lg">Extrato Diário</h3>
-                    <div class="relative">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-3"></i>
-                        <input type="text" id="search-input" placeholder="Buscar lançamentos..." class="glass-input rounded-xl pl-9 pr-4 py-2.5 text-sm w-full sm:w-64">
+                    <h3 class="font-bold text-white text-lg flex items-center">
+                        <i data-lucide="list-ordered" class="w-5 h-5 mr-2 text-emerald-400"></i>
+                        Extrato Diário
+                    </h3>
+                    <div class="relative w-full sm:w-64">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5"></i>
+                        <input type="text" id="search-input" placeholder="Buscar registros..." class="glass-input rounded-xl pl-10 pr-4 py-2.5 text-sm w-full">
                     </div>
                 </div>
 
-                <div class="overflow-x-auto flex-1">
+                <div class="overflow-x-auto flex-1 rounded-xl border border-white/5 bg-black/10">
                     <table class="w-full text-left text-sm whitespace-nowrap">
-                        <thead>
+                        <thead class="bg-black/20">
                             <tr class="border-b border-white/10 text-slate-400">
-                                <th class="py-3 px-4 font-semibold font-mono text-xs">Data</th>
-                                <th class="py-3 px-4 font-semibold text-xs uppercase">Descrição</th>
-                                <th class="py-3 px-4 font-semibold text-xs uppercase">Categoria</th>
-                                <th class="py-3 px-4 font-semibold text-xs uppercase text-right">Valor</th>
-                                <th class="py-3 px-4 font-semibold text-xs uppercase text-center">Ações</th>
+                                <th class="py-3.5 px-4 font-semibold text-xs uppercase flex items-center space-x-1.5"><i data-lucide="calendar-days" class="w-3.5 h-3.5"></i><span>Data</span></th>
+                                <th class="py-3.5 px-4 font-semibold text-xs uppercase">Descrição</th>
+                                <th class="py-3.5 px-4 font-semibold text-xs uppercase text-center">Categoria</th>
+                                <th class="py-3.5 px-4 font-semibold text-xs uppercase text-right">Valor</th>
+                                <th class="py-3.5 px-4 font-semibold text-xs uppercase text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="table-body" class="divide-y divide-white/5">
@@ -253,10 +323,12 @@
                     </table>
                     
                     <!-- Empty State -->
-                    <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-center">
-                        <i data-lucide="file-spreadsheet" class="w-10 h-10 text-slate-600 mb-4"></i>
-                        <h4 class="text-white font-medium mb-1">Nenhum lançamento</h4>
-                        <p class="text-xs text-slate-400">Adicione registros no formulário ao lado.</p>
+                    <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-center">
+                        <div class="w-16 h-16 rounded-full bg-slate-900/50 flex items-center justify-center mb-4 border border-white/5 shadow-inner">
+                            <i data-lucide="inbox" class="w-8 h-8 text-slate-500"></i>
+                        </div>
+                        <h4 class="text-white font-medium mb-1 text-base">Nenhum lançamento</h4>
+                        <p class="text-sm text-slate-400 max-w-[250px]">Você ainda não possui registros que correspondam a essa busca.</p>
                     </div>
                 </div>
             </div>
@@ -265,10 +337,20 @@
     </div>
 
     <script>
-        // Initialize Lucide Icons
+        // --- 1. SPLASH SCREEN LOGIC ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                splash.style.pointerEvents = 'none';
+                setTimeout(() => splash.remove(), 700); // Remove from DOM after fade out
+            }, 1800); // Fades out after ~2 seconds
+        });
+
+        // --- 2. INITIALIZE ICONS ---
         lucide.createIcons();
 
-        // Initial Dummy Data to show off the design
+        // --- 3. STATE & DATA ---
         let transactions = [
             { id: 1, date: '2026-10-02', desc: 'Venda de Software (SaaS)', amount: 2500.00, type: 'in', category: 'Receita' },
             { id: 2, date: '2026-10-05', desc: 'Aluguel do Servidor AWS', amount: 350.00, type: 'out', category: 'Fixos' },
@@ -278,28 +360,37 @@
         const initialBalance = 1000.00;
         const yellowThreshold = 500.00;
 
-        // Set today's date in form
         document.getElementById('tx-date').valueAsDate = new Date();
 
-        // Currency Formatter
+        // --- 4. FORMATTERS ---
         const formatBRL = (value) => {
             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
         };
 
-        // Format Date (YYYY-MM-DD to DD/MM/YYYY)
         const formatDate = (dateStr) => {
             const [y, m, d] = dateStr.split('-');
             return `${d}/${m}/${y}`;
         };
 
-        // Update UI
+        // Get matching icon for category
+        const getCategoryIcon = (cat) => {
+            const icons = {
+                'Receita': 'trending-up',
+                'Fixos': 'home',
+                'Pessoal': 'user',
+                'Saúde': 'heart-pulse',
+                'Investimento': 'pie-chart',
+                'Outros': 'more-horizontal'
+            };
+            return icons[cat] || 'tag';
+        };
+
+        // --- 5. UI UPDATES ---
         function updateDashboard() {
-            // 1. Calculate totals
             const totalIn = transactions.filter(t => t.type === 'in').reduce((acc, t) => acc + t.amount, 0);
             const totalOut = transactions.filter(t => t.type === 'out').reduce((acc, t) => acc + t.amount, 0);
             const currentBalance = initialBalance + totalIn - totalOut;
 
-            // 2. Update KPI DOM Elements
             document.getElementById('kpi-income').innerText = formatBRL(totalIn);
             document.getElementById('kpi-expense').innerText = formatBRL(totalOut);
             
@@ -308,9 +399,8 @@
             
             balanceEl.innerText = formatBRL(currentBalance);
 
-            // 3. Update Balance Status Colors
-            balanceEl.className = 'text-3xl font-bold tracking-tight ';
-            statusEl.className = 'mt-4 inline-flex items-center px-2.5 py-1 rounded-lg border text-xs font-medium ';
+            balanceEl.className = 'text-2xl sm:text-3xl font-bold tracking-tight transition-colors duration-300 ';
+            statusEl.className = 'mt-4 inline-flex items-center px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors duration-300 ';
             
             if (currentBalance < 0) {
                 balanceEl.classList.add('text-rose-400');
@@ -329,7 +419,7 @@
             renderTable();
         }
 
-        // Render Table
+        // --- 6. TABLE RENDERING ---
         function renderTable(filterText = '') {
             const tbody = document.getElementById('table-body');
             const emptyState = document.getElementById('empty-state');
@@ -348,24 +438,29 @@
                 emptyState.style.display = 'none';
                 tbody.parentElement.classList.remove('hidden');
 
-                filteredTx.forEach(tx => {
+                filteredTx.forEach((tx, index) => {
                     const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-white/[0.03] transition-colors group animate-fade-in';
+                    tr.className = 'hover:bg-white/[0.04] transition-colors group animate-fade-in';
+                    tr.style.animationDelay = `${index * 0.05}s`;
+                    tr.style.opacity = '0';
                     
                     const amountClass = tx.type === 'in' ? 'text-emerald-400' : 'text-rose-400';
                     const amountPrefix = tx.type === 'in' ? '+' : '-';
+                    const catIcon = getCategoryIcon(tx.category);
 
                     tr.innerHTML = `
-                        <td class="py-4 px-4 font-mono text-slate-400">${formatDate(tx.date)}</td>
+                        <td class="py-4 px-4 font-mono text-slate-400 text-xs">${formatDate(tx.date)}</td>
                         <td class="py-4 px-4 font-medium text-white">${tx.desc}</td>
-                        <td class="py-4 px-4">
-                            <span class="px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 text-[11px] border border-white/5">${tx.category}</span>
+                        <td class="py-4 px-4 text-center">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-white/5 text-slate-300 text-[11px] border border-white/5">
+                                <i data-lucide="${catIcon}" class="w-3 h-3 mr-1.5 opacity-70"></i> ${tx.category}
+                            </span>
                         </td>
                         <td class="py-4 px-4 font-bold text-right font-mono ${amountClass}">
                             ${amountPrefix} ${formatBRL(tx.amount)}
                         </td>
                         <td class="py-4 px-4 text-center">
-                            <button onclick="deleteTransaction(${tx.id})" class="p-2 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all opacity-50 group-hover:opacity-100">
+                            <button onclick="deleteTransaction(${tx.id})" class="p-2 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all sm:opacity-50 sm:group-hover:opacity-100 active:scale-90" title="Excluir">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </td>
@@ -374,50 +469,52 @@
                 });
             }
             
-            // Re-initialize icons for dynamically added elements
             lucide.createIcons();
         }
 
-        // Add Transaction
+        // --- 7. EVENT LISTENERS ---
         document.getElementById('transaction-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const desc = document.getElementById('tx-desc').value;
-            const amount = parseFloat(document.getElementById('tx-amount').value);
-            const type = document.getElementById('tx-type').value;
-            const category = document.getElementById('tx-category').value;
-            const date = document.getElementById('tx-date').value;
-
-            if (!desc || isNaN(amount)) return;
-
-            const newTx = {
-                id: Date.now(),
-                date, desc, amount, type, category
-            };
-
-            // Add to beginning of array
-            transactions.unshift(newTx);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalHtml = submitBtn.innerHTML;
             
-            // Reset form
-            this.reset();
-            document.getElementById('tx-date').valueAsDate = new Date();
-            
-            // Update UI
-            updateDashboard();
+            // Button loading state animation
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Processando...</span>';
+            lucide.createIcons();
+            submitBtn.classList.add('opacity-80', 'pointer-events-none');
+
+            // Simulate network delay for UX
+            setTimeout(() => {
+                const desc = document.getElementById('tx-desc').value;
+                const amount = parseFloat(document.getElementById('tx-amount').value);
+                const type = document.getElementById('tx-type').value;
+                const category = document.getElementById('tx-category').value;
+                const date = document.getElementById('tx-date').value;
+
+                if (desc && !isNaN(amount)) {
+                    transactions.unshift({ id: Date.now(), date, desc, amount, type, category });
+                    this.reset();
+                    document.getElementById('tx-date').valueAsDate = new Date();
+                    updateDashboard();
+                }
+
+                // Restore button
+                submitBtn.innerHTML = originalHtml;
+                lucide.createIcons();
+                submitBtn.classList.remove('opacity-80', 'pointer-events-none');
+            }, 400);
         });
 
-        // Delete Transaction
         window.deleteTransaction = function(id) {
             transactions = transactions.filter(t => t.id !== id);
             updateDashboard();
         };
 
-        // Search feature
         document.getElementById('search-input').addEventListener('input', function(e) {
             renderTable(e.target.value);
         });
 
-        // Initial Load
         updateDashboard();
     </script>
 </body>
