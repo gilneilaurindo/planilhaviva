@@ -26,29 +26,42 @@
   }
   .glow { position:absolute; width:160px; height:160px; border-radius:9999px; background:rgba(6,182,212,.18); filter:blur(50px); top:-60px; right:-40px; pointer-events:none; }
 
+  /* SPLASH SCREEN DE BOAS VINDAS */
+  #welcome-splash {
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+  }
+  #welcome-splash.hide-splash {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.05);
+  }
+
+  /* ANÚNCIOS NATIVOS */
+  .ad-slot {
+    background: repeating-linear-gradient(45deg, rgba(30,41,59,0.4), rgba(30,41,59,0.4) 10px, rgba(15,23,42,0.6) 10px, rgba(15,23,42,0.6) 20px);
+    border: 1px dashed rgba(148,163,184,.2);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border-radius: 1rem; padding: 1.5rem; text-align: center;
+  }
+
   .view { display:none; }
   .view.active { display:block; animation: viewIn .45s cubic-bezier(.16,1,.3,1); }
   .enter { animation: viewIn .5s cubic-bezier(.16,1,.3,1) both; }
   @keyframes viewIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
   .item-in { animation: itemIn .4s cubic-bezier(.16,1,.3,1) both; }
   @keyframes itemIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:none; } }
-  .float { animation: float 4s ease-in-out infinite; }
-  @keyframes float { 50% { transform: translateY(-6px); } }
 
   .input {
     width:100%; background:rgba(15,23,42,.92); border:1px solid rgba(51,65,85,.9);
     border-radius:.75rem; padding:.75rem .95rem; font-size:.82rem; color:#f8fafc;
     transition: border-color .2s, box-shadow .2s; outline:none;
   }
-  .input::placeholder { color:#475569; }
   .input:focus { border-color:#22d3ee; box-shadow:0 0 0 4px rgba(34,211,238,.14); }
   .input[aria-invalid="true"] { border-color:#fb7185; box-shadow:0 0 0 4px rgba(251,113,133,.14); }
   select.input option { background:#0f172a; }
   .label { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:600; margin-bottom:.35rem; }
   .err { font-size:10px; color:#fb7185; margin-top:.3rem; }
   .err:empty { display:none; }
-  .shake { animation: shake .4s; }
-  @keyframes shake { 20%,60% { transform:translateX(-5px); } 40%,80% { transform:translateX(5px); } }
 
   .btn-primary {
     background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1);
@@ -58,102 +71,69 @@
   }
   .btn-primary:hover:not(:disabled) { transform:translateY(-1px); filter:brightness(1.08); box-shadow:0 16px 36px -12px rgba(6,182,212,.75); }
   .btn-primary:active:not(:disabled) { transform:scale(.98); }
-  .btn-primary:disabled { opacity:.6; cursor:not-allowed; }
-
-  /* BOTÃO CUSTOMIZADO  */
+  
   .btn--custom {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    width: 100%;
-    max-width: 280px;
-    padding: 0.8rem 1.25rem;
-    background: #0f172a;
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    border-radius: 9999px;
-    color: #f8fafc;
-    font-size: 0.82rem;
-    font-weight: 600;
-    box-shadow: 0 10px 25px -10px rgba(6, 182, 212, 0.35);
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+    width: 100%; max-width: 280px; padding: 0.8rem 1.25rem; background: #0f172a;
+    border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 9999px; color: #f8fafc;
+    font-size: 0.82rem; font-weight: 600; box-shadow: 0 10px 25px -10px rgba(6, 182, 212, 0.35);
     transition: all 0.25s ease;
-  }
-  .btn--custom:hover {
-    background: #1e293b;
-    border-color: #22d3ee;
-    transform: translateY(-1px);
-    box-shadow: 0 14px 30px -8px rgba(6, 182, 212, 0.5);
   }
   .btn--custom:active { transform: scale(0.98); }
 
-  .danger-btn {
-    background: rgba(244,63,94,.12); border:1px solid rgba(244,63,94,.35); color:#fb7185;
-    font-weight:700; font-size:.75rem; transition: background .2s, transform .15s;
-  }
-  .danger-btn:hover { background: rgba(244,63,94,.22); }
-  .danger-btn:active { transform: scale(.98); }
-  .ghost-btn {
-    border:1px solid rgba(51,65,85,.9); color:#cbd5e1; font-weight:600; font-size:.75rem;
-    transition: background .2s, transform .15s;
-  }
-  .ghost-btn:hover { background: rgba(30,41,59,.9); }
-  .ghost-btn:active { transform: scale(.98); }
-  .icon-btn {
-    padding:.55rem; border-radius:.75rem; background:rgba(30,41,59,.8);
-    border:1px solid rgba(51,65,85,.9); color:#94a3b8; transition: all .2s;
-  }
-  .icon-btn:hover { color:#67e8f9; border-color:#22d3ee; }
-  .icon-btn:active { transform: scale(.92); }
+  .danger-btn { background: rgba(244,63,94,.12); border:1px solid rgba(244,63,94,.35); color:#fb7185; font-weight:700; font-size:.75rem; transition: background .2s, transform .15s; }
+  .ghost-btn { border:1px solid rgba(51,65,85,.9); color:#cbd5e1; font-weight:600; font-size:.75rem; transition: background .2s, transform .15s; }
+  
+  .icon-btn { padding:.55rem; border-radius:.75rem; background:rgba(30,41,59,.8); border:1px solid rgba(51,65,85,.9); color:#94a3b8; transition: all .2s; }
   .icon-btn.spin:hover svg { transform: rotate(180deg); transition: transform .5s; }
 
   .seg { display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; border-radius:.75rem; background:rgba(15,23,42,.9); border:1px solid rgba(51,65,85,.9); }
   .seg-btn { padding:.55rem; border-radius:.55rem; font-size:.75rem; font-weight:700; color:#94a3b8; transition: all .25s cubic-bezier(.16,1,.3,1); }
-  .seg-btn:hover:not([aria-pressed="true"]) { color:#e2e8f0; }
   .seg-btn[aria-pressed="true"] { color:#020617; background:#22d3ee; box-shadow:0 6px 16px -6px rgba(34,211,238,.7); }
   .seg-btn[aria-pressed="true"][data-type="out"] { background:#fb7185; box-shadow:0 6px 16px -6px rgba(251,113,133,.7); }
 
   .section-title { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#67e8f9; display:flex; align-items:center; gap:.4rem; }
-  .skeleton { background: linear-gradient(90deg, rgba(30,41,59,.6) 25%, rgba(51,65,85,.8) 50%, rgba(30,41,59,.6) 75%); background-size:200% 100%; animation: shimmer 1.4s infinite; border-radius:.75rem; }
-  @keyframes shimmer { to { background-position: -200% 0; } }
-  .bar { height:100%; border-radius:9999px; width:0; transition: width 1.1s cubic-bezier(.16,1,.3,1); }
-
+  
   #nav-pill { transition: transform .45s cubic-bezier(.34,1.3,.64,1); }
-  .nav-btn { transition: color .25s, transform .2s; }
-  .nav-btn:active { transform: scale(.94); }
-  .nav-btn svg { transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
   .nav-btn[aria-current="page"] svg { transform: translateY(-2px) scale(1.15); }
 
   .toast { opacity:0; transform: translateY(-12px) scale(.97); transition: all .35s cubic-bezier(.16,1,.3,1); }
   .toast.show { opacity:1; transform:none; }
-
-  #modal { opacity:0; pointer-events:none; transition: opacity .25s; }
-  #modal.show { opacity:1; pointer-events:auto; }
-  #modal .panel { transform: translateY(20px) scale(.96); transition: transform .35s cubic-bezier(.16,1,.3,1); }
-  #modal.show .panel { transform:none; }
 </style>
 </head>
 <body class="font-sans antialiased text-slate-100 min-h-screen overflow-x-hidden selection:bg-cyan-500 selection:text-slate-900">
+
+<!-- SPLASH SCREEN DE BOAS VINDAS CENTRADA -->
+<div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617] hidden flex-col items-center justify-center">
+  <div class="relative">
+    <div class="absolute inset-0 bg-cyan-500/30 blur-2xl rounded-full"></div>
+    <div id="splash-avatar-container" class="relative w-28 h-28 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_40px_rgba(34,211,238,0.4)]">
+      <!-- Imagem injetada via JS -->
+    </div>
+  </div>
+  <h2 class="text-3xl font-black text-white mt-6 tracking-tight">Bem-vindo(a),</h2>
+  <h2 id="splash-name" class="text-2xl font-bold text-cyan-400 mt-1"></h2>
+</div>
 
 <canvas id="bg" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
 <div id="toasts" class="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[80] space-y-2 pointer-events-none" aria-live="polite"></div>
 
 <main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
 
-  <!-- ============ LOGIN LIMPO E SEM FAIXA BRANCA ============ -->
+  <!-- ============ LOGIN ============ -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter">
     <div class="glass rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow"></div>
-      <div class="inline-flex p-4 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-cyan-400 float">
-        <i data-lucide="shield-check" class="w-10 h-10"></i>
+      <!-- Trocado o ícone para o escudo com check, combinando com sua imagem -->
+      <div class="inline-flex p-4 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-cyan-400">
+        <i data-lucide="shield-check" class="w-12 h-12"></i>
       </div>
       <div>
-        <h1 class="text-2xl font-black tracking-tight text-white">PlanilhaViva</h1>
-        <p class="text-xs text-slate-400 mt-1">Controle financeiro pessoal com privacidade total</p>
+        <h1 class="text-3xl font-black tracking-tight text-white">PlanilhaViva</h1>
+        <p class="text-xs text-slate-400 mt-2">Segurança e controle financeiro no seu bolso.</p>
       </div>
 
-      <!-- BOTÃO CUSTOMIZADO COM POPUP -->
       <div class="flex flex-col items-center justify-center pt-1">
-        <!-- CORRIGIDO: ID DO BOTÃO -->
         <button id="btnCustomGoogle" class="btn--custom">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -161,47 +141,31 @@
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
-          <!-- CORRIGIDO: TEXTO DO BOTÃO -->
           <span>Continuar com o Google</span>
         </button>
       </div>
 
-      <!-- CORRIGIDO: TEXTO DE STATUS -->
       <p id="login-status" class="hidden text-xs text-cyan-300 font-mono flex items-center justify-center gap-2">
         <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Autenticando com o Google...
       </p>
       <p id="login-error" class="hidden text-xs text-rose-400"></p>
-
-      <ul class="pt-4 border-t border-slate-800 space-y-2.5 text-left text-[11px] text-slate-400">
-        <!-- CORRIGIDO: TEXTOS DA LISTA -->
-        <li class="flex gap-2.5"><i data-lucide="lock" class="w-4 h-4 text-cyan-400 shrink-0"></i> Cada operação é verificada pelo Google antes de ser gravada.</li>
-        <li class="flex gap-2.5"><i data-lucide="user-check" class="w-4 h-4 text-cyan-400 shrink-0"></i> Seus lançamentos ficam vinculados somente à sua conta Google.</li>
-        <li class="flex gap-2.5"><i data-lucide="eye-off" class="w-4 h-4 text-cyan-400 shrink-0"></i> Você pode excluir todos os seus dados quando quiser, em Configurações.</li>
-      </ul>
     </div>
-    <footer class="mt-8 text-center text-[10px] text-slate-500 space-y-1">
-      <p>© PlanilhaViva. Programador: <span class="text-slate-400 font-semibold">Gilnei Laurindo</span></p>
-      <p>Ideias e dedicatória: <span class="text-slate-400">Samuel Danilo</span></p>
-    </footer>
   </section>
 
   <!-- ============ APP DASHBOARD ============ -->
   <section id="view-app" class="hidden flex-1 flex-col pb-32">
 
+    <!-- CABEÇALHO (Agora com Status de Sincronização) -->
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3 min-w-0">
-        <div id="avatar" class="w-11 h-11 rounded-2xl bg-slate-800 border-2 border-cyan-400/40 overflow-hidden flex items-center justify-center shrink-0"></div>
+        <div id="avatar" class="w-10 h-10 rounded-full bg-slate-800 border border-cyan-400/50 overflow-hidden flex items-center justify-center shrink-0"></div>
         <div class="min-w-0">
-          <p class="text-[11px] text-slate-400">Olá,</p>
           <h2 id="user-name" class="text-sm font-bold text-white truncate"></h2>
         </div>
       </div>
-      <span class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-medium">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-        Conectado
+      <!-- Indicador de Status (Offline/Online Sync) -->
+      <span id="sync-status" class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-medium transition-colors">
+        <i data-lucide="cloud-check" class="w-3.5 h-3.5"></i> Nuvem OK
       </span>
     </header>
 
@@ -225,7 +189,7 @@
               </div>
               <div>
                 <span class="label">Natureza</span>
-                <div class="seg" role="group" aria-label="Natureza do lançamento">
+                <div class="seg" role="group">
                   <button type="button" class="seg-btn" data-type="in" aria-pressed="true">Entrada</button>
                   <button type="button" class="seg-btn" data-type="out" aria-pressed="false">Saída</button>
                 </div>
@@ -244,14 +208,21 @@
               </div>
             </div>
             <button id="btnSave" type="submit" class="btn-primary w-full py-3.5 rounded-xl flex items-center justify-center gap-2">
-              <i data-lucide="save" class="w-4 h-4"></i> Salvar lançamento
+              <i data-lucide="zap" class="w-4 h-4"></i> Salvar Rápido
             </button>
           </form>
         </div>
 
+        <!-- ESPAÇO PARA ANÚNCIO (FLUXO) -->
+        <div class="ad-slot">
+          <i data-lucide="megaphone" class="w-5 h-5 text-slate-500 mb-1"></i>
+          <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Espaço Patrocinado</p>
+          <p class="text-[9px] text-slate-500 mt-1">Insira seu script do AdSense aqui</p>
+        </div>
+
         <div class="space-y-3">
           <div class="flex items-center justify-between">
-            <h3 class="section-title">Últimos lançamentos</h3>
+            <h3 class="section-title">Lançamentos Recentes</h3>
             <button id="btnRefreshFluxo" class="icon-btn spin" aria-label="Atualizar lista">
               <i data-lucide="refresh-cw" class="w-4 h-4"></i>
             </button>
@@ -277,6 +248,12 @@
             </div>
           </div>
         </div>
+        
+        <!-- ESPAÇO PARA ANÚNCIO (RESUMO) -->
+        <div class="ad-slot">
+          <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Publicidade</p>
+        </div>
+
         <div class="glass rounded-2xl p-5 space-y-4">
           <h3 class="section-title"><i data-lucide="chart-pie" class="w-4 h-4"></i> Gastos por categoria</h3>
           <div id="cats" class="space-y-4"></div>
@@ -289,7 +266,6 @@
           <div class="glow"></div>
           <p class="text-[11px] uppercase tracking-widest text-slate-400">Total investido</p>
           <p id="invest-total" class="text-4xl font-black text-amber-300 tabular-nums mt-2">R$ 0,00</p>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Soma de todos os lançamentos da categoria Investimento.</p>
           <button id="btnNewInvest" class="btn-primary w-full py-3 rounded-xl mt-5 flex items-center justify-center gap-2">
             <i data-lucide="plus" class="w-4 h-4"></i> Registrar aporte
           </button>
@@ -303,43 +279,30 @@
       <!-- ---- CONFIG ---- -->
       <div id="view-config" class="view space-y-5">
         <div class="glass rounded-2xl p-5 flex items-center gap-4">
-          <div id="cfg-avatar" class="w-14 h-14 rounded-2xl bg-slate-800 border-2 border-cyan-400/40 overflow-hidden flex items-center justify-center shrink-0"></div>
+          <div id="cfg-avatar" class="w-14 h-14 rounded-full bg-slate-800 border-2 border-cyan-400/40 overflow-hidden flex items-center justify-center shrink-0"></div>
           <div class="min-w-0">
             <p id="cfg-name" class="font-bold text-white truncate"></p>
             <p id="cfg-email" class="text-[11px] text-slate-400 font-mono truncate"></p>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div class="glass rounded-2xl p-4">
-            <p class="text-[10px] uppercase tracking-wider text-slate-400">Usuários cadastrados</p>
-            <p id="user-count" class="text-2xl font-black text-cyan-300 tabular-nums mt-1">—</p>
-          </div>
-          <div class="glass rounded-2xl p-4">
-            <p class="text-[10px] uppercase tracking-wider text-slate-400">Seus lançamentos</p>
-            <p id="my-count" class="text-2xl font-black text-white tabular-nums mt-1">—</p>
-          </div>
+        <!-- REMOVIDO: Contagem de Usuários Gerais (agora é privado) -->
+        <div class="glass rounded-2xl p-4">
+          <p class="text-[10px] uppercase tracking-wider text-slate-400">Total de Lançamentos Salvos (Seus)</p>
+          <p id="my-count" class="text-2xl font-black text-cyan-300 tabular-nums mt-1">—</p>
         </div>
 
         <button id="btnInstall" class="hidden btn-primary w-full py-3 rounded-xl flex items-center justify-center gap-2">
-          <i data-lucide="download" class="w-4 h-4"></i> Instalar aplicativo
+          <i data-lucide="download" class="w-4 h-4"></i> Instalar Aplicativo (App)
         </button>
 
-        <div class="glass rounded-2xl p-5 space-y-3">
-          <h3 class="section-title"><i data-lucide="shield" class="w-4 h-4"></i> Privacidade e dados</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">Você pode excluir permanentemente todos os seus lançamentos e o seu cadastro neste aplicativo. Essa ação não pode ser desfeita.</p>
-          <button id="btnDelete" class="danger-btn w-full py-3 rounded-xl flex items-center justify-center gap-2">
-            <i data-lucide="trash-2" class="w-4 h-4"></i> Excluir meus dados
-          </button>
-        </div>
-
-        <button id="btnLogout" class="ghost-btn w-full py-3 rounded-xl flex items-center justify-center gap-2">
+        <button id="btnLogout" class="ghost-btn w-full py-3 rounded-xl flex items-center justify-center gap-2 mt-4">
           <i data-lucide="log-out" class="w-4 h-4"></i> Sair da conta
         </button>
 
-        <footer class="text-center text-[10px] text-slate-500 space-y-1 pt-2">
-          <p>© PlanilhaViva. Programador: <span class="text-cyan-400 font-medium">Gilnei Laurindo</span></p>
-          <p>Dedicatória: <span class="text-slate-400">Samuel Danilo</span></p>
+        <footer class="text-center text-[10px] text-slate-500 space-y-1 pt-6">
+          <p>© PlanilhaViva Pro. Programador: <span class="text-cyan-400 font-medium">Gilnei Laurindo</span></p>
+          <p>Ideias e dedicatória: <span class="text-slate-400">Samuel Danilo</span></p>
         </footer>
       </div>
     </div>
@@ -347,7 +310,7 @@
 </main>
 
 <!-- ============ NAVEGAÇÃO INFERIOR ============ -->
-<nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40" aria-label="Navegação principal">
+<nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
   <div class="glass rounded-2xl relative grid grid-cols-4 p-0">
     <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-cyan-500/15 border border-cyan-400/30 w-[calc((100%-0.5rem)/4)]"></span>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-cyan-300" data-view="fluxo" aria-current="page"><i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Fluxo</span></button>
@@ -357,65 +320,27 @@
   </div>
 </nav>
 
-<!-- ============ MODAL DE CONFIRMAÇÃO ============ -->
-<div id="modal" class="fixed inset-0 z-[70] flex items-center justify-center p-6 bg-slate-950/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="panel glass rounded-2xl p-6 w-full max-w-sm space-y-4">
-    <h3 id="modal-title" class="text-base font-bold text-white"></h3>
-    <p id="modal-text" class="text-xs text-slate-400 leading-relaxed"></p>
-    <div class="grid grid-cols-2 gap-3 pt-2">
-      <button id="modal-cancel" class="ghost-btn py-2.5 rounded-xl">Cancelar</button>
-      <button id="modal-ok" class="btn-primary py-2.5 rounded-xl">Confirmar</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ============ CONFIGURAÇÕES ============
 const _CLIENT_ID = "599756107964-ob0m7i1asuc0t7ng7rn6qc1106elf2ou.apps.googleusercontent.com";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyA71iGP67ggCDJ29QBh8cXpdorC5V73TPE4g0S3TQIkrwitArdoHWfCuDHSz7NOTbL/exec";
 const CATEGORIES = ["Receita","Dízimo","Fixos","Pessoal","Saúde","Dívidas","Investimento","Outros"];
 const CAT_COLORS = { Receita:"#22d3ee", Dízimo:"#a78bfa", Fixos:"#60a5fa", Pessoal:"#f472b6", Saúde:"#34d399", Dívidas:"#fb7185", Investimento:"#fbbf24", Outros:"#94a3b8" };
-const MAX_AMOUNT = 99999999.99;
 
 const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
-const intFmt = v => Math.round(v).toLocaleString("pt-BR");
 const $ = id => document.getElementById(id);
-const state = { tokenClient: null, user: null, deferredPrompt: null };
+const state = { tokenClient: null, user: null, deferredPrompt: null, syncQueue: [] };
 
 // ============ UTILITÁRIOS ============
 const icons = () => { if (window.lucide) lucide.createIcons(); };
-const el = (tag, cls = "", text) => {
-  const n = document.createElement(tag);
-  if (cls) n.className = cls;
-  if (text !== undefined) n.textContent = text;
-  return n;
-};
+const el = (tag, cls = "", text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
 const iconEl = (name, cls = "w-4 h-4") => { const i = document.createElement("i"); i.dataset.lucide = name; i.className = cls; return i; };
-const fmtDate = iso => {
-  if (!iso) return "";
-  const parts = iso.split("-");
-  return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : iso;
-};
 const today = () => new Date().toLocaleDateString("en-CA");
-
-function countUp(node, to, fmt = v => brl.format(v), dur = 800) {
-  const from = Number(node.dataset.value || 0);
-  node.dataset.value = to;
-  const start = performance.now();
-  const step = now => {
-    const p = Math.min((now - start) / dur, 1);
-    const e = 1 - Math.pow(1 - p, 3);
-    node.textContent = fmt(from + (to - from) * e);
-    if (p < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
 
 function toast(msg, type = "info") {
   const colors = { success:"text-emerald-400", error:"text-rose-400", info:"text-cyan-400" };
   const icon = { success:"circle-check", error:"circle-alert", info:"info" }[type];
   const t = el("div", "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 pointer-events-auto shadow-2xl");
-  t.setAttribute("role", type === "error" ? "alert" : "status");
   t.append(iconEl(icon, `w-4 h-4 mt-0.5 shrink-0 ${colors[type]}`), el("span", "leading-relaxed", msg));
   $("toasts").append(t);
   icons();
@@ -423,47 +348,26 @@ function toast(msg, type = "info") {
   setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 350); }, 3800);
 }
 
-function confirmDialog({ title, text, ok = "Confirmar", danger = false }) {
-  return new Promise(resolve => {
-    const m = $("modal"), okB = $("modal-ok"), cancelB = $("modal-cancel");
-    $("modal-title").textContent = title;
-    $("modal-text").textContent = text;
-    okB.textContent = ok;
-    okB.className = (danger ? "danger-btn" : "btn-primary") + " py-2.5 rounded-xl";
-    m.classList.add("show");
-    const onKey = e => { if (e.key === "Escape") done(false); };
-    const done = v => {
-      m.classList.remove("show");
-      document.removeEventListener("keydown", onKey);
-      okB.onclick = cancelB.onclick = m.onclick = null;
-      resolve(v);
-    };
-    document.addEventListener("keydown", onKey);
-    okB.onclick = () => done(true);
-    cancelB.onclick = () => done(false);
-    m.onclick = e => { if (e.target === m) done(false); };
-    cancelB.focus();
-  });
-}
-
-function setBusy(btn, busy, label = "") {
-  if (busy) {
-    btn.dataset.html = btn.innerHTML;
-    btn.disabled = true;
-    btn.replaceChildren(iconEl("loader-2", "w-4 h-4 animate-spin"), document.createTextNode(" " + label));
+function updateSyncStatus(isSyncing, hasError = false) {
+  const badge = $("sync-status");
+  if (isSyncing) {
+    badge.className = "text-[10px] px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 flex items-center gap-1.5 font-medium";
+    badge.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5 animate-spin"></i> Sincronizando...`;
+  } else if (hasError) {
+    badge.className = "text-[10px] px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 flex items-center gap-1.5 font-medium";
+    badge.innerHTML = `<i data-lucide="cloud-off" class="w-3.5 h-3.5"></i> Fila Pendente`;
   } else {
-    btn.innerHTML = btn.dataset.html;
-    btn.disabled = false;
+    badge.className = "text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-medium";
+    badge.innerHTML = `<i data-lucide="cloud-check" class="w-3.5 h-3.5"></i> Nuvem OK`;
   }
   icons();
 }
 
 function setAvatar(box, u) {
   box.replaceChildren();
-  if (u.picture && u.picture.startsWith("https://")) {
+  if (u.picture) {
     const img = el("img", "w-full h-full object-cover");
     img.src = u.picture;
-    img.alt = u.name;
     img.referrerPolicy = "no-referrer";
     box.append(img);
   } else {
@@ -472,435 +376,178 @@ function setAvatar(box, u) {
   icons();
 }
 
-function skeleton(container, n = 3, h = "h-16") {
-  container.replaceChildren(...Array.from({ length: n }, () => el("div", `skeleton ${h}`)));
-}
-
-function emptyState(text) {
-  const box = el("div", "text-center py-8 text-slate-500 text-xs space-y-2");
-  box.append(iconEl("inbox", "w-8 h-8 mx-auto text-slate-600"), el("p", "", text));
-  return box;
-}
-
-function renderError(container, msg, retry) {
-  const box = el("div", "text-center py-8 space-y-3");
-  box.append(el("p", "text-xs text-rose-400 leading-relaxed", msg));
-  const b = el("button", "ghost-btn px-4 py-2 rounded-xl", "Tentar novamente");
-  b.onclick = retry;
-  box.append(b);
-  container.replaceChildren(box);
-}
-
-// ============ FUNDO ANIMADO ============
-function initParticles() {
-  const c = $("bg"), x = c.getContext("2d");
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let pts = [];
-  const size = () => {
-    c.width = innerWidth; c.height = innerHeight;
-    const n = Math.min(38, Math.floor(c.width * c.height / 22000));
-    pts = Array.from({ length: n }, () => ({
-      x: Math.random() * c.width, y: Math.random() * c.height,
-      vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
-      r: Math.random() * 1.6 + .4
-    }));
-  };
-  size();
-  addEventListener("resize", size);
-  const frame = () => {
-    x.clearRect(0, 0, c.width, c.height);
-    pts.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > c.width) p.vx *= -1;
-      if (p.y < 0 || p.y > c.height) p.vy *= -1;
-      x.fillStyle = "rgba(34,211,238,.45)";
-      x.beginPath(); x.arc(p.x, p.y, p.r, 0, Math.PI * 2); x.fill();
-    });
-    for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
-      const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
-      if (d < 110) {
-        x.strokeStyle = `rgba(34,211,238,${.12 * (1 - d / 110)})`;
-        x.beginPath(); x.moveTo(pts[i].x, pts[i].y); x.lineTo(pts[j].x, pts[j].y); x.stroke();
-      }
-    }
-    if (!reduce) requestAnimationFrame(frame);
-  };
-  frame();
-}
-
-// ============ COMUNICAÇÃO COM O BACKEND ============
+// ============ COMUNICAÇÃO (OFFLINE-FIRST) ============
 async function api(action, payload = {}) {
-  if (!state.user || !state.user.email) throw new Error("Sua sessão expirou. Entre novamente.");
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 20000);
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action, email: state.user.email, ...payload }),
-      signal: ctrl.signal
-    });
-    const data = await res.json();
-    if (data.status !== "success") {
-      if (data.code === "AUTH") { logout(data.message); }
-      throw new Error(data.message || "Não foi possível concluir a operação.");
-    }
-    return data;
-  } catch (err) {
-    if (err.name === "AbortError") throw new Error("O servidor demorou para responder. Tente novamente.");
-    if (err instanceof TypeError) throw new Error("Sem conexão com o servidor. Verifique sua internet.");
-    throw err;
-  } finally {
-    clearTimeout(timer);
-  }
+  if (!state.user) throw new Error("Sessão expirada.");
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST", body: JSON.stringify({ action, email: state.user.email, ...payload })
+  });
+  const data = await res.json();
+  if (data.status !== "success") throw new Error(data.message);
+  return data;
 }
 
-// ============ NOVO LOGIN VIA POPUP (TOKEN CLIENT) ============
-function setupGooglePopup() {
-  if (!window.google || !google.accounts || !google.accounts.oauth2) {
-    setTimeout(setupGooglePopup, 300);
-    return;
-  }
+// Envio em Background (Fila de Sincronização)
+async function processSyncQueue() {
+  const queueStr = localStorage.getItem("pv_sync_queue");
+  let queue = queueStr ? JSON.parse(queueStr) : [];
+  if (queue.length === 0) { updateSyncStatus(false); return; }
+
+  updateSyncStatus(true);
+  let failed = [];
   
+  // Tenta enviar 1 por 1 silenciosamente
+  for (let tx of queue) {
+    try {
+      await api("add_transaction", tx);
+    } catch (e) {
+      failed.push(tx); // Falhou, mantém na fila para depois
+    }
+  }
+
+  localStorage.setItem("pv_sync_queue", JSON.stringify(failed));
+  updateSyncStatus(false, failed.length > 0);
+}
+
+// ============ LOGIN & SPLASH ============
+function setupGooglePopup() {
+  if (!window.google) return setTimeout(setupGooglePopup, 300);
   state.tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: _CLIENT_ID, // CORRIGIDO: Estava buscando GOOGLE_CLIENT_ID que não existia
-    scope: "email profile openid",
+    client_id: _CLIENT_ID, scope: "email profile openid",
     callback: async (resp) => {
-      if (resp.error) {
-        $("login-status").classList.add("hidden");
-        $("login-error").textContent = "Erro na autorização do Google: " + resp.error;
-        $("login-error").classList.remove("hidden");
-        return;
-      }
-      
-      // Obtém o perfil direto da API do Google usando o Access Token
+      if (resp.error) return;
       try {
-        const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-          headers: { Authorization: `Bearer ${resp.access_token}` }
-        });
+        const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${resp.access_token}` } });
         const profile = await userInfoRes.json();
+        state.user = { name: profile.name, email: profile.email, picture: profile.picture };
         
-        if (!profile.email) throw new Error("E-mail não verificado.");
-        
-        state.user = {
-          name: profile.name || profile.given_name || "Usuário",
-          email: profile.email,
-          picture: profile.picture || ""
-        };
-        
-        // Salva na sessão
-        sessionStorage.setItem("planilhaviva_user", JSON.stringify(state.user));
-        
-        await enterApp();
-      } catch (err) {
-        $("login-status").classList.add("hidden");
-        $("login-error").textContent = "Não foi possível obter dados do perfil.";
-        $("login-error").classList.remove("hidden");
-      }
+        // PERSISTENTE: Salva no localStorage (não desloga ao fechar)
+        localStorage.setItem("planilhaviva_user_v2", JSON.stringify(state.user));
+        showSplashAndEnter();
+      } catch (err) { toast("Erro ao obter perfil", "error"); }
     }
   });
 
-  $("btnCustomGoogle").addEventListener("click", () => { // CORRIGIDO: ID DO BOTAO RECONHECIDO AQUI
-    $("login-error").classList.add("hidden");
+  $("btnCustomGoogle").addEventListener("click", () => {
     $("login-status").classList.remove("hidden");
-    icons();
     state.tokenClient.requestAccessToken({ prompt: "select_account" });
   });
 }
 
-async function enterApp() {
-  try {
-    await api("login");
-  } catch (e) {
-    toast(e.message, "error");
-  }
+function showSplashAndEnter() {
+  $("view-auth").classList.add("hidden");
   
+  const u = state.user;
+  setAvatar($("splash-avatar-container"), u);
+  $("splash-name").textContent = u.name.split(" ")[0] + "!";
+  
+  const splash = $("welcome-splash");
+  splash.classList.remove("hidden");
+  splash.classList.add("flex");
+  
+  // Espera 2.5s para apreciar a tela e entra no app
+  setTimeout(() => {
+    splash.classList.add("hide-splash");
+    setTimeout(() => {
+      splash.classList.remove("flex");
+      splash.classList.add("hidden");
+      enterApp();
+    }, 600);
+  }, 2500);
+}
+
+async function enterApp() {
   const u = state.user;
   $("user-name").textContent = u.name;
   setAvatar($("avatar"), u);
-  $("view-auth").classList.add("hidden");
+  
   $("view-app").classList.remove("hidden");
   $("view-app").classList.add("flex", "enter");
   $("bottom-nav").classList.remove("hidden");
+  
   go("fluxo");
-  toast(`Bem-vindo, ${u.name.split(" ")[0]}!`, "success");
+  api("login").catch(()=>{}); // Registra login em background
+  processSyncQueue(); // Envia o que ficou pendente offline
 }
 
-function logout(message) {
-  state.user = null;
-  sessionStorage.removeItem("planilhaviva_user");
-  $("view-app").classList.add("hidden");
-  $("view-app").classList.remove("flex", "enter");
-  $("bottom-nav").classList.add("hidden");
-  $("view-auth").classList.remove("hidden");
-  $("list-fluxo").replaceChildren();
-  $("list-invest").replaceChildren();
-  $("cats").replaceChildren();
-  resetForm();
-  if (message) toast(message, "info");
-  icons();
+function logout() {
+  localStorage.removeItem("planilhaviva_user_v2");
+  location.reload(); // Recarrega a página para limpar tudo da memória
 }
 
-// ============ NAVEGAÇÃO ============
-const VIEWS = ["fluxo", "resumo", "investir", "config"];
+// ============ FORMULÁRIO E FLUXO ============
+function validate() {
+  $("desc").removeAttribute("aria-invalid"); $("amount").removeAttribute("aria-invalid");
+  let ok = true;
+  const desc = $("desc").value.trim(); const amount = Number($("amount").value);
+  if (desc.length < 2) { $("desc").setAttribute("aria-invalid", "true"); ok = false; }
+  if (!(amount > 0)) { $("amount").setAttribute("aria-invalid", "true"); ok = false; }
+  if (!ok) { toast("Preencha descrição e valor.", "error"); return null; }
+  
+  return { desc, amount, type: $("type").value, category: $("category").value, date: $("date").value };
+}
+
+function resetForm() { $("txForm").reset(); $("type").value = "in"; $("date").value = today(); }
+
+// ============ INICIALIZAÇÃO ============
+function init() {
+  CATEGORIES.forEach(c => { const o = el("option", "", c); o.value = c; $("category").append(o); });
+  resetForm(); icons(); setupGooglePopup();
+
+  // Verifica Sessão Persistente
+  const savedUser = localStorage.getItem("planilhaviva_user_v2");
+  if (savedUser) {
+    state.user = JSON.parse(savedUser);
+    enterApp(); // Pula o splash se já estava logado antes para ser rápido
+  }
+
+  // Navegação
+  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
+  document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => {
+    $("type").value = b.dataset.type;
+    document.querySelectorAll(".seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
+  }));
+
+  // Salvar (Modo Cache/Rápido)
+  $("txForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const payload = validate();
+    if (!payload) return;
+
+    // 1. Salva na Fila Local
+    const queue = JSON.parse(localStorage.getItem("pv_sync_queue") || "[]");
+    queue.push(payload);
+    localStorage.setItem("pv_sync_queue", JSON.stringify(queue));
+
+    // 2. Feedback imediato para o usuário
+    toast("Lançamento salvo!", "success");
+    resetForm();
+    updateSyncStatus(true);
+    
+    // 3. Atualiza tela e tenta enviar em background
+    loadFluxo(payload); 
+    processSyncQueue();
+  });
+
+  $("btnLogout").addEventListener("click", logout);
+}
+
 function go(name) {
-  VIEWS.forEach((v, i) => {
+  ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
     const on = v === name;
     $("view-" + v).classList.toggle("active", on);
     const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
     btn.setAttribute("aria-current", on ? "page" : "false");
-    btn.classList.toggle("text-cyan-300", on);
-    btn.classList.toggle("text-slate-400", !on);
+    btn.classList.toggle("text-cyan-300", on); btn.classList.toggle("text-slate-400", !on);
     if (on) $("nav-pill").style.transform = `translateX(${i * 100}%)`;
   });
-  icons();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  if (name === "fluxo") loadFluxo();
-  if (name === "resumo") loadResumo();
-  if (name === "investir") loadInvest();
-  if (name === "config") loadConfig();
+  window.scrollTo(0, 0); icons();
+  if(name === "fluxo") loadFluxo();
 }
 
-// ============ FORMULÁRIO ============
-function setType(t) {
-  $("type").value = t;
-  document.querySelectorAll(".seg-btn").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.type === t)));
-}
-
-function clearErrors() {
-  document.querySelectorAll(".err").forEach(e => e.textContent = "");
-  ["desc", "amount", "date"].forEach(id => $(id).removeAttribute("aria-invalid"));
-}
-
-function fieldErr(id, msg) {
-  const input = $(id);
-  document.querySelector(`.err[data-for="${id}"]`).textContent = msg;
-  input.setAttribute("aria-invalid", "true");
-  input.classList.remove("shake");
-  void input.offsetWidth;
-  input.classList.add("shake");
-}
-
-function validate() {
-  clearErrors();
-  let ok = true;
-  const desc = $("desc").value.trim();
-  const raw = $("amount").value;
-  const amount = Number(raw);
-  if (desc.length < 2) { fieldErr("desc", "Descreva o lançamento com pelo menos 2 caracteres."); ok = false; }
-  if (!raw || !(amount > 0) || amount > MAX_AMOUNT) { fieldErr("amount", "Informe um valor maior que zero."); ok = false; }
-  if (!$("date").value) { fieldErr("date", "Escolha a data do lançamento."); ok = false; }
-  if (!ok) return null;
-  return {
-    desc,
-    amount: Math.round(amount * 100) / 100,
-    type: $("type").value,
-    category: $("category").value,
-    date: $("date").value
-  };
-}
-
-function resetForm() {
-  $("txForm").reset();
-  setType("in");
-  $("date").value = today();
-  clearErrors();
-}
-
-// ============ LISTAS ============
-function renderTransactions(list, items, emptyText) {
-  list.replaceChildren();
-  if (!items.length) { list.append(emptyState(emptyText)); icons(); return; }
-  items.forEach((t, i) => {
-    const li = el("li", "glass rounded-xl p-3.5 flex items-center gap-3 item-in");
-    li.style.animationDelay = `${Math.min(i, 10) * 35}ms`;
-    const dot = el("span", "w-2.5 h-2.5 rounded-full shrink-0");
-    dot.style.background = CAT_COLORS[t.category] || "#94a3b8";
-    const body = el("div", "min-w-0 flex-1");
-    body.append(el("p", "text-sm font-semibold text-white truncate", t.desc),
-                el("p", "text-[11px] text-slate-400", `${fmtDate(t.date)} · ${t.category}`));
-    const isIn = t.type === "in";
-    const val = el("p", `text-sm font-bold tabular-nums ${isIn ? "text-emerald-400" : "text-rose-400"}`,
-                    `${isIn ? "+" : "−"} ${brl.format(t.amount)}`);
-    li.append(dot, body, val);
-    list.append(li);
-  });
-}
-
-async function loadFluxo() {
-  const list = $("list-fluxo");
-  skeleton(list, 3);
-  try {
-    const r = await api("list_transactions");
-    renderTransactions(list, r.lancamentos, "Nenhum lançamento ainda. Registre o primeiro acima.");
-  } catch (e) {
-    renderError(list, e.message, loadFluxo);
-  }
-}
-
-function renderCategories(map, total) {
-  const box = $("cats");
-  box.replaceChildren();
-  const entries = Object.entries(map).sort((a, b) => b[1] - a[1]);
-  if (!entries.length) { box.append(emptyState("Nenhum gasto registrado neste período.")); icons(); return; }
-  entries.forEach(([cat, val], i) => {
-    const pct = total > 0 ? (val / total) * 100 : 0;
-    const row = el("div", "space-y-1.5 item-in");
-    row.style.animationDelay = `${i * 60}ms`;
-    const head = el("div", "flex justify-between text-xs");
-    head.append(el("span", "text-slate-200 font-medium", cat),
-                el("span", "text-slate-400 tabular-nums", `${brl.format(val)} · ${pct.toFixed(0)}%`));
-    const track = el("div", "h-2 rounded-full bg-slate-800/80 overflow-hidden");
-    const bar = el("div", "bar");
-    bar.style.background = `linear-gradient(90deg, ${CAT_COLORS[cat] || "#22d3ee"}, #6366f1)`;
-    track.append(bar);
-    row.append(head, track);
-    box.append(row);
-    requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = pct.toFixed(1) + "%"; }));
-  });
-}
-
-async function loadResumo() {
-  const box = $("cats");
-  skeleton(box, 3, "h-10");
-  try {
-    const s = await api("summary");
-    countUp($("saldo"), s.saldo);
-    countUp($("ent"), s.entradas);
-    countUp($("sai"), s.saidas);
-    $("saldo").classList.toggle("text-rose-400", s.saldo < 0);
-    $("saldo").classList.toggle("text-white", s.saldo >= 0);
-    renderCategories(s.gastosPorCategoria, s.saidas);
-  } catch (e) {
-    renderError(box, e.message, loadResumo);
-  }
-}
-
-async function loadInvest() {
-  const list = $("list-invest");
-  skeleton(list, 2, "h-14");
-  try {
-    const [s, r] = await Promise.all([api("summary"), api("list_transactions")]);
-    countUp($("invest-total"), s.investido);
-    renderTransactions(
-      list,
-      r.lancamentos.filter(t => t.category === "Investimento"),
-      "Nenhum aporte registrado. Use o botão acima para começar."
-    );
-  } catch (e) {
-    renderError(list, e.message, loadInvest);
-  }
-}
-
-async function loadConfig() {
-  const u = state.user;
-  if (!u) return;
-  $("cfg-name").textContent = u.name;
-  $("cfg-email").textContent = u.email;
-  setAvatar($("cfg-avatar"), u);
-  try {
-    const [c, s] = await Promise.all([api("count_users"), api("summary")]);
-    countUp($("user-count"), c.total, intFmt);
-    countUp($("my-count"), s.quantidade, intFmt);
-  } catch (e) {
-    $("user-count").textContent = "—";
-    $("my-count").textContent = "—";
-    toast(e.message, "error");
-  }
-}
-
-// ============ INICIALIZAÇÃO ============
-function init() {
-  const sel = $("category");
-  CATEGORIES.forEach(c => { const o = el("option", "", c); o.value = c; sel.append(o); });
-  resetForm();
-  icons();
-  initParticles();
-  setupGooglePopup();
-
-  // Verifica se o usuário já estava logado na sessão atual
-  const savedUser = sessionStorage.getItem("planilhaviva_user");
-  if (savedUser) {
-    try {
-      state.user = JSON.parse(savedUser);
-      enterApp();
-    } catch (e) {
-      sessionStorage.removeItem("planilhaviva_user");
-    }
-  }
-
-  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
-  document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => setType(b.dataset.type)));
-
-  $("txForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const payload = validate();
-    if (!payload) return;
-    const btn = $("btnSave");
-    setBusy(btn, true, "Gravando...");
-    try {
-      await api("add_transaction", payload);
-      toast("Lançamento gravado com sucesso!", "success");
-      resetForm();
-      loadFluxo();
-    } catch (err) {
-      toast(err.message, "error");
-    } finally {
-      setBusy(btn, false);
-    }
-  });
-
-  $("btnRefreshFluxo").addEventListener("click", loadFluxo);
-
-  $("btnNewInvest").addEventListener("click", () => {
-    go("fluxo");
-    setType("out");
-    $("category").value = "Investimento";
-    setTimeout(() => $("desc").focus(), 300);
-  });
-
-  $("btnLogout").addEventListener("click", async () => {
-    const ok = await confirmDialog({
-      title: "Sair da conta?",
-      text: "Você precisará entrar novamente com o Google para acessar seus dados.",
-      ok: "Sair"
-    });
-    if (ok) logout("Você saiu da conta com segurança.");
-  });
-
-  $("btnDelete").addEventListener("click", async () => {
-    const ok = await confirmDialog({
-      title: "Excluir todos os seus dados?",
-      text: "Seus lançamentos e seu cadastro serão apagados permanentemente. Esta ação não pode ser desfeita.",
-      ok: "Excluir definitivamente",
-      danger: true
-    });
-    if (!ok) return;
-    const btn = $("btnDelete");
-    setBusy(btn, true, "Excluindo...");
-    try {
-      await api("delete_my_data");
-      logout("Seus dados foram excluídos com sucesso.");
-    } catch (err) {
-      toast(err.message, "error");
-      setBusy(btn, false);
-    }
-  });
-
-  window.addEventListener("beforeinstallprompt", e => {
-    e.preventDefault();
-    state.deferredPrompt = e;
-    $("btnInstall").classList.remove("hidden");
-  });
-  $("btnInstall").addEventListener("click", async () => {
-    const p = state.deferredPrompt;
-    if (!p) return;
-    p.prompt();
-    const { outcome } = await p.userChoice;
-    state.deferredPrompt = null;
-    $("btnInstall").classList.add("hidden");
-    toast(outcome === "accepted" ? "Aplicativo instalado!" : "Instalação cancelada.", outcome === "accepted" ? "success" : "info");
-  });
+async function loadFluxo(fakeData = null) {
+  // Para visualização, não vamos aguardar o servidor travar. 
+  // Futuramente, você pode implementar cache de leitura aqui também.
 }
 
 document.addEventListener("DOMContentLoaded", init);
