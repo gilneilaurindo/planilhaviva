@@ -8,7 +8,8 @@
 <link rel="manifest" href="manifest.json">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer onload="initGoogle()"></script>
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root { color-scheme: dark; }
   body {
@@ -18,7 +19,7 @@
       radial-gradient(700px 500px at 110% 110%, rgba(99,102,241,.14), transparent 60%);
   }
   .glass {
-    background: rgba(15,23,42,.78);
+    background: rgba(15,23,42,.82);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(148,163,184,.14);
     box-shadow: 0 20px 50px -20px rgba(0,0,0,.7);
@@ -58,6 +59,33 @@
   .btn-primary:hover:not(:disabled) { transform:translateY(-1px); filter:brightness(1.08); box-shadow:0 16px 36px -12px rgba(6,182,212,.75); }
   .btn-primary:active:not(:disabled) { transform:scale(.98); }
   .btn-primary:disabled { opacity:.6; cursor:not-allowed; }
+
+  /* BOTÃO CUSTOMIZADO GOOGLE */
+  .btn-google-custom {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 280px;
+    padding: 0.8rem 1.25rem;
+    background: #0f172a;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 9999px;
+    color: #f8fafc;
+    font-size: 0.82rem;
+    font-weight: 600;
+    box-shadow: 0 10px 25px -10px rgba(6, 182, 212, 0.35);
+    transition: all 0.25s ease;
+  }
+  .btn-google-custom:hover {
+    background: #1e293b;
+    border-color: #22d3ee;
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px -8px rgba(6, 182, 212, 0.5);
+  }
+  .btn-google-custom:active { transform: scale(0.98); }
+
   .danger-btn {
     background: rgba(244,63,94,.12); border:1px solid rgba(244,63,94,.35); color:#fb7185;
     font-weight:700; font-size:.75rem; transition: background .2s, transform .15s;
@@ -111,7 +139,7 @@
 
 <main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
 
-  <!-- ============ LOGIN ============ -->
+  <!-- ============ LOGIN LIMPO E SEM FAIXA BRANCA ============ -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter">
     <div class="glass rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow"></div>
@@ -120,11 +148,28 @@
       </div>
       <div>
         <h1 class="text-2xl font-black tracking-tight text-white">PlanilhaViva</h1>
-        <p class="text-xs text-slate-400 mt-1">Controle financeiro pessoal, com privacidade</p>
+        <p class="text-xs text-slate-400 mt-1">Controle financeiro pessoal com privacidade total</p>
       </div>
-      <div class="flex justify-center min-h-[44px]"><div id="google-btn"></div></div>
-      <p id="login-status" class="hidden text-xs text-cyan-300 font-mono">Verificando sua conta com segurança...</p>
+
+      <!-- BOTÃO CUSTOMIZADO COM POPUP -->
+      <div class="flex flex-col items-center justify-center pt-1">
+        <button id="btnCustomGoogle" class="btn-google-custom">
+          <!-- Ícone SVG Oficial do Google -->
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>Continuar com o Google</span>
+        </button>
+      </div>
+
+      <p id="login-status" class="hidden text-xs text-cyan-300 font-mono flex items-center justify-center gap-2">
+        <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Autenticando com o Google...
+      </p>
       <p id="login-error" class="hidden text-xs text-rose-400"></p>
+
       <ul class="pt-4 border-t border-slate-800 space-y-2.5 text-left text-[11px] text-slate-400">
         <li class="flex gap-2.5"><i data-lucide="lock" class="w-4 h-4 text-cyan-400 shrink-0"></i> Cada operação é verificada pelo Google antes de ser gravada.</li>
         <li class="flex gap-2.5"><i data-lucide="user-check" class="w-4 h-4 text-cyan-400 shrink-0"></i> Seus lançamentos ficam vinculados somente à sua conta Google.</li>
@@ -137,7 +182,7 @@
     </footer>
   </section>
 
-  <!-- ============ APP ============ -->
+  <!-- ============ APP DASHBOARD ============ -->
   <section id="view-app" class="hidden flex-1 flex-col pb-32">
 
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between">
@@ -332,7 +377,7 @@ const MAX_AMOUNT = 99999999.99;
 const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
 const intFmt = v => Math.round(v).toLocaleString("pt-BR");
 const $ = id => document.getElementById(id);
-const state = { token: null, user: null, deferredPrompt: null };
+const state = { tokenClient: null, user: null, deferredPrompt: null };
 
 // ============ UTILITÁRIOS ============
 const icons = () => { if (window.lucide) lucide.createIcons(); };
@@ -349,14 +394,6 @@ const fmtDate = iso => {
   return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : iso;
 };
 const today = () => new Date().toLocaleDateString("en-CA");
-
-function decodeJwt(token) {
-  try {
-    const b = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-    const json = decodeURIComponent(atob(b).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join(""));
-    return JSON.parse(json);
-  } catch { return null; }
-}
 
 function countUp(node, to, fmt = v => brl.format(v), dur = 800) {
   const from = Number(node.dataset.value || 0);
@@ -490,14 +527,14 @@ function initParticles() {
 
 // ============ COMUNICAÇÃO COM O BACKEND ============
 async function api(action, payload = {}) {
-  if (!state.token) throw new Error("Sua sessão expirou. Entre novamente.");
+  if (!state.user || !state.user.email) throw new Error("Sua sessão expirou. Entre novamente.");
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 20000);
   try {
     const res = await fetch(SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action, token: state.token, ...payload }),
+      body: JSON.stringify({ action, email: state.user.email, ...payload }),
       signal: ctrl.signal
     });
     const data = await res.json();
@@ -515,46 +552,66 @@ async function api(action, payload = {}) {
   }
 }
 
-// ============ LOGIN ============
-function initGoogle() {
-  if (!window.google || !google.accounts || !google.accounts.id) {
-    $("login-error").textContent = "Não foi possível carregar o login do Google. Recarregue a página.";
-    $("login-error").classList.remove("hidden");
+// ============ NOVO LOGIN VIA POPUP (TOKEN CLIENT) ============
+function setupGooglePopup() {
+  if (!window.google || !google.accounts || !google.accounts.oauth2) {
+    setTimeout(setupGooglePopup, 300);
     return;
   }
-  google.accounts.id.initialize({
+  
+  state.tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: GOOGLE_CLIENT_ID,
-    callback: handleCredential,
-    auto_select: false,
-    cancel_on_tap_outside: true
+    scope: "email profile openid",
+    callback: async (resp) => {
+      if (resp.error) {
+        $("login-status").classList.add("hidden");
+        $("login-error").textContent = "Erro na autorização do Google: " + resp.error;
+        $("login-error").classList.remove("hidden");
+        return;
+      }
+      
+      // Obtém o perfil direto da API do Google usando o Access Token
+      try {
+        const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: { Authorization: `Bearer ${resp.access_token}` }
+        });
+        const profile = await userInfoRes.json();
+        
+        if (!profile.email) throw new Error("E-mail não verificado.");
+        
+        state.user = {
+          name: profile.name || profile.given_name || "Usuário",
+          email: profile.email,
+          picture: profile.picture || ""
+        };
+        
+        // Salva na sessão
+        sessionStorage.setItem("planilhaviva_user", JSON.stringify(state.user));
+        
+        await enterApp();
+      } catch (err) {
+        $("login-status").classList.add("hidden");
+        $("login-error").textContent = "Não foi possível obter dados do perfil.";
+        $("login-error").classList.remove("hidden");
+      }
+    }
   });
-  google.accounts.id.renderButton($("google-btn"), {
-    theme: "filled_black", size: "large", shape: "pill", text: "continue_with", width: 260, locale: "pt-BR"
-  });
-}
 
-async function handleCredential(resp) {
-  const p = decodeJwt(resp.credential);
-  if (!p || !p.email || String(p.email_verified) !== "true") {
-    $("login-error").textContent = "Não foi possível validar sua conta Google.";
-    $("login-error").classList.remove("hidden");
-    return;
-  }
-  $("login-error").classList.add("hidden");
-  $("login-status").classList.remove("hidden");
-  state.token = resp.credential;
-  state.user = { name: p.name || p.given_name || "Usuário", email: p.email, picture: p.picture || "" };
-  await enterApp();
-  $("login-status").classList.add("hidden");
+  $("btnCustomGoogle").addEventListener("click", () => {
+    $("login-error").classList.add("hidden");
+    $("login-status").classList.remove("hidden");
+    icons();
+    state.tokenClient.requestAccessToken({ prompt: "select_account" });
+  });
 }
 
 async function enterApp() {
   try {
     await api("login");
   } catch (e) {
-    if (state.token) toast(e.message, "error");
-    return;
+    toast(e.message, "error");
   }
+  
   const u = state.user;
   $("user-name").textContent = u.name;
   setAvatar($("avatar"), u);
@@ -567,9 +624,8 @@ async function enterApp() {
 }
 
 function logout(message) {
-  state.token = null;
   state.user = null;
-  if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+  sessionStorage.removeItem("planilhaviva_user");
   $("view-app").classList.add("hidden");
   $("view-app").classList.remove("flex", "enter");
   $("bottom-nav").classList.add("hidden");
@@ -750,13 +806,25 @@ async function loadConfig() {
   }
 }
 
-// ============ EVENTOS ============
+// ============ INICIALIZAÇÃO ============
 function init() {
   const sel = $("category");
   CATEGORIES.forEach(c => { const o = el("option", "", c); o.value = c; sel.append(o); });
   resetForm();
   icons();
   initParticles();
+  setupGooglePopup();
+
+  // Verifica se o usuário já estava logado na sessão atual
+  const savedUser = sessionStorage.getItem("planilhaviva_user");
+  if (savedUser) {
+    try {
+      state.user = JSON.parse(savedUser);
+      enterApp();
+    } catch (e) {
+      sessionStorage.removeItem("planilhaviva_user");
+    }
+  }
 
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
   document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => setType(b.dataset.type)));
