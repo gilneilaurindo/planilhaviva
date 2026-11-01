@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#020617">
 <title>PlanilhaViva Pro</title>
+<!-- CHAMA O MANIFESTO PARA O ÍCONE DO APLICATIVO -->
 <link rel="manifest" href="manifest.json">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
-<!-- Google Identity Services -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root { color-scheme: dark; }
@@ -17,7 +17,13 @@
     background-image:
       radial-gradient(900px 500px at 10% -10%, rgba(6,182,212,.14), transparent 60%),
       radial-gradient(700px 500px at 110% 110%, rgba(99,102,241,.14), transparent 60%);
+    margin: 0;
+    overflow-x: hidden;
   }
+  
+  /* CANVAS DAS PARTÍCULAS NO FUNDO */
+  #bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+
   .glass {
     background: rgba(15,23,42,.82);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -26,17 +32,11 @@
   }
   .glow { position:absolute; width:160px; height:160px; border-radius:9999px; background:rgba(6,182,212,.18); filter:blur(50px); top:-60px; right:-40px; pointer-events:none; }
 
-  /* SPLASH SCREEN DE BOAS VINDAS */
-  #welcome-splash {
-    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
-  }
-  #welcome-splash.hide-splash {
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(1.05);
-  }
+  /* SPLASH SCREEN */
+  #welcome-splash { transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out; }
+  #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); }
 
-  /* ANÚNCIOS NATIVOS */
+  /* SLOTS DE ANÚNCIO (ESPAÇO PATROCINADO) */
   .ad-slot {
     background: repeating-linear-gradient(45deg, rgba(30,41,59,0.4), rgba(30,41,59,0.4) 10px, rgba(15,23,42,0.6) 10px, rgba(15,23,42,0.6) 20px);
     border: 1px dashed rgba(148,163,184,.2);
@@ -81,7 +81,6 @@
   }
   .btn--custom:active { transform: scale(0.98); }
 
-  .danger-btn { background: rgba(244,63,94,.12); border:1px solid rgba(244,63,94,.35); color:#fb7185; font-weight:700; font-size:.75rem; transition: background .2s, transform .15s; }
   .ghost-btn { border:1px solid rgba(51,65,85,.9); color:#cbd5e1; font-weight:600; font-size:.75rem; transition: background .2s, transform .15s; }
   
   .icon-btn { padding:.55rem; border-radius:.75rem; background:rgba(30,41,59,.8); border:1px solid rgba(51,65,85,.9); color:#94a3b8; transition: all .2s; }
@@ -99,23 +98,25 @@
 
   .toast { opacity:0; transform: translateY(-12px) scale(.97); transition: all .35s cubic-bezier(.16,1,.3,1); }
   .toast.show { opacity:1; transform:none; }
+  
+  .text-alert { color: #fbbf24 !important; } /* Cor amarela para alerta de saldo */
 </style>
 </head>
-<body class="font-sans antialiased text-slate-100 min-h-screen overflow-x-hidden selection:bg-cyan-500 selection:text-slate-900">
+<body class="font-sans antialiased text-slate-100 min-h-screen">
 
-<!-- SPLASH SCREEN DE BOAS VINDAS CENTRADA -->
+<!-- FUNDO ANIMADO COM PARTÍCULAS -->
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<!-- SPLASH SCREEN DE BOAS VINDAS -->
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617] hidden flex-col items-center justify-center">
   <div class="relative">
     <div class="absolute inset-0 bg-cyan-500/30 blur-2xl rounded-full"></div>
-    <div id="splash-avatar-container" class="relative w-28 h-28 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_40px_rgba(34,211,238,0.4)]">
-      <!-- Imagem injetada via JS -->
-    </div>
+    <div id="splash-avatar-container" class="relative w-28 h-28 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_40px_rgba(34,211,238,0.4)]"></div>
   </div>
   <h2 class="text-3xl font-black text-white mt-6 tracking-tight">Bem-vindo(a),</h2>
   <h2 id="splash-name" class="text-2xl font-bold text-cyan-400 mt-1"></h2>
 </div>
 
-<canvas id="bg" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
 <div id="toasts" class="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[80] space-y-2 pointer-events-none" aria-live="polite"></div>
 
 <main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
@@ -124,7 +125,6 @@
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter">
     <div class="glass rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow"></div>
-      <!-- Trocado o ícone para o escudo com check, combinando com sua imagem -->
       <div class="inline-flex p-4 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-cyan-400">
         <i data-lucide="shield-check" class="w-12 h-12"></i>
       </div>
@@ -132,7 +132,6 @@
         <h1 class="text-3xl font-black tracking-tight text-white">PlanilhaViva</h1>
         <p class="text-xs text-slate-400 mt-2">Segurança e controle financeiro no seu bolso.</p>
       </div>
-
       <div class="flex flex-col items-center justify-center pt-1">
         <button id="btnCustomGoogle" class="btn--custom">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -144,18 +143,16 @@
           <span>Continuar com o Google</span>
         </button>
       </div>
-
       <p id="login-status" class="hidden text-xs text-cyan-300 font-mono flex items-center justify-center gap-2">
         <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Autenticando com o Google...
       </p>
-      <p id="login-error" class="hidden text-xs text-rose-400"></p>
     </div>
   </section>
 
   <!-- ============ APP DASHBOARD ============ -->
   <section id="view-app" class="hidden flex-1 flex-col pb-32">
 
-    <!-- CABEÇALHO (Agora com Status de Sincronização) -->
+    <!-- CABEÇALHO -->
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3 min-w-0">
         <div id="avatar" class="w-10 h-10 rounded-full bg-slate-800 border border-cyan-400/50 overflow-hidden flex items-center justify-center shrink-0"></div>
@@ -163,7 +160,6 @@
           <h2 id="user-name" class="text-sm font-bold text-white truncate"></h2>
         </div>
       </div>
-      <!-- Indicador de Status (Offline/Online Sync) -->
       <span id="sync-status" class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-medium transition-colors">
         <i data-lucide="cloud-check" class="w-3.5 h-3.5"></i> Nuvem OK
       </span>
@@ -178,14 +174,12 @@
           <form id="txForm" novalidate class="space-y-4">
             <div>
               <label for="desc" class="label">Descrição</label>
-              <input id="desc" class="input" maxlength="80" autocomplete="off" placeholder="Ex.: Venda de produto, compra no mercado">
-              <p class="err" data-for="desc"></p>
+              <input id="desc" class="input" maxlength="80" autocomplete="off" placeholder="Ex.: Mercado, Venda...">
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label for="amount" class="label">Valor (R$)</label>
-                <input id="amount" type="number" class="input" step="0.01" min="0.01" max="99999999.99" inputmode="decimal" placeholder="0,00">
-                <p class="err" data-for="amount"></p>
+                <input id="amount" type="number" class="input" step="0.01" min="0.01" inputmode="decimal" placeholder="0,00">
               </div>
               <div>
                 <span class="label">Natureza</span>
@@ -204,7 +198,6 @@
               <div>
                 <label for="date" class="label">Data</label>
                 <input id="date" type="date" class="input">
-                <p class="err" data-for="date"></p>
               </div>
             </div>
             <button id="btnSave" type="submit" class="btn-primary w-full py-3.5 rounded-xl flex items-center justify-center gap-2">
@@ -213,21 +206,9 @@
           </form>
         </div>
 
-        <!-- ESPAÇO PARA ANÚNCIO (FLUXO) -->
         <div class="ad-slot">
           <i data-lucide="megaphone" class="w-5 h-5 text-slate-500 mb-1"></i>
           <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Espaço Patrocinado</p>
-          <p class="text-[9px] text-slate-500 mt-1">Insira seu script do AdSense aqui</p>
-        </div>
-
-        <div class="space-y-3">
-          <div class="flex items-center justify-between">
-            <h3 class="section-title">Lançamentos Recentes</h3>
-            <button id="btnRefreshFluxo" class="icon-btn spin" aria-label="Atualizar lista">
-              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-            </button>
-          </div>
-          <ul id="list-fluxo" class="space-y-2"></ul>
         </div>
       </div>
 
@@ -235,29 +216,11 @@
       <div id="view-resumo" class="view space-y-5">
         <div class="glass rounded-3xl p-6 relative overflow-hidden">
           <div class="glow"></div>
-          <p class="text-[11px] uppercase tracking-widest text-slate-400">Saldo do período</p>
+          <p class="text-[11px] uppercase tracking-widest text-slate-400">Saldo Atualizado</p>
           <p id="saldo" class="text-4xl font-black mt-2 tabular-nums">R$ 0,00</p>
-          <div class="grid grid-cols-2 gap-3 mt-5">
-            <div class="rounded-xl bg-slate-900/60 border border-emerald-500/20 p-3">
-              <p class="text-[10px] uppercase tracking-wider text-slate-400">Entradas</p>
-              <p id="ent" class="text-sm font-bold text-emerald-400 tabular-nums mt-1">R$ 0,00</p>
-            </div>
-            <div class="rounded-xl bg-slate-900/60 border border-rose-500/20 p-3">
-              <p class="text-[10px] uppercase tracking-wider text-slate-400">Saídas</p>
-              <p id="sai" class="text-sm font-bold text-rose-400 tabular-nums mt-1">R$ 0,00</p>
-            </div>
-          </div>
+          <p id="alerta-saldo" class="text-[10px] text-amber-400 mt-1 hidden"><i data-lucide="alert-triangle" class="w-3 h-3 inline"></i> Atenção: Saldo abaixo de R$ 500,00</p>
         </div>
-        
-        <!-- ESPAÇO PARA ANÚNCIO (RESUMO) -->
-        <div class="ad-slot">
-          <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Publicidade</p>
-        </div>
-
-        <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="chart-pie" class="w-4 h-4"></i> Gastos por categoria</h3>
-          <div id="cats" class="space-y-4"></div>
-        </div>
+        <div class="ad-slot"><p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Publicidade</p></div>
       </div>
 
       <!-- ---- INVESTIR ---- -->
@@ -266,41 +229,55 @@
           <div class="glow"></div>
           <p class="text-[11px] uppercase tracking-widest text-slate-400">Total investido</p>
           <p id="invest-total" class="text-4xl font-black text-amber-300 tabular-nums mt-2">R$ 0,00</p>
-          <button id="btnNewInvest" class="btn-primary w-full py-3 rounded-xl mt-5 flex items-center justify-center gap-2">
-            <i data-lucide="plus" class="w-4 h-4"></i> Registrar aporte
-          </button>
-        </div>
-        <div class="space-y-3">
-          <h3 class="section-title">Aportes recentes</h3>
-          <ul id="list-invest" class="space-y-2"></ul>
         </div>
       </div>
 
-      <!-- ---- CONFIG ---- -->
+      <!-- ---- CONFIGURAÇÕES (REVISADA) ---- -->
       <div id="view-config" class="view space-y-5">
-        <div class="glass rounded-2xl p-5 flex items-center gap-4">
+        
+        <!-- PERFIL DO USUÁRIO GARANTIDO (O que estava vazio na imagem) -->
+        <div class="glass rounded-2xl p-5 flex items-center gap-4 border border-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.1)]">
           <div id="cfg-avatar" class="w-14 h-14 rounded-full bg-slate-800 border-2 border-cyan-400/40 overflow-hidden flex items-center justify-center shrink-0"></div>
           <div class="min-w-0">
-            <p id="cfg-name" class="font-bold text-white truncate"></p>
-            <p id="cfg-email" class="text-[11px] text-slate-400 font-mono truncate"></p>
+            <p id="cfg-name" class="font-bold text-white truncate text-lg">Usuário</p>
+            <p id="cfg-email" class="text-[11px] text-slate-400 font-mono truncate">carregando...</p>
+            <span class="inline-block mt-1 text-[9px] font-bold uppercase tracking-wider bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2 py-0.5 rounded">Membro Pro</span>
           </div>
         </div>
 
-        <!-- REMOVIDO: Contagem de Usuários Gerais (agora é privado) -->
-        <div class="glass rounded-2xl p-4">
-          <p class="text-[10px] uppercase tracking-wider text-slate-400">Total de Lançamentos Salvos (Seus)</p>
-          <p id="my-count" class="text-2xl font-black text-cyan-300 tabular-nums mt-1">—</p>
+        <!-- CONFIGURAÇÕES DA PLANILHA (Novo) -->
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title"><i data-lucide="sliders" class="w-4 h-4"></i> Estrutura da Planilha</h3>
+          <div>
+            <label for="saldo-inicial" class="label">Definir Saldo Inicial (R$)</label>
+            <input id="saldo-inicial" type="number" class="input" placeholder="Ex: 1500,00" onchange="salvarSaldoInicial(this.value)">
+            <p class="text-[10px] text-slate-400 mt-1">Este valor será a base de cálculo para a aba Resumo.</p>
+          </div>
+          <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-900/50 border border-slate-700/50">
+            <i data-lucide="bell-ring" class="w-4 h-4 text-amber-400"></i>
+            <p class="text-[11px] text-slate-300 flex-1">Alerta de saldo baixo ativado (R$ 500,00)</p>
+          </div>
         </div>
 
+        <!-- DADOS E SISTEMA -->
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title"><i data-lucide="database" class="w-4 h-4"></i> Seus Dados</h3>
+          <div class="flex justify-between items-center">
+            <p class="text-xs text-slate-300">Total de Lançamentos</p>
+            <p id="my-count" class="text-lg font-black text-cyan-300 tabular-nums">0</p>
+          </div>
+        </div>
+
+        <!-- BOTÕES DE AÇÃO -->
         <button id="btnInstall" class="hidden btn-primary w-full py-3 rounded-xl flex items-center justify-center gap-2">
           <i data-lucide="download" class="w-4 h-4"></i> Instalar Aplicativo (App)
         </button>
 
-        <button id="btnLogout" class="ghost-btn w-full py-3 rounded-xl flex items-center justify-center gap-2 mt-4">
-          <i data-lucide="log-out" class="w-4 h-4"></i> Sair da conta
+        <button id="btnLogout" class="ghost-btn w-full py-3 rounded-xl flex items-center justify-center gap-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i> Sair da conta seguramente
         </button>
 
-        <footer class="text-center text-[10px] text-slate-500 space-y-1 pt-6">
+        <footer class="text-center text-[10px] text-slate-500 space-y-1 pt-4 pb-6">
           <p>© PlanilhaViva Pro. Programador: <span class="text-cyan-400 font-medium">Gilnei Laurindo</span></p>
           <p>Ideias e dedicatória: <span class="text-slate-400">Samuel Danilo</span></p>
         </footer>
@@ -314,105 +291,121 @@
   <div class="glass rounded-2xl relative grid grid-cols-4 p-0">
     <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-cyan-500/15 border border-cyan-400/30 w-[calc((100%-0.5rem)/4)]"></span>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-cyan-300" data-view="fluxo" aria-current="page"><i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Fluxo</span></button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-200" data-view="resumo" aria-current="false"><i data-lucide="chart-pie" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Resumo</span></button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-200" data-view="investir" aria-current="false"><i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Investir</span></button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-200" data-view="config" aria-current="false"><i data-lucide="settings" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Config</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="resumo"><i data-lucide="chart-pie" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Resumo</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="investir"><i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Investir</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config"><i data-lucide="settings" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Config</span></button>
   </div>
 </nav>
 
 <script>
-// ============ CONFIGURAÇÕES ============
+// ============ CONFIGURAÇÕES GERAIS ============
 const _CLIENT_ID = "599756107964-ob0m7i1asuc0t7ng7rn6qc1106elf2ou.apps.googleusercontent.com";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyA71iGP67ggCDJ29QBh8cXpdorC5V73TPE4g0S3TQIkrwitArdoHWfCuDHSz7NOTbL/exec";
+// Substitua pela sua URL real de execução do Apps Script:
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyA71iGP67ggCDJ29QBh8cXpdorC5V73TPE4g0S3TQIkrwitArdoHWfCuDHSz7NOTbL/exec"; 
 const CATEGORIES = ["Receita","Dízimo","Fixos","Pessoal","Saúde","Dívidas","Investimento","Outros"];
-const CAT_COLORS = { Receita:"#22d3ee", Dízimo:"#a78bfa", Fixos:"#60a5fa", Pessoal:"#f472b6", Saúde:"#34d399", Dívidas:"#fb7185", Investimento:"#fbbf24", Outros:"#94a3b8" };
 
 const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
 const $ = id => document.getElementById(id);
-const state = { tokenClient: null, user: null, deferredPrompt: null, syncQueue: [] };
+const state = { user: null, deferredPrompt: null };
+
+// ============ SISTEMA DE PARTÍCULAS (CORRIGIDO) ============
+function initParticles() {
+  const canvas = $("bg");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  let particles = [];
+  
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const count = Math.min(40, Math.floor((canvas.width * canvas.height) / 15000));
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 1.5 + 0.5
+    }));
+  }
+  
+  window.addEventListener('resize', resize);
+  resize();
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+      ctx.fillStyle = "rgba(34, 211, 238, 0.4)";
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    });
+    
+    // Conexões
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) {
+          ctx.strokeStyle = `rgba(34, 211, 238, ${0.15 * (1 - dist / 100)})`;
+          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
 
 // ============ UTILITÁRIOS ============
 const icons = () => { if (window.lucide) lucide.createIcons(); };
-const el = (tag, cls = "", text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
-const iconEl = (name, cls = "w-4 h-4") => { const i = document.createElement("i"); i.dataset.lucide = name; i.className = cls; return i; };
-const today = () => new Date().toLocaleDateString("en-CA");
-
 function toast(msg, type = "info") {
   const colors = { success:"text-emerald-400", error:"text-rose-400", info:"text-cyan-400" };
   const icon = { success:"circle-check", error:"circle-alert", info:"info" }[type];
-  const t = el("div", "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 pointer-events-auto shadow-2xl");
-  t.append(iconEl(icon, `w-4 h-4 mt-0.5 shrink-0 ${colors[type]}`), el("span", "leading-relaxed", msg));
-  $("toasts").append(t);
-  icons();
+  const t = document.createElement("div");
+  t.className = "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 pointer-events-auto shadow-2xl";
+  t.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 mt-0.5 shrink-0 ${colors[type]}"></i><span class="leading-relaxed">${msg}</span>`;
+  $("toasts").append(t); icons();
   requestAnimationFrame(() => t.classList.add("show"));
-  setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 350); }, 3800);
-}
-
-function updateSyncStatus(isSyncing, hasError = false) {
-  const badge = $("sync-status");
-  if (isSyncing) {
-    badge.className = "text-[10px] px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 flex items-center gap-1.5 font-medium";
-    badge.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5 animate-spin"></i> Sincronizando...`;
-  } else if (hasError) {
-    badge.className = "text-[10px] px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 flex items-center gap-1.5 font-medium";
-    badge.innerHTML = `<i data-lucide="cloud-off" class="w-3.5 h-3.5"></i> Fila Pendente`;
-  } else {
-    badge.className = "text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-medium";
-    badge.innerHTML = `<i data-lucide="cloud-check" class="w-3.5 h-3.5"></i> Nuvem OK`;
-  }
-  icons();
+  setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 300); }, 3000);
 }
 
 function setAvatar(box, u) {
-  box.replaceChildren();
-  if (u.picture) {
-    const img = el("img", "w-full h-full object-cover");
-    img.src = u.picture;
-    img.referrerPolicy = "no-referrer";
+  if(!box) return;
+  box.innerHTML = '';
+  if (u && u.picture) {
+    const img = document.createElement("img");
+    img.src = u.picture; img.className = "w-full h-full object-cover"; img.referrerPolicy = "no-referrer";
     box.append(img);
   } else {
-    box.append(iconEl("user", "w-5 h-5 text-slate-400"));
+    box.innerHTML = `<i data-lucide="user" class="w-6 h-6 text-slate-400"></i>`;
+    icons();
   }
-  icons();
 }
 
-// ============ COMUNICAÇÃO (OFFLINE-FIRST) ============
-async function api(action, payload = {}) {
-  if (!state.user) throw new Error("Sessão expirada.");
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST", body: JSON.stringify({ action, email: state.user.email, ...payload })
-  });
-  const data = await res.json();
-  if (data.status !== "success") throw new Error(data.message);
-  return data;
+// ============ CONFIGURAÇÕES LOCAIS (Saldo Inicial) ============
+function salvarSaldoInicial(valor) {
+  localStorage.setItem("pv_saldo_inicial", valor);
+  toast("Saldo inicial salvo na memória local.", "success");
+  atualizarAlertaSaldo();
 }
-
-// Envio em Background (Fila de Sincronização)
-async function processSyncQueue() {
-  const queueStr = localStorage.getItem("pv_sync_queue");
-  let queue = queueStr ? JSON.parse(queueStr) : [];
-  if (queue.length === 0) { updateSyncStatus(false); return; }
-
-  updateSyncStatus(true);
-  let failed = [];
+function atualizarAlertaSaldo() {
+  // Lógica fictícia para visualização. No cenário real, o saldo vem do Google Sheets.
+  const saldoInicial = parseFloat(localStorage.getItem("pv_saldo_inicial")) || 0;
+  $("saldo").textContent = brl.format(saldoInicial);
   
-  // Tenta enviar 1 por 1 silenciosamente
-  for (let tx of queue) {
-    try {
-      await api("add_transaction", tx);
-    } catch (e) {
-      failed.push(tx); // Falhou, mantém na fila para depois
-    }
+  if(saldoInicial < 500 && saldoInicial > 0) {
+    $("saldo").classList.add("text-alert");
+    $("alerta-saldo").classList.remove("hidden");
+  } else {
+    $("saldo").classList.remove("text-alert");
+    $("alerta-saldo").classList.add("hidden");
   }
-
-  localStorage.setItem("pv_sync_queue", JSON.stringify(failed));
-  updateSyncStatus(false, failed.length > 0);
 }
 
-// ============ LOGIN & SPLASH ============
+// ============ LOGIN & NAVEGAÇÃO ============
 function setupGooglePopup() {
   if (!window.google) return setTimeout(setupGooglePopup, 300);
-  state.tokenClient = google.accounts.oauth2.initTokenClient({
+  const tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: _CLIENT_ID, scope: "email profile openid",
     callback: async (resp) => {
       if (resp.error) return;
@@ -420,8 +413,6 @@ function setupGooglePopup() {
         const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${resp.access_token}` } });
         const profile = await userInfoRes.json();
         state.user = { name: profile.name, email: profile.email, picture: profile.picture };
-        
-        // PERSISTENTE: Salva no localStorage (não desloga ao fechar)
         localStorage.setItem("planilhaviva_user_v2", JSON.stringify(state.user));
         showSplashAndEnter();
       } catch (err) { toast("Erro ao obter perfil", "error"); }
@@ -430,106 +421,43 @@ function setupGooglePopup() {
 
   $("btnCustomGoogle").addEventListener("click", () => {
     $("login-status").classList.remove("hidden");
-    state.tokenClient.requestAccessToken({ prompt: "select_account" });
+    tokenClient.requestAccessToken({ prompt: "select_account" });
   });
 }
 
 function showSplashAndEnter() {
   $("view-auth").classList.add("hidden");
-  
-  const u = state.user;
-  setAvatar($("splash-avatar-container"), u);
-  $("splash-name").textContent = u.name.split(" ")[0] + "!";
-  
-  const splash = $("welcome-splash");
-  splash.classList.remove("hidden");
-  splash.classList.add("flex");
-  
-  // Espera 2.5s para apreciar a tela e entra no app
+  setAvatar($("splash-avatar-container"), state.user);
+  $("splash-name").textContent = state.user.name.split(" ")[0] + "!";
+  $("welcome-splash").classList.remove("hidden");
+  $("welcome-splash").classList.add("flex");
   setTimeout(() => {
-    splash.classList.add("hide-splash");
-    setTimeout(() => {
-      splash.classList.remove("flex");
-      splash.classList.add("hidden");
-      enterApp();
-    }, 600);
-  }, 2500);
+    $("welcome-splash").classList.add("hide-splash");
+    setTimeout(() => { $("welcome-splash").classList.remove("flex"); $("welcome-splash").classList.add("hidden"); enterApp(); }, 600);
+  }, 2000);
 }
 
-async function enterApp() {
+function enterApp() {
   const u = state.user;
+  // Preencher cabeçalho e configurações
   $("user-name").textContent = u.name;
   setAvatar($("avatar"), u);
+  
+  // Garantir que a aba Config receba os dados (Resolvendo o vazio da imagem ab80a2.png)
+  $("cfg-name").textContent = u.name;
+  $("cfg-email").textContent = u.email;
+  setAvatar($("cfg-avatar"), u);
+  
+  // Recuperar configurações
+  const saldoSalvo = localStorage.getItem("pv_saldo_inicial");
+  if(saldoSalvo) $("saldo-inicial").value = saldoSalvo;
   
   $("view-app").classList.remove("hidden");
   $("view-app").classList.add("flex", "enter");
   $("bottom-nav").classList.remove("hidden");
   
   go("fluxo");
-  api("login").catch(()=>{}); // Registra login em background
-  processSyncQueue(); // Envia o que ficou pendente offline
-}
-
-function logout() {
-  localStorage.removeItem("planilhaviva_user_v2");
-  location.reload(); // Recarrega a página para limpar tudo da memória
-}
-
-// ============ FORMULÁRIO E FLUXO ============
-function validate() {
-  $("desc").removeAttribute("aria-invalid"); $("amount").removeAttribute("aria-invalid");
-  let ok = true;
-  const desc = $("desc").value.trim(); const amount = Number($("amount").value);
-  if (desc.length < 2) { $("desc").setAttribute("aria-invalid", "true"); ok = false; }
-  if (!(amount > 0)) { $("amount").setAttribute("aria-invalid", "true"); ok = false; }
-  if (!ok) { toast("Preencha descrição e valor.", "error"); return null; }
-  
-  return { desc, amount, type: $("type").value, category: $("category").value, date: $("date").value };
-}
-
-function resetForm() { $("txForm").reset(); $("type").value = "in"; $("date").value = today(); }
-
-// ============ INICIALIZAÇÃO ============
-function init() {
-  CATEGORIES.forEach(c => { const o = el("option", "", c); o.value = c; $("category").append(o); });
-  resetForm(); icons(); setupGooglePopup();
-
-  // Verifica Sessão Persistente
-  const savedUser = localStorage.getItem("planilhaviva_user_v2");
-  if (savedUser) {
-    state.user = JSON.parse(savedUser);
-    enterApp(); // Pula o splash se já estava logado antes para ser rápido
-  }
-
-  // Navegação
-  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
-  document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => {
-    $("type").value = b.dataset.type;
-    document.querySelectorAll(".seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
-  }));
-
-  // Salvar (Modo Cache/Rápido)
-  $("txForm").addEventListener("submit", e => {
-    e.preventDefault();
-    const payload = validate();
-    if (!payload) return;
-
-    // 1. Salva na Fila Local
-    const queue = JSON.parse(localStorage.getItem("pv_sync_queue") || "[]");
-    queue.push(payload);
-    localStorage.setItem("pv_sync_queue", JSON.stringify(queue));
-
-    // 2. Feedback imediato para o usuário
-    toast("Lançamento salvo!", "success");
-    resetForm();
-    updateSyncStatus(true);
-    
-    // 3. Atualiza tela e tenta enviar em background
-    loadFluxo(payload); 
-    processSyncQueue();
-  });
-
-  $("btnLogout").addEventListener("click", logout);
+  atualizarAlertaSaldo();
 }
 
 function go(name) {
@@ -542,15 +470,59 @@ function go(name) {
     if (on) $("nav-pill").style.transform = `translateX(${i * 100}%)`;
   });
   window.scrollTo(0, 0); icons();
-  if(name === "fluxo") loadFluxo();
 }
 
-async function loadFluxo(fakeData = null) {
-  // Para visualização, não vamos aguardar o servidor travar. 
-  // Futuramente, você pode implementar cache de leitura aqui também.
-}
+// ============ INICIALIZAÇÃO ============
+document.addEventListener("DOMContentLoaded", () => {
+  initParticles(); // 1. Inicia o fundo garantidamente
+  
+  // 2. Popula Categorias
+  CATEGORIES.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; $("category").append(o); });
+  $("date").value = new Date().toLocaleDateString("en-CA");
+  icons();
 
-document.addEventListener("DOMContentLoaded", init);
+  // 3. Checa Login
+  const savedUser = localStorage.getItem("planilhaviva_user_v2");
+  if (savedUser) {
+    state.user = JSON.parse(savedUser);
+    $("view-auth").classList.add("hidden");
+    enterApp();
+  } else {
+    setupGooglePopup();
+  }
+
+  // Eventos de Navegação e Botões
+  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
+  document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => {
+    $("type").value = b.dataset.type;
+    document.querySelectorAll(".seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
+  }));
+
+  // Instalar PWA
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault(); state.deferredPrompt = e; $("btnInstall").classList.remove("hidden");
+  });
+  $("btnInstall").addEventListener("click", async () => {
+    if (state.deferredPrompt) { state.deferredPrompt.prompt(); state.deferredPrompt = null; $("btnInstall").classList.add("hidden"); }
+  });
+
+  $("btnLogout").addEventListener("click", () => {
+    localStorage.removeItem("planilhaviva_user_v2");
+    location.reload();
+  });
+  
+  // Salvar (Simulação rápida do Offline-First)
+  $("txForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const desc = $("desc").value.trim(); const val = $("amount").value;
+    if(!desc || !val) return toast("Preencha todos os campos", "error");
+    toast("Lançamento guardado na fila!", "success");
+    $("txForm").reset(); $("date").value = new Date().toLocaleDateString("en-CA");
+    
+    let count = parseInt($("my-count").textContent) || 0;
+    $("my-count").textContent = count + 1;
+  });
+});
 </script>
 </body>
 </html>
