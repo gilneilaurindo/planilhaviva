@@ -60,8 +60,8 @@
   .btn-primary:active:not(:disabled) { transform:scale(.98); }
   .btn-primary:disabled { opacity:.6; cursor:not-allowed; }
 
-  /* BOTÃO CUSTOMIZADO GOOGLE */
-  .btn-google-custom {
+  /* BOTÃO CUSTOMIZADO  */
+  .btn--custom {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -78,13 +78,13 @@
     box-shadow: 0 10px 25px -10px rgba(6, 182, 212, 0.35);
     transition: all 0.25s ease;
   }
-  .btn-google-custom:hover {
+  .btn--custom:hover {
     background: #1e293b;
     border-color: #22d3ee;
     transform: translateY(-1px);
     box-shadow: 0 14px 30px -8px rgba(6, 182, 212, 0.5);
   }
-  .btn-google-custom:active { transform: scale(0.98); }
+  .btn--custom:active { transform: scale(0.98); }
 
   .danger-btn {
     background: rgba(244,63,94,.12); border:1px solid rgba(244,63,94,.35); color:#fb7185;
@@ -153,26 +153,26 @@
 
       <!-- BOTÃO CUSTOMIZADO COM POPUP -->
       <div class="flex flex-col items-center justify-center pt-1">
-        <button id="btnCustomGoogle" class="btn-google-custom">
-          <!-- Ícone SVG Oficial do Google -->
+        <button id="btnCustom" class="btn--custom">
+          <!-- Ícone SVG Oficial do  -->
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
-          <span>Continuar com o Google</span>
+          <span>Continuar com o </span>
         </button>
       </div>
 
       <p id="login-status" class="hidden text-xs text-cyan-300 font-mono flex items-center justify-center gap-2">
-        <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Autenticando com o Google...
+        <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Autenticando com o ...
       </p>
       <p id="login-error" class="hidden text-xs text-rose-400"></p>
 
       <ul class="pt-4 border-t border-slate-800 space-y-2.5 text-left text-[11px] text-slate-400">
-        <li class="flex gap-2.5"><i data-lucide="lock" class="w-4 h-4 text-cyan-400 shrink-0"></i> Cada operação é verificada pelo Google antes de ser gravada.</li>
-        <li class="flex gap-2.5"><i data-lucide="user-check" class="w-4 h-4 text-cyan-400 shrink-0"></i> Seus lançamentos ficam vinculados somente à sua conta Google.</li>
+        <li class="flex gap-2.5"><i data-lucide="lock" class="w-4 h-4 text-cyan-400 shrink-0"></i> Cada operação é verificada pelo  antes de ser gravada.</li>
+        <li class="flex gap-2.5"><i data-lucide="user-check" class="w-4 h-4 text-cyan-400 shrink-0"></i> Seus lançamentos ficam vinculados somente à sua conta .</li>
         <li class="flex gap-2.5"><i data-lucide="eye-off" class="w-4 h-4 text-cyan-400 shrink-0"></i> Você pode excluir todos os seus dados quando quiser, em Configurações.</li>
       </ul>
     </div>
@@ -368,8 +368,8 @@
 
 <script>
 // ============ CONFIGURAÇÕES ============
-const GOOGLE_CLIENT_ID = "599756107964-ob0m7i1asuc0t7ng7rn6qc1106elf2ou.apps.googleusercontent.com";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpL7sEYg6DaAolO-uyvnQUMPOIdB4OqZQ_PG-rhaikGjaLABlZ7fkssyHfP8xd8j1-pg/exec";
+const _CLIENT_ID = "599756107964-ob0m7i1asuc0t7ng7rn6qc1106elf2ou.apps.googleusercontent.com";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyA71iGP67ggCDJ29QBh8cXpdorC5V73TPE4g0S3TQIkrwitArdoHWfCuDHSz7NOTbL/exec";
 const CATEGORIES = ["Receita","Dízimo","Fixos","Pessoal","Saúde","Dívidas","Investimento","Outros"];
 const CAT_COLORS = { Receita:"#22d3ee", Dízimo:"#a78bfa", Fixos:"#60a5fa", Pessoal:"#f472b6", Saúde:"#34d399", Dívidas:"#fb7185", Investimento:"#fbbf24", Outros:"#94a3b8" };
 const MAX_AMOUNT = 99999999.99;
