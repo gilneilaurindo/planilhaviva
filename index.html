@@ -14,34 +14,34 @@
   body {
     background-color: #020617;
     background-image:
-      radial-gradient(900px 500px at 10% -10%, rgba(6,182,212,.12), transparent 60%),
-      radial-gradient(700px 500px at 110% 110%, rgba(99,102,241,.12), transparent 60%);
+      radial-gradient(900px 500px at 10% -10%, rgba(6,182,212,.14), transparent 60%),
+      radial-gradient(700px 500px at 110% 110%, rgba(99,102,241,.14), transparent 60%);
   }
   .glass {
-    background: rgba(15,23,42,.72);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    background: rgba(15,23,42,.78);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(148,163,184,.14);
-    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.7);
   }
   .glow { position:absolute; width:160px; height:160px; border-radius:9999px; background:rgba(6,182,212,.18); filter:blur(50px); top:-60px; right:-40px; pointer-events:none; }
 
   .view { display:none; }
-  .view.active { display:block; animation: viewIn .5s cubic-bezier(.16,1,.3,1); }
-  .enter { animation: viewIn .6s cubic-bezier(.16,1,.3,1) both; }
+  .view.active { display:block; animation: viewIn .45s cubic-bezier(.16,1,.3,1); }
+  .enter { animation: viewIn .5s cubic-bezier(.16,1,.3,1) both; }
   @keyframes viewIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
-  .item-in { animation: itemIn .45s cubic-bezier(.16,1,.3,1) both; }
-  @keyframes itemIn { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:none; } }
+  .item-in { animation: itemIn .4s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes itemIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:none; } }
   .float { animation: float 4s ease-in-out infinite; }
   @keyframes float { 50% { transform: translateY(-6px); } }
 
   .input {
-    width:100%; background:rgba(15,23,42,.9); border:1px solid rgba(51,65,85,.9);
-    border-radius:.75rem; padding:.7rem .9rem; font-size:.8rem; color:#f8fafc;
+    width:100%; background:rgba(15,23,42,.92); border:1px solid rgba(51,65,85,.9);
+    border-radius:.75rem; padding:.75rem .95rem; font-size:.82rem; color:#f8fafc;
     transition: border-color .2s, box-shadow .2s; outline:none;
   }
   .input::placeholder { color:#475569; }
-  .input:focus { border-color:#22d3ee; box-shadow:0 0 0 4px rgba(34,211,238,.12); }
-  .input[aria-invalid="true"] { border-color:#fb7185; box-shadow:0 0 0 4px rgba(251,113,133,.12); }
+  .input:focus { border-color:#22d3ee; box-shadow:0 0 0 4px rgba(34,211,238,.14); }
+  .input[aria-invalid="true"] { border-color:#fb7185; box-shadow:0 0 0 4px rgba(251,113,133,.14); }
   select.input option { background:#0f172a; }
   .label { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:600; margin-bottom:.35rem; }
   .err { font-size:10px; color:#fb7185; margin-top:.3rem; }
@@ -71,29 +71,29 @@
   .ghost-btn:hover { background: rgba(30,41,59,.9); }
   .ghost-btn:active { transform: scale(.98); }
   .icon-btn {
-    padding:.5rem; border-radius:.75rem; background:rgba(30,41,59,.8);
+    padding:.55rem; border-radius:.75rem; background:rgba(30,41,59,.8);
     border:1px solid rgba(51,65,85,.9); color:#94a3b8; transition: all .2s;
   }
-  .icon-btn:hover { color:#67e8f9; }
+  .icon-btn:hover { color:#67e8f9; border-color:#22d3ee; }
   .icon-btn:active { transform: scale(.92); }
   .icon-btn.spin:hover svg { transform: rotate(180deg); transition: transform .5s; }
 
   .seg { display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; border-radius:.75rem; background:rgba(15,23,42,.9); border:1px solid rgba(51,65,85,.9); }
-  .seg-btn { padding:.5rem; border-radius:.55rem; font-size:.75rem; font-weight:700; color:#94a3b8; transition: all .3s cubic-bezier(.16,1,.3,1); }
+  .seg-btn { padding:.55rem; border-radius:.55rem; font-size:.75rem; font-weight:700; color:#94a3b8; transition: all .25s cubic-bezier(.16,1,.3,1); }
   .seg-btn:hover:not([aria-pressed="true"]) { color:#e2e8f0; }
   .seg-btn[aria-pressed="true"] { color:#020617; background:#22d3ee; box-shadow:0 6px 16px -6px rgba(34,211,238,.7); }
   .seg-btn[aria-pressed="true"][data-type="out"] { background:#fb7185; box-shadow:0 6px 16px -6px rgba(251,113,133,.7); }
 
-  .section-title { font-size:.7rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#67e8f9; display:flex; align-items:center; gap:.4rem; }
+  .section-title { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#67e8f9; display:flex; align-items:center; gap:.4rem; }
   .skeleton { background: linear-gradient(90deg, rgba(30,41,59,.6) 25%, rgba(51,65,85,.8) 50%, rgba(30,41,59,.6) 75%); background-size:200% 100%; animation: shimmer 1.4s infinite; border-radius:.75rem; }
   @keyframes shimmer { to { background-position: -200% 0; } }
   .bar { height:100%; border-radius:9999px; width:0; transition: width 1.1s cubic-bezier(.16,1,.3,1); }
 
-  #nav-pill { transition: transform .5s cubic-bezier(.34,1.3,.64,1); }
-  .nav-btn { transition: color .3s, transform .2s; }
+  #nav-pill { transition: transform .45s cubic-bezier(.34,1.3,.64,1); }
+  .nav-btn { transition: color .25s, transform .2s; }
   .nav-btn:active { transform: scale(.94); }
-  .nav-btn svg { transition: transform .4s cubic-bezier(.34,1.56,.64,1); }
-  .nav-btn[aria-current="page"] svg { transform: translateY(-2px) scale(1.12); }
+  .nav-btn svg { transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
+  .nav-btn[aria-current="page"] svg { transform: translateY(-2px) scale(1.15); }
 
   .toast { opacity:0; transform: translateY(-12px) scale(.97); transition: all .35s cubic-bezier(.16,1,.3,1); }
   .toast.show { opacity:1; transform:none; }
@@ -102,13 +102,9 @@
   #modal.show { opacity:1; pointer-events:auto; }
   #modal .panel { transform: translateY(20px) scale(.96); transition: transform .35s cubic-bezier(.16,1,.3,1); }
   #modal.show .panel { transform:none; }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
-  }
 </style>
 </head>
-<body class="font-sans antialiased text-slate-100 min-h-screen overflow-x-hidden">
+<body class="font-sans antialiased text-slate-100 min-h-screen overflow-x-hidden selection:bg-cyan-500 selection:text-slate-900">
 
 <canvas id="bg" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
 <div id="toasts" class="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[80] space-y-2 pointer-events-none" aria-live="polite"></div>
@@ -127,7 +123,7 @@
         <p class="text-xs text-slate-400 mt-1">Controle financeiro pessoal, com privacidade</p>
       </div>
       <div class="flex justify-center min-h-[44px]"><div id="google-btn"></div></div>
-      <p id="login-status" class="hidden text-xs text-cyan-300">Verificando sua conta...</p>
+      <p id="login-status" class="hidden text-xs text-cyan-300 font-mono">Verificando sua conta com segurança...</p>
       <p id="login-error" class="hidden text-xs text-rose-400"></p>
       <ul class="pt-4 border-t border-slate-800 space-y-2.5 text-left text-[11px] text-slate-400">
         <li class="flex gap-2.5"><i data-lucide="lock" class="w-4 h-4 text-cyan-400 shrink-0"></i> Cada operação é verificada pelo Google antes de ser gravada.</li>
@@ -336,7 +332,7 @@ const MAX_AMOUNT = 99999999.99;
 const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
 const intFmt = v => Math.round(v).toLocaleString("pt-BR");
 const $ = id => document.getElementById(id);
-const state = { token:null, user:null, deferredPrompt:null };
+const state = { token: null, user: null, deferredPrompt: null };
 
 // ============ UTILITÁRIOS ============
 const icons = () => { if (window.lucide) lucide.createIcons(); };
@@ -347,7 +343,11 @@ const el = (tag, cls = "", text) => {
   return n;
 };
 const iconEl = (name, cls = "w-4 h-4") => { const i = document.createElement("i"); i.dataset.lucide = name; i.className = cls; return i; };
-const fmtDate = iso => { const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; };
+const fmtDate = iso => {
+  if (!iso) return "";
+  const parts = iso.split("-");
+  return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : iso;
+};
 const today = () => new Date().toLocaleDateString("en-CA");
 
 function decodeJwt(token) {
@@ -358,7 +358,7 @@ function decodeJwt(token) {
   } catch { return null; }
 }
 
-function countUp(node, to, fmt = v => brl.format(v), dur = 900) {
+function countUp(node, to, fmt = v => brl.format(v), dur = 800) {
   const from = Number(node.dataset.value || 0);
   node.dataset.value = to;
   const start = performance.now();
@@ -374,7 +374,7 @@ function countUp(node, to, fmt = v => brl.format(v), dur = 900) {
 function toast(msg, type = "info") {
   const colors = { success:"text-emerald-400", error:"text-rose-400", info:"text-cyan-400" };
   const icon = { success:"circle-check", error:"circle-alert", info:"info" }[type];
-  const t = el("div", "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 pointer-events-auto");
+  const t = el("div", "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 pointer-events-auto shadow-2xl");
   t.setAttribute("role", type === "error" ? "alert" : "status");
   t.append(iconEl(icon, `w-4 h-4 mt-0.5 shrink-0 ${colors[type]}`), el("span", "leading-relaxed", msg));
   $("toasts").append(t);
@@ -444,7 +444,7 @@ function emptyState(text) {
 
 function renderError(container, msg, retry) {
   const box = el("div", "text-center py-8 space-y-3");
-  box.append(el("p", "text-xs text-rose-400", msg));
+  box.append(el("p", "text-xs text-rose-400 leading-relaxed", msg));
   const b = el("button", "ghost-btn px-4 py-2 rounded-xl", "Tentar novamente");
   b.onclick = retry;
   box.append(b);
@@ -458,10 +458,10 @@ function initParticles() {
   let pts = [];
   const size = () => {
     c.width = innerWidth; c.height = innerHeight;
-    const n = Math.min(40, Math.floor(c.width * c.height / 22000));
+    const n = Math.min(38, Math.floor(c.width * c.height / 22000));
     pts = Array.from({ length: n }, () => ({
       x: Math.random() * c.width, y: Math.random() * c.height,
-      vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
+      vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
       r: Math.random() * 1.6 + .4
     }));
   };
@@ -518,7 +518,7 @@ async function api(action, payload = {}) {
 // ============ LOGIN ============
 function initGoogle() {
   if (!window.google || !google.accounts || !google.accounts.id) {
-    $("login-error").textContent = "Não foi possível carregar o login do Google. Verifique sua conexão e recarregue a página.";
+    $("login-error").textContent = "Não foi possível carregar o login do Google. Recarregue a página.";
     $("login-error").classList.remove("hidden");
     return;
   }
@@ -654,7 +654,7 @@ function renderTransactions(list, items, emptyText) {
   if (!items.length) { list.append(emptyState(emptyText)); icons(); return; }
   items.forEach((t, i) => {
     const li = el("li", "glass rounded-xl p-3.5 flex items-center gap-3 item-in");
-    li.style.animationDelay = `${Math.min(i, 10) * 40}ms`;
+    li.style.animationDelay = `${Math.min(i, 10) * 35}ms`;
     const dot = el("span", "w-2.5 h-2.5 rounded-full shrink-0");
     dot.style.background = CAT_COLORS[t.category] || "#94a3b8";
     const body = el("div", "min-w-0 flex-1");
@@ -687,7 +687,7 @@ function renderCategories(map, total) {
   entries.forEach(([cat, val], i) => {
     const pct = total > 0 ? (val / total) * 100 : 0;
     const row = el("div", "space-y-1.5 item-in");
-    row.style.animationDelay = `${i * 70}ms`;
+    row.style.animationDelay = `${i * 60}ms`;
     const head = el("div", "flex justify-between text-xs");
     head.append(el("span", "text-slate-200 font-medium", cat),
                 el("span", "text-slate-400 tabular-nums", `${brl.format(val)} · ${pct.toFixed(0)}%`));
