@@ -5,10 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#020617">
 <title>PlanilhaViva Pro</title>
-<!-- CHAMA O MANIFESTO PARA O ÍCONE DO APLICATIVO -->
 <link rel="manifest" href="manifest.json">
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/dist/umd/lucide.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root { color-scheme: dark; }
@@ -17,85 +16,76 @@
     background-image:
       radial-gradient(900px 500px at 10% -10%, rgba(6,182,212,.14), transparent 60%),
       radial-gradient(700px 500px at 110% 110%, rgba(99,102,241,.14), transparent 60%);
-    margin: 0;
-    overflow-x: hidden;
+    margin: 0; overflow-x: hidden;
   }
   
-  /* CANVAS DAS PARTÍCULAS NO FUNDO */
   #bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 
   .glass {
-    background: rgba(15,23,42,.82);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(148,163,184,.14);
-    box-shadow: 0 20px 50px -20px rgba(0,0,0,.7);
+    background: rgba(15,23,42,.75);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(148,163,184,.12);
+    box-shadow: 0 20px 40px -20px rgba(0,0,0,.8);
   }
-  .glow { position:absolute; width:160px; height:160px; border-radius:9999px; background:rgba(6,182,212,.18); filter:blur(50px); top:-60px; right:-40px; pointer-events:none; }
+  .glow { position:absolute; width:160px; height:160px; border-radius:9999px; background:rgba(6,182,212,.15); filter:blur(60px); top:-60px; right:-40px; pointer-events:none; }
 
-  /* ANIMAÇÕES DOS ÍCONES */
-  .animate-float { animation: float 3s ease-in-out infinite; }
-  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  /* ANIMAÇÕES GERAIS */
+  .animate-float { animation: float 4s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
   
   .icon-pop svg { animation: pop 0.4s cubic-bezier(.175, .885, .32, 1.275) both; }
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
-  
-  .spin-hover:hover svg { transform: rotate(180deg); transition: transform 0.5s ease; }
 
-  /* SPLASH SCREEN */
-  #welcome-splash { transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out; }
-  #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); }
-
-  /* SLOTS DE ANÚNCIO ESTRATÉGICOS E NÃO INTRUSIVOS */
-  .ad-slot {
-    background: rgba(15,23,42,0.5);
-    border: 1px solid rgba(56, 189, 248, 0.1);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border-radius: 1rem; padding: 1.2rem; text-align: center;
-    min-height: 80px; position: relative; overflow: hidden;
+  /* GRÁFICO DE ROSCA (DOUGHNUT) CSS PURE */
+  .conic-chart {
+    background: conic-gradient(#3b82f6 0% 40%, #10b981 40% 65%, #8b5cf6 65% 85%, #f59e0b 85% 100%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
   }
-  .ad-slot::before {
-    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-    animation: shine 4s infinite;
+  .conic-chart::after {
+    content: ""; position: absolute; inset: 12px;
+    background: #0f172a; border-radius: 50%;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
   }
-  @keyframes shine { 100% { left: 200%; } }
 
+  /* BARRA DE PROGRESSO COMPARATIVA */
+  .compare-bar-container { display: flex; width: 100%; height: 8px; border-radius: 99px; overflow: hidden; background: #1e293b; }
+  .compare-bar-in { height: 100%; background: #10b981; transition: width 1s ease-out; }
+  .compare-bar-out { height: 100%; background: #f43f5e; transition: width 1s ease-out; }
+
+  /* CARROSSEL DE ANÚNCIOS (BANNERS ANIMADOS) */
+  .ad-carousel { position: relative; width: 100%; height: 75px; border-radius: 0.75rem; overflow: hidden; border: 1px solid rgba(34,211,238,0.2); background: rgba(15,23,42,0.8); }
+  .ad-slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.8s ease-in-out; padding: 1rem; text-align: center; }
+  .ad-slide.active { opacity: 1; z-index: 10; }
+  .ad-badge { position: absolute; top: 4px; left: 6px; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; color: #94a3b8; z-index: 20; }
+
+  /* COMPONENTES DA INTERFACE */
   .view { display:none; }
   .view.active { display:block; animation: viewIn .45s cubic-bezier(.16,1,.3,1); }
-  .enter { animation: viewIn .5s cubic-bezier(.16,1,.3,1) both; }
   @keyframes viewIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
-  .item-in { animation: itemIn .4s cubic-bezier(.16,1,.3,1) both; }
-  @keyframes itemIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:none; } }
 
   .input {
     width:100%; background:rgba(15,23,42,.92); border:1px solid rgba(51,65,85,.9);
-    border-radius:.75rem; padding:.75rem .95rem; font-size:.82rem; color:#f8fafc;
-    transition: border-color .2s, box-shadow .2s; outline:none;
+    border-radius:.75rem; padding:.7rem .95rem; font-size:.82rem; color:#f8fafc;
+    transition: all .2s; outline:none;
   }
   .input:focus { border-color:#22d3ee; box-shadow:0 0 0 4px rgba(34,211,238,.14); }
   select.input option { background:#0f172a; }
-  .label { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:600; margin-bottom:.35rem; }
+  .label { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:600; margin-bottom:.3rem; }
 
   .btn-primary {
-    background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1);
-    color:#020617; font-weight:800; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;
-    box-shadow: 0 12px 30px -12px rgba(6,182,212,.6);
-    transition: transform .15s, box-shadow .3s, filter .3s, opacity .2s;
+    background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1); color:#020617; font-weight:800; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;
+    box-shadow: 0 12px 30px -12px rgba(6,182,212,.6); transition: all .2s;
   }
-  .btn-primary:hover:not(:disabled) { transform:translateY(-1px); filter:brightness(1.08); box-shadow:0 16px 36px -12px rgba(6,182,212,.75); }
-  .btn-primary:active:not(:disabled) { transform:scale(.98); }
-  
+  .btn-primary:active { transform:scale(.98); }
   .btn--custom {
-    display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
-    width: 100%; max-width: 280px; padding: 0.8rem 1.25rem; background: #0f172a;
-    border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 9999px; color: #f8fafc;
-    font-size: 0.82rem; font-weight: 600; box-shadow: 0 10px 25px -10px rgba(6, 182, 212, 0.35);
-    transition: all 0.25s ease;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; max-width: 280px; padding: 0.8rem 1.25rem; background: #0f172a;
+    border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 9999px; color: #f8fafc; font-size: 0.82rem; font-weight: 600; box-shadow: 0 10px 25px -10px rgba(6, 182, 212, 0.35); transition: all 0.25s ease;
   }
   .btn--custom:active { transform: scale(0.98); }
   .ghost-btn { border:1px solid rgba(51,65,85,.9); color:#cbd5e1; font-weight:600; font-size:.75rem; transition: background .2s, transform .15s; }
   
-  .icon-btn { padding:.55rem; border-radius:.75rem; background:rgba(30,41,59,.8); border:1px solid rgba(51,65,85,.9); color:#94a3b8; transition: all .2s; }
   .seg { display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; border-radius:.75rem; background:rgba(15,23,42,.9); border:1px solid rgba(51,65,85,.9); }
   .seg-btn { padding:.55rem; border-radius:.55rem; font-size:.75rem; font-weight:700; color:#94a3b8; transition: all .25s cubic-bezier(.16,1,.3,1); }
   .seg-btn[aria-pressed="true"] { color:#020617; background:#22d3ee; box-shadow:0 6px 16px -6px rgba(34,211,238,.7); }
@@ -104,34 +94,19 @@
   
   #nav-pill { transition: transform .45s cubic-bezier(.34,1.3,.64,1); }
   .nav-btn[aria-current="page"] svg { transform: translateY(-2px) scale(1.15); color: #67e8f9; }
-
-  .toast { opacity:0; transform: translateY(-12px) scale(.97); transition: all .35s cubic-bezier(.16,1,.3,1); }
-  .toast.show { opacity:1; transform:none; }
-  .text-alert { color: #fbbf24 !important; }
 </style>
 </head>
 <body class="font-sans antialiased text-slate-100 min-h-screen">
 
-<!-- FUNDO ANIMADO COM PARTÍCULAS -->
 <canvas id="bg" aria-hidden="true"></canvas>
 
-<!-- SPLASH SCREEN -->
-<div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617] hidden flex-col items-center justify-center">
-  <div class="relative z-10">
-    <div class="absolute inset-0 bg-cyan-500/30 blur-2xl rounded-full z-0"></div>
-    <div id="splash-avatar-container" class="relative z-10 w-28 h-28 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_40px_rgba(34,211,238,0.4)]"></div>
-  </div>
-  <h2 class="text-3xl font-black text-white mt-6 tracking-tight z-10">Bem-vindo(a),</h2>
-  <h2 id="splash-name" class="text-2xl font-bold text-cyan-400 mt-1 z-10"></h2>
-</div>
-
+<!-- TOASTS -->
 <div id="toasts" class="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[80] space-y-2 pointer-events-none" aria-live="polite"></div>
 
 <main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
 
-  <!-- ============ LOGIN ============ -->
+  <!-- ============ VIEW: LOGIN ============ -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter relative">
-    
     <div class="glass rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow"></div>
       <div class="inline-flex p-4 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-cyan-400 animate-float">
@@ -139,10 +114,10 @@
       </div>
       <div>
         <h1 class="text-3xl font-black tracking-tight text-white">PlanilhaViva</h1>
-        <p class="text-xs text-slate-400 mt-2">Segurança e controle financeiro no seu bolso.</p>
+        <p class="text-xs text-slate-400 mt-2">Segurança e inteligência financeira no seu bolso.</p>
       </div>
-      <div class="flex flex-col items-center justify-center pt-1">
-        <button id="btnCustomGoogle" class="btn--custom">
+      <div class="flex flex-col items-center justify-center pt-2">
+        <button id="btnCustomGoogle" class="btn--custom hover:bg-slate-800">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -152,12 +127,7 @@
           <span>Continuar com o Google</span>
         </button>
       </div>
-      <p id="login-status" class="hidden text-xs text-cyan-300 font-mono flex items-center justify-center gap-2">
-        <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Autenticando com o Google...
-      </p>
     </div>
-
-    <!-- RODAPÉ DE DIREITOS E CRÉDITOS ESTRATÉGICO -->
     <footer class="mt-8 text-center text-[10px] text-slate-500 space-y-1.5 z-10">
       <p>© Direitos reservados <span class="text-cyan-400 font-bold tracking-wider">PlanilhaViva Pro</span>.</p>
       <p>Programador: <span class="text-slate-300 font-medium">Gilnei Laurindo</span></p>
@@ -168,169 +138,211 @@
   <!-- ============ APP DASHBOARD ============ -->
   <section id="view-app" class="hidden flex-1 flex-col pb-32">
 
-    <!-- CABEÇALHO -->
-    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between">
+    <!-- HEADER OTIMIZADO -->
+    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between shadow-lg">
       <div class="flex items-center gap-3 min-w-0">
-        <div id="avatar" class="w-10 h-10 shrink-0 rounded-full bg-slate-800 border border-cyan-400/50 overflow-hidden flex items-center justify-center"></div>
-        <div class="min-w-0">
-          <h2 id="user-name" class="text-sm font-bold text-white truncate"></h2>
+        <div id="avatar" class="w-9 h-9 shrink-0 rounded-full bg-slate-800 border border-cyan-400/50 overflow-hidden flex items-center justify-center"></div>
+        <div class="min-w-0 flex flex-col">
+          <span class="text-[9px] text-cyan-400 font-bold uppercase tracking-wider">Membro Pro</span>
+          <h2 id="user-name" class="text-sm font-bold text-white truncate leading-tight"></h2>
         </div>
       </div>
-      <span id="sync-status" class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-medium transition-colors">
-        <i data-lucide="cloud-check" class="w-3.5 h-3.5 animate-pulse"></i> Nuvem OK
+      <span class="text-[10px] px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-medium border border-emerald-500/20">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online
       </span>
     </header>
 
-    <div class="px-5 pt-5">
+    <div class="px-5 pt-4 space-y-4">
 
-      <!-- ---- FLUXO ---- -->
-      <div id="view-fluxo" class="view active space-y-5">
-        <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="plus-circle" class="w-4 h-4"></i> Novo lançamento</h3>
-          <form id="txForm" novalidate class="space-y-4">
-            <div>
-              <label for="desc" class="label">Descrição</label>
-              <input id="desc" class="input" maxlength="80" autocomplete="off" placeholder="Ex: Mercado, Venda...">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
+      <!-- ---- ABA 1: FLUXO (LANÇAMENTOS) ---- -->
+      <div id="view-fluxo" class="view active space-y-4">
+        
+        <!-- BANNER ANIMADO SIMULADO 1 -->
+        <div class="ad-carousel shadow-lg">
+          <span class="ad-badge">Patrocinado</span>
+          <div class="ad-slide active bg-gradient-to-r from-blue-900/60 to-purple-900/60">
+            <div class="flex items-center gap-3 text-left">
+              <i data-lucide="trending-up" class="w-8 h-8 text-cyan-300"></i>
               <div>
-                <label for="amount" class="label">Valor (R$)</label>
-                <input id="amount" type="number" class="input" step="0.01" min="0.01" inputmode="decimal" placeholder="0,00">
-              </div>
-              <div>
-                <span class="label">Natureza</span>
-                <div class="seg" role="group">
-                  <button type="button" class="seg-btn" data-type="in" aria-pressed="true">Entrada</button>
-                  <button type="button" class="seg-btn" data-type="out" aria-pressed="false">Saída</button>
-                </div>
-                <input type="hidden" id="type" value="in">
+                <p class="text-xs font-bold text-white">Multiplique seu capital</p>
+                <p class="text-[10px] text-cyan-200">Abra sua conta na corretora parceira.</p>
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-3">
+          </div>
+          <div class="ad-slide bg-gradient-to-r from-emerald-900/60 to-teal-900/60">
+            <div class="flex items-center gap-3 text-left">
+              <i data-lucide="credit-card" class="w-8 h-8 text-emerald-300"></i>
               <div>
-                <label for="category" class="label">Categoria</label>
-                <select id="category" class="input"></select>
-              </div>
-              <div>
-                <label for="date" class="label">Data</label>
-                <input id="date" type="date" class="input">
+                <p class="text-xs font-bold text-white">Cartão Black Sem Anuidade</p>
+                <p class="text-[10px] text-emerald-200">Oferta exclusiva para usuários Pro.</p>
               </div>
             </div>
-            <button id="btnSave" type="submit" class="btn-primary w-full py-3.5 rounded-xl flex items-center justify-center gap-2">
-              <i data-lucide="zap" class="w-4 h-4"></i> Salvar Rápido
+          </div>
+        </div>
+
+        <!-- FORMULÁRIO MAIS COMPACTO -->
+        <div class="glass rounded-2xl p-4 space-y-3">
+          <h3 class="section-title"><i data-lucide="zap" class="w-4 h-4"></i> Registro Rápido</h3>
+          <form id="txForm" class="space-y-3">
+            <input id="desc" class="input" maxlength="60" placeholder="O que foi? (Ex: Almoço, Salário)">
+            <div class="grid grid-cols-2 gap-2">
+              <input id="amount" type="number" class="input" step="0.01" placeholder="R$ 0,00">
+              <input id="date" type="date" class="input text-xs">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="seg" role="group">
+                <button type="button" class="seg-btn" data-type="in" aria-pressed="true">Receita</button>
+                <button type="button" class="seg-btn" data-type="out" aria-pressed="false">Gasto</button>
+              </div>
+              <select id="category" class="input text-xs"></select>
+            </div>
+            <input type="hidden" id="type" value="in">
+            <button id="btnSave" type="submit" class="btn-primary w-full py-3 rounded-xl flex items-center justify-center gap-2">
+              Salvar na Planilha
             </button>
           </form>
         </div>
 
-        <!-- ESPAÇO AD: Entre o form e a lista -->
-        <div class="ad-slot">
-          <p class="text-[9px] text-slate-500 font-medium uppercase tracking-wider mb-1">Patrocinado</p>
-          <div class="w-full h-12 bg-slate-800/50 rounded flex items-center justify-center border border-slate-700/50">
-            <span class="text-xs text-slate-500"><i data-lucide="image" class="w-4 h-4 inline mr-1"></i>Espaço para Banner</span>
+        <div class="glass rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="section-title">Hoje</h3>
+            <span class="text-[10px] text-slate-400">Últimos registros</span>
           </div>
-        </div>
-
-        <div class="space-y-3">
-          <div class="flex items-center justify-between">
-            <h3 class="section-title">Lançamentos Recentes</h3>
-            <button class="icon-btn spin-hover"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+          <div class="text-center py-6 text-slate-500 text-xs">
+            <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+            Nenhum lançamento hoje.
           </div>
-          <ul id="list-fluxo" class="space-y-2">
-            <!-- Renderizado dinamicamente -->
-          </ul>
         </div>
       </div>
 
-      <!-- ---- RESUMO ---- -->
-      <div id="view-resumo" class="view space-y-5">
-        <div class="glass rounded-3xl p-6 relative overflow-hidden">
-          <div class="glow"></div>
-          <p class="text-[11px] uppercase tracking-widest text-slate-400">Saldo Atualizado</p>
-          <p id="saldo" class="text-4xl font-black mt-2 tabular-nums">R$ 0,00</p>
-          <p id="alerta-saldo" class="text-[10px] text-amber-400 mt-1 hidden"><i data-lucide="alert-triangle" class="w-3 h-3 inline"></i> Atenção: Saldo abaixo de R$ 500,00</p>
-        </div>
-
-        <!-- NOVA INFORMAÇÃO RELEVANTE: Balanço do Mês -->
-        <div class="grid grid-cols-2 gap-3">
-          <div class="glass rounded-2xl p-4 border border-emerald-500/20">
-            <p class="text-[10px] uppercase tracking-wider text-slate-400 flex items-center gap-1"><i data-lucide="trending-up" class="w-3 h-3 text-emerald-400"></i> Entradas</p>
-            <p class="text-lg font-bold text-emerald-400 tabular-nums mt-1">R$ 0,00</p>
-          </div>
-          <div class="glass rounded-2xl p-4 border border-rose-500/20">
-            <p class="text-[10px] uppercase tracking-wider text-slate-400 flex items-center gap-1"><i data-lucide="trending-down" class="w-3 h-3 text-rose-400"></i> Saídas</p>
-            <p class="text-lg font-bold text-rose-400 tabular-nums mt-1">R$ 0,00</p>
-          </div>
-        </div>
-
-        <!-- ESPAÇO AD: Abaixo do saldo e balanço -->
-        <div class="ad-slot">
-          <p class="text-[9px] text-slate-500 font-medium uppercase tracking-wider">Publicidade</p>
-        </div>
-      </div>
-
-      <!-- ---- INVESTIR ---- -->
-      <div id="view-investir" class="view space-y-5">
-        <div class="glass rounded-3xl p-6 text-center relative overflow-hidden">
-          <div class="glow"></div>
-          <p class="text-[11px] uppercase tracking-widest text-slate-400">Total investido</p>
-          <p id="invest-total" class="text-4xl font-black text-amber-300 tabular-nums mt-2">R$ 0,00</p>
-        </div>
-
-        <!-- ESPAÇO AD: Abaixo do total investido -->
-        <div class="ad-slot">
-          <p class="text-[9px] text-slate-500 font-medium uppercase tracking-wider">Publicidade</p>
-        </div>
-      </div>
-
-      <!-- ---- CONFIGURAÇÕES ---- -->
-      <div id="view-config" class="view space-y-5">
+      <!-- ---- ABA 2: RESUMO E GRÁFICOS ---- -->
+      <div id="view-resumo" class="view space-y-4">
         
-        <div class="glass rounded-2xl p-5 flex items-center gap-4 border border-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.1)]">
+        <div class="glass rounded-3xl p-5 relative overflow-hidden flex justify-between items-end">
+          <div class="glow"></div>
+          <div>
+            <p class="text-[10px] uppercase tracking-widest text-cyan-400 font-bold">Saldo Disponível</p>
+            <p id="saldo" class="text-3xl font-black mt-1 tabular-nums">R$ 0,00</p>
+          </div>
+          <div class="text-right">
+            <span class="inline-flex items-center gap-1 text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full font-bold">
+              <i data-lucide="arrow-up-right" class="w-3 h-3"></i> 5.2%
+            </span>
+          </div>
+        </div>
+
+        <!-- GRÁFICO COMPARATIVO (BARRA) -->
+        <div class="glass rounded-2xl p-5 space-y-3">
+          <h3 class="section-title"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Análise Mensal</h3>
+          
+          <div class="flex justify-between text-xs font-bold mt-2">
+            <span class="text-emerald-400">Entradas</span>
+            <span class="text-rose-400">Saídas</span>
+          </div>
+          <div class="compare-bar-container">
+            <div class="compare-bar-in" style="width: 65%;"></div>
+            <div class="compare-bar-out" style="width: 35%;"></div>
+          </div>
+          <div class="flex justify-between text-[10px] text-slate-400 tabular-nums">
+            <span>R$ 4.500,00 (65%)</span>
+            <span>R$ 2.420,00 (35%)</span>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <h3 class="section-title mb-4"><i data-lucide="pie-chart" class="w-4 h-4"></i> Gastos por Categoria</h3>
+          <!-- Gráficos de barras horizontais simulados -->
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-[10px] mb-1"><span class="text-slate-200">Moradia (Fixos)</span><span class="text-slate-400">45%</span></div>
+              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[45%]"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px] mb-1"><span class="text-slate-200">Alimentação (Pessoal)</span><span class="text-slate-400">30%</span></div>
+              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-500 w-[30%]"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px] mb-1"><span class="text-slate-200">Transporte</span><span class="text-slate-400">15%</span></div>
+              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-500 w-[15%]"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- ABA 3: INVESTIR (CARTEIRA VIP) ---- -->
+      <div id="view-investir" class="view space-y-4">
+        
+        <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col items-center">
+          <div class="glow"></div>
+          <h3 class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-4">Sua Carteira de Ativos</h3>
+          
+          <!-- GRÁFICO DOUGHNUT CSS -->
+          <div class="conic-chart w-32 h-32 flex items-center justify-center mb-4 animate-float">
+            <div class="absolute z-10 flex flex-col items-center">
+              <span class="text-xs text-slate-400">Patrimônio</span>
+              <span class="text-lg font-black text-white">R$ 12k</span>
+            </div>
+          </div>
+
+          <!-- LEGENDA DA CARTEIRA -->
+          <div class="w-full grid grid-cols-2 gap-2 text-[10px] mt-2">
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span class="text-slate-300">Renda Fixa (40%)</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-slate-300">Ações (25%)</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span><span class="text-slate-300">FIIs (20%)</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span><span class="text-slate-300">Cripto (15%)</span></div>
+          </div>
+        </div>
+
+        <!-- BANNER ANIMADO SIMULADO 2 -->
+        <div class="ad-carousel shadow-lg h-20">
+          <span class="ad-badge">Anúncio</span>
+          <div class="ad-slide active bg-gradient-to-br from-amber-900/60 to-orange-900/60">
+            <p class="text-xs font-bold text-white mb-1">Compre Bitcoin com taxa zero!</p>
+            <p class="text-[9px] text-amber-200">Exchange Oficial Parceira</p>
+          </div>
+          <div class="ad-slide bg-gradient-to-br from-indigo-900/60 to-purple-900/60">
+            <p class="text-xs font-bold text-white mb-1">Tesouro Direto rendendo IPCA+ 6%</p>
+            <p class="text-[9px] text-indigo-200">Aproveite as taxas de hoje.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- ABA 4: CONFIGURAÇÕES ---- -->
+      <div id="view-config" class="view space-y-4">
+        
+        <div class="glass rounded-2xl p-5 flex items-center gap-4">
           <div id="cfg-avatar" class="w-14 h-14 shrink-0 rounded-full bg-slate-800 border-2 border-cyan-400/40 overflow-hidden flex items-center justify-center"></div>
           <div class="flex-1 min-w-0">
             <p id="cfg-name" class="font-bold text-white truncate text-lg">Usuário</p>
-            <p id="cfg-email" class="text-[11px] text-slate-400 font-mono truncate">carregando...</p>
-            <!-- SELO MEMBRO PRO COM ÍCONE ANIMADO -->
-            <span class="inline-flex items-center gap-1 mt-1.5 text-[9px] font-bold uppercase tracking-wider bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2 py-0.5 rounded shadow-sm">
-              <i data-lucide="award" class="w-3 h-3 animate-pulse"></i> Membro Pro
+            <p id="cfg-email" class="text-[10px] text-slate-400 font-mono truncate mb-1">email@gmail.com</p>
+            <span class="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider bg-cyan-500 text-slate-900 px-2 py-0.5 rounded-sm">
+              <i data-lucide="crown" class="w-3 h-3"></i> Conta Pro Ativa
             </span>
           </div>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="sliders" class="w-4 h-4"></i> Estrutura da Planilha</h3>
+          <h3 class="section-title"><i data-lucide="sliders" class="w-4 h-4"></i> Dados Base da Planilha</h3>
           <div>
-            <label for="saldo-inicial" class="label">Definir Saldo Inicial (R$)</label>
-            <input id="saldo-inicial" type="number" class="input" placeholder="Ex: 1500,00" onchange="salvarSaldoInicial(this.value)">
-            <p class="text-[10px] text-slate-400 mt-1">Este valor será a base de cálculo para a aba Resumo.</p>
+            <label class="label">Definir Saldo Inicial (Marco Zero)</label>
+            <input id="saldo-inicial" type="number" class="input text-sm" placeholder="R$ 0,00" onchange="salvarSaldoInicial(this.value)">
           </div>
         </div>
 
-        <!-- NOVA INFORMAÇÃO RELEVANTE: Gerenciamento -->
-        <div class="glass rounded-2xl p-5 space-y-3">
-          <h3 class="section-title"><i data-lucide="database" class="w-4 h-4"></i> Gerenciamento</h3>
-          <button class="ghost-btn w-full py-3 rounded-xl flex items-center justify-between px-4" onclick="toast('Sincronizando com a planilha...', 'info')">
-            <span class="flex items-center gap-2"><i data-lucide="refresh-ccw" class="w-4 h-4"></i> Forçar Sincronização</span>
-            <i data-lucide="chevron-right" class="w-4 h-4 opacity-50"></i>
+        <div class="grid grid-cols-2 gap-3">
+          <button class="glass rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-slate-800/50 transition-colors" onclick="toast('Relatório PDF será gerado em breve!', 'success')">
+            <i data-lucide="file-text" class="w-6 h-6 text-emerald-400"></i>
+            <span class="text-[10px] font-bold uppercase text-slate-300">Exportar PDF</span>
           </button>
-          <button class="ghost-btn w-full py-3 rounded-xl flex items-center justify-between px-4" onclick="toast('Recurso de exportação em breve.', 'info')">
-            <span class="flex items-center gap-2"><i data-lucide="file-down" class="w-4 h-4"></i> Exportar Relatório</span>
-            <i data-lucide="chevron-right" class="w-4 h-4 opacity-50"></i>
+          <button class="glass rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-slate-800/50 transition-colors" id="btnInstall">
+            <i data-lucide="smartphone" class="w-6 h-6 text-cyan-400"></i>
+            <span class="text-[10px] font-bold uppercase text-slate-300">Instalar App</span>
           </button>
         </div>
 
-        <button id="btnInstall" class="btn-primary w-full py-3 rounded-xl flex items-center justify-center gap-2">
-          <i data-lucide="download" class="w-4 h-4 animate-bounce"></i> Instalar Aplicativo (App)
+        <button id="btnLogout" class="ghost-btn w-full py-3 rounded-xl flex items-center justify-center gap-2 border-rose-500/30 text-rose-400 mt-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i> Sair da Conta
         </button>
-
-        <button id="btnLogout" class="ghost-btn w-full py-3 rounded-xl flex items-center justify-center gap-2 border-rose-500/30 text-rose-400 hover:bg-rose-500/10">
-          <i data-lucide="log-out" class="w-4 h-4"></i> Sair da conta
-        </button>
-
-        <!-- ESPAÇO AD: Acima do rodapé final -->
-        <div class="ad-slot mt-4">
-          <p class="text-[9px] text-slate-500 font-medium uppercase tracking-wider">Patrocinado</p>
-        </div>
 
       </div>
     </div>
@@ -339,12 +351,12 @@
 
 <!-- ============ NAVEGAÇÃO INFERIOR ============ -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
-  <div class="glass rounded-2xl relative grid grid-cols-4 p-0">
-    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-cyan-500/15 border border-cyan-400/30 w-[calc((100%-0.5rem)/4)]"></span>
+  <div class="glass rounded-2xl relative grid grid-cols-4 p-0 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-cyan-500/20 border border-cyan-400/30 w-[calc((100%-0.5rem)/4)]"></span>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-cyan-300" data-view="fluxo" aria-current="page"><i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Fluxo</span></button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="resumo"><i data-lucide="chart-pie" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Resumo</span></button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="investir"><i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Investir</span></button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config"><i data-lucide="settings" class="w-5 h-5 spin-hover"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Config</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="resumo"><i data-lucide="bar-chart-2" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Resumo</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="investir"><i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Investir</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config"><i data-lucide="settings" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Config</span></button>
   </div>
 </nav>
 
@@ -355,143 +367,109 @@ const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" })
 const $ = id => document.getElementById(id);
 const state = { user: null, deferredPrompt: null };
 
-// ============ SISTEMA DE PARTÍCULAS ============
+// ============ EFEITO DE PARTÍCULAS NO FUNDO ============
 function initParticles() {
-  const canvas = $("bg");
-  if (!canvas) return;
+  const canvas = $("bg"); if (!canvas) return;
   const ctx = canvas.getContext("2d");
   let particles = [];
   function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const count = Math.min(40, Math.floor((canvas.width * canvas.height) / 15000));
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const count = Math.min(30, Math.floor((canvas.width * canvas.height) / 18000));
     particles = Array.from({ length: count }, () => ({
       x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, r: Math.random() * 1.5 + 0.5
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 1.5 + 0.5
     }));
   }
-  window.addEventListener('resize', resize);
-  resize();
+  window.addEventListener('resize', resize); resize();
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     particles.forEach(p => {
       p.x += p.vx; p.y += p.vy;
       if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
       if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-      ctx.fillStyle = "rgba(34, 211, 238, 0.4)";
+      ctx.fillStyle = "rgba(34, 211, 238, 0.3)";
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
     });
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 100) {
-          ctx.strokeStyle = `rgba(34, 211, 238, ${0.15 * (1 - dist / 100)})`;
-          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
-        }
-      }
-    }
     requestAnimationFrame(animate);
   }
   animate();
 }
 
+// ============ CARROSSEL DE ANÚNCIOS ANIMADO ============
+function startAdCarousels() {
+  const carousels = document.querySelectorAll('.ad-carousel');
+  carousels.forEach(carousel => {
+    const slides = carousel.querySelectorAll('.ad-slide');
+    if (slides.length < 2) return;
+    let current = 0;
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 4500); // Troca a cada 4.5 segundos
+  });
+}
+
 // ============ UTILITÁRIOS ============
 const icons = () => { if (window.lucide) lucide.createIcons(); };
 function toast(msg, type = "info") {
-  const colors = { success:"text-emerald-400", error:"text-rose-400", info:"text-cyan-400" };
-  const icon = { success:"circle-check", error:"circle-alert", info:"info" }[type];
   const t = document.createElement("div");
-  t.className = "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 pointer-events-auto shadow-2xl";
-  t.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 mt-0.5 shrink-0 ${colors[type]}"></i><span class="leading-relaxed">${msg}</span>`;
+  t.className = "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 shadow-2xl z-[100]";
+  t.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 mt-0.5 shrink-0 text-emerald-400"></i><span class="leading-relaxed">${msg}</span>`;
   $("toasts").append(t); icons();
   requestAnimationFrame(() => t.classList.add("show"));
-  setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 300); }, 3500);
+  setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 300); }, 3000);
 }
 
 function setAvatar(box, u) {
-  if(!box) return;
-  box.innerHTML = '';
+  if(!box) return; box.innerHTML = '';
   if (u && u.picture) {
     const img = document.createElement("img");
-    img.src = u.picture; img.className = "w-full h-full object-cover shrink-0 block"; img.referrerPolicy = "no-referrer";
+    img.src = u.picture; img.className = "w-full h-full object-cover"; img.referrerPolicy = "no-referrer";
     box.append(img);
   } else {
-    box.innerHTML = `<i data-lucide="user" class="w-6 h-6 text-slate-400"></i>`;
-    icons();
+    box.innerHTML = `<i data-lucide="user" class="w-6 h-6 text-slate-400"></i>`; icons();
   }
 }
 
 function salvarSaldoInicial(valor) {
   localStorage.setItem("pv_saldo_inicial", valor);
-  toast("Saldo inicial salvo na memória local.", "success");
-  atualizarAlertaSaldo();
+  toast("Saldo inicial salvo!");
 }
 
-function atualizarAlertaSaldo() {
-  const saldoInicial = parseFloat(localStorage.getItem("pv_saldo_inicial")) || 0;
-  $("saldo").textContent = brl.format(saldoInicial);
-  if(saldoInicial < 500 && saldoInicial > 0) {
-    $("saldo").classList.add("text-alert");
-    $("alerta-saldo").classList.remove("hidden");
-  } else {
-    $("saldo").classList.remove("text-alert");
-    $("alerta-saldo").classList.add("hidden");
-  }
-}
-
-// ============ LOGIN & NAVEGAÇÃO ============
+// ============ LOGIN DO GOOGLE ============
 function setupGooglePopup() {
   if (!window.google) return setTimeout(setupGooglePopup, 300);
   const tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: _CLIENT_ID, scope: "email profile openid",
+    client_id: _CLIENT_ID, scope: "email profile",
     callback: async (resp) => {
       if (resp.error) return;
-      try {
-        const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${resp.access_token}` } });
-        const profile = await userInfoRes.json();
-        state.user = { name: profile.name, email: profile.email, picture: profile.picture };
-        localStorage.setItem("planilhaviva_user_v2", JSON.stringify(state.user));
-        showSplashAndEnter();
-      } catch (err) { toast("Erro ao obter perfil", "error"); }
+      const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${resp.access_token}` } });
+      const profile = await userInfoRes.json();
+      state.user = { name: profile.name, email: profile.email, picture: profile.picture };
+      localStorage.setItem("planilhaviva_user_v2", JSON.stringify(state.user));
+      enterApp();
     }
   });
-
-  $("btnCustomGoogle").addEventListener("click", () => {
-    $("login-status").classList.remove("hidden");
-    tokenClient.requestAccessToken({ prompt: "select_account" });
-  });
-}
-
-function showSplashAndEnter() {
-  $("view-auth").classList.add("hidden");
-  setAvatar($("splash-avatar-container"), state.user);
-  $("splash-name").textContent = state.user.name.split(" ")[0] + "!";
-  $("welcome-splash").classList.remove("hidden");
-  $("welcome-splash").classList.add("flex");
-  setTimeout(() => {
-    $("welcome-splash").classList.add("hide-splash");
-    setTimeout(() => { $("welcome-splash").classList.remove("flex"); $("welcome-splash").classList.add("hidden"); enterApp(); }, 600);
-  }, 2000);
+  $("btnCustomGoogle").addEventListener("click", () => tokenClient.requestAccessToken({ prompt: "select_account" }));
 }
 
 function enterApp() {
+  $("view-auth").classList.add("hidden");
+  
   const u = state.user;
-  $("user-name").textContent = u.name;
+  $("user-name").textContent = u.name.split(" ")[0]; // Primeiro nome
   setAvatar($("avatar"), u);
   $("cfg-name").textContent = u.name;
   $("cfg-email").textContent = u.email;
   setAvatar($("cfg-avatar"), u);
   
-  const saldoSalvo = localStorage.getItem("pv_saldo_inicial");
-  if(saldoSalvo) $("saldo-inicial").value = saldoSalvo;
+  if(localStorage.getItem("pv_saldo_inicial")) $("saldo-inicial").value = localStorage.getItem("pv_saldo_inicial");
   
   $("view-app").classList.remove("hidden");
   $("view-app").classList.add("flex", "enter");
   $("bottom-nav").classList.remove("hidden");
-  
   go("fluxo");
-  atualizarAlertaSaldo();
 }
 
 function go(name) {
@@ -501,33 +479,23 @@ function go(name) {
     const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
     btn.setAttribute("aria-current", on ? "page" : "false");
     btn.classList.toggle("text-cyan-300", on); btn.classList.toggle("text-slate-400", !on);
-    
     if (on) {
       $("nav-pill").style.transform = `translateX(${i * 100}%)`;
-      btn.classList.remove("icon-pop");
-      void btn.offsetWidth;
-      btn.classList.add("icon-pop");
+      btn.classList.remove("icon-pop"); void btn.offsetWidth; btn.classList.add("icon-pop");
     }
   });
   window.scrollTo(0, 0); icons();
 }
 
-// ============ INICIALIZAÇÃO ============
+// ============ INIT ============
 document.addEventListener("DOMContentLoaded", () => {
-  initParticles(); 
-  
+  initParticles(); startAdCarousels();
   CATEGORIES.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; $("category").append(o); });
   $("date").value = new Date().toLocaleDateString("en-CA");
   icons();
 
   const savedUser = localStorage.getItem("planilhaviva_user_v2");
-  if (savedUser) {
-    state.user = JSON.parse(savedUser);
-    $("view-auth").classList.add("hidden");
-    enterApp();
-  } else {
-    setupGooglePopup();
-  }
+  if (savedUser) { state.user = JSON.parse(savedUser); enterApp(); } else { setupGooglePopup(); }
 
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
   document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => {
@@ -535,31 +503,18 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
   }));
 
-  window.addEventListener("beforeinstallprompt", e => {
-    e.preventDefault(); 
-    state.deferredPrompt = e;
-  });
-  
-  $("btnInstall").addEventListener("click", async () => {
-    if (state.deferredPrompt) { 
-      state.deferredPrompt.prompt(); 
-      state.deferredPrompt = null; 
-    } else {
-      toast("Para instalar, use a opção 'Adicionar à Tela Inicial' no menu do seu navegador.", "info");
-    }
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); state.deferredPrompt = e; });
+  $("btnInstall").addEventListener("click", () => {
+    if (state.deferredPrompt) { state.deferredPrompt.prompt(); state.deferredPrompt = null; }
+    else { toast("Use 'Adicionar à Tela Inicial' no menu do navegador."); }
   });
 
-  $("btnLogout").addEventListener("click", () => {
-    localStorage.removeItem("planilhaviva_user_v2");
-    location.reload();
-  });
+  $("btnLogout").addEventListener("click", () => { localStorage.removeItem("planilhaviva_user_v2"); location.reload(); });
   
   $("txForm").addEventListener("submit", e => {
     e.preventDefault();
-    const desc = $("desc").value.trim(); const val = $("amount").value;
-    if(!desc || !val) return toast("Preencha todos os campos", "error");
-    toast("Lançamento guardado na fila!", "success");
-    $("txForm").reset(); $("date").value = new Date().toLocaleDateString("en-CA");
+    toast("Registro salvo e enfileirado!");
+    $("desc").value = ""; $("amount").value = "";
   });
 });
 </script>
