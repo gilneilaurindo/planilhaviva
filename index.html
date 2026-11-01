@@ -1,196 +1,838 @@
-/***** PlanilhaViva: backend (Google Apps Script) *****/
-const CLIENT_ID = "599756107964-ob0m7i1asuc0t7ng7rn6qc1106elf2ou.apps.googleusercontent.com";
-const SHEET_TX = "Lançamentos";
-const SHEET_USERS = "Usuários";
-const TX_HEADERS = ["ID", "Email", "Data", "Descrição", "Tipo", "Categoria", "Valor", "Criado em"];
-const USER_HEADERS = ["Email", "Nome", "Primeiro acesso", "Último acesso"];
-const CATEGORIES = ["Receita", "Dízimo", "Fixos", "Pessoal", "Saúde", "Dívidas", "Investimento", "Outros"];
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020617">
+<title>PlanilhaViva Pro</title>
+<link rel="manifest" href="manifest.json">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="initGoogle()"></script>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    background-color: #020617;
+    background-image:
+      radial-gradient(900px 500px at 10% -10%, rgba(6,182,212,.12), transparent 60%),
+      radial-gradient(700px 500px at 110% 110%, rgba(99,102,241,.12), transparent 60%);
+  }
+  .glass {
+    background: rgba(15,23,42,.72);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(148,163,184,.14);
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+  }
+  .glow { position:absolute; width:160px; height:160px; border-radius:9999px; background:rgba(6,182,212,.18); filter:blur(50px); top:-60px; right:-40px; pointer-events:none; }
+
+  .view { display:none; }
+  .view.active { display:block; animation: viewIn .5s cubic-bezier(.16,1,.3,1); }
+  .enter { animation: viewIn .6s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes viewIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+  .item-in { animation: itemIn .45s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes itemIn { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:none; } }
+  .float { animation: float 4s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translateY(-6px); } }
+
+  .input {
+    width:100%; background:rgba(15,23,42,.9); border:1px solid rgba(51,65,85,.9);
+    border-radius:.75rem; padding:.7rem .9rem; font-size:.8rem; color:#f8fafc;
+    transition: border-color .2s, box-shadow .2s; outline:none;
+  }
+  .input::placeholder { color:#475569; }
+  .input:focus { border-color:#22d3ee; box-shadow:0 0 0 4px rgba(34,211,238,.12); }
+  .input[aria-invalid="true"] { border-color:#fb7185; box-shadow:0 0 0 4px rgba(251,113,133,.12); }
+  select.input option { background:#0f172a; }
+  .label { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:600; margin-bottom:.35rem; }
+  .err { font-size:10px; color:#fb7185; margin-top:.3rem; }
+  .err:empty { display:none; }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 20%,60% { transform:translateX(-5px); } 40%,80% { transform:translateX(5px); } }
+
+  .btn-primary {
+    background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1);
+    color:#020617; font-weight:800; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;
+    box-shadow: 0 12px 30px -12px rgba(6,182,212,.6);
+    transition: transform .15s, box-shadow .3s, filter .3s, opacity .2s;
+  }
+  .btn-primary:hover:not(:disabled) { transform:translateY(-1px); filter:brightness(1.08); box-shadow:0 16px 36px -12px rgba(6,182,212,.75); }
+  .btn-primary:active:not(:disabled) { transform:scale(.98); }
+  .btn-primary:disabled { opacity:.6; cursor:not-allowed; }
+  .danger-btn {
+    background: rgba(244,63,94,.12); border:1px solid rgba(244,63,94,.35); color:#fb7185;
+    font-weight:700; font-size:.75rem; transition: background .2s, transform .15s;
+  }
+  .danger-btn:hover { background: rgba(244,63,94,.22); }
+  .danger-btn:active { transform: scale(.98); }
+  .ghost-btn {
+    border:1px solid rgba(51,65,85,.9); color:#cbd5e1; font-weight:600; font-size:.75rem;
+    transition: background .2s, transform .15s;
+  }
+  .ghost-btn:hover { background: rgba(30,41,59,.9); }
+  .ghost-btn:active { transform: scale(.98); }
+  .icon-btn {
+    padding:.5rem; border-radius:.75rem; background:rgba(30,41,59,.8);
+    border:1px solid rgba(51,65,85,.9); color:#94a3b8; transition: all .2s;
+  }
+  .icon-btn:hover { color:#67e8f9; }
+  .icon-btn:active { transform: scale(.92); }
+  .icon-btn.spin:hover svg { transform: rotate(180deg); transition: transform .5s; }
+
+  .seg { display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; border-radius:.75rem; background:rgba(15,23,42,.9); border:1px solid rgba(51,65,85,.9); }
+  .seg-btn { padding:.5rem; border-radius:.55rem; font-size:.75rem; font-weight:700; color:#94a3b8; transition: all .3s cubic-bezier(.16,1,.3,1); }
+  .seg-btn:hover:not([aria-pressed="true"]) { color:#e2e8f0; }
+  .seg-btn[aria-pressed="true"] { color:#020617; background:#22d3ee; box-shadow:0 6px 16px -6px rgba(34,211,238,.7); }
+  .seg-btn[aria-pressed="true"][data-type="out"] { background:#fb7185; box-shadow:0 6px 16px -6px rgba(251,113,133,.7); }
+
+  .section-title { font-size:.7rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#67e8f9; display:flex; align-items:center; gap:.4rem; }
+  .skeleton { background: linear-gradient(90deg, rgba(30,41,59,.6) 25%, rgba(51,65,85,.8) 50%, rgba(30,41,59,.6) 75%); background-size:200% 100%; animation: shimmer 1.4s infinite; border-radius:.75rem; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+  .bar { height:100%; border-radius:9999px; width:0; transition: width 1.1s cubic-bezier(.16,1,.3,1); }
+
+  #nav-pill { transition: transform .5s cubic-bezier(.34,1.3,.64,1); }
+  .nav-btn { transition: color .3s, transform .2s; }
+  .nav-btn:active { transform: scale(.94); }
+  .nav-btn svg { transition: transform .4s cubic-bezier(.34,1.56,.64,1); }
+  .nav-btn[aria-current="page"] svg { transform: translateY(-2px) scale(1.12); }
+
+  .toast { opacity:0; transform: translateY(-12px) scale(.97); transition: all .35s cubic-bezier(.16,1,.3,1); }
+  .toast.show { opacity:1; transform:none; }
+
+  #modal { opacity:0; pointer-events:none; transition: opacity .25s; }
+  #modal.show { opacity:1; pointer-events:auto; }
+  #modal .panel { transform: translateY(20px) scale(.96); transition: transform .35s cubic-bezier(.16,1,.3,1); }
+  #modal.show .panel { transform:none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+  }
+</style>
+</head>
+<body class="font-sans antialiased text-slate-100 min-h-screen overflow-x-hidden">
+
+<canvas id="bg" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
+<div id="toasts" class="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[80] space-y-2 pointer-events-none" aria-live="polite"></div>
+
+<main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
+
+  <!-- ============ LOGIN ============ -->
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter">
+    <div class="glass rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
+      <div class="glow"></div>
+      <div class="inline-flex p-4 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-cyan-400 float">
+        <i data-lucide="shield-check" class="w-10 h-10"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-black tracking-tight text-white">PlanilhaViva</h1>
+        <p class="text-xs text-slate-400 mt-1">Controle financeiro pessoal, com privacidade</p>
+      </div>
+      <div class="flex justify-center min-h-[44px]"><div id="google-btn"></div></div>
+      <p id="login-status" class="hidden text-xs text-cyan-300">Verificando sua conta...</p>
+      <p id="login-error" class="hidden text-xs text-rose-400"></p>
+      <ul class="pt-4 border-t border-slate-800 space-y-2.5 text-left text-[11px] text-slate-400">
+        <li class="flex gap-2.5"><i data-lucide="lock" class="w-4 h-4 text-cyan-400 shrink-0"></i> Cada operação é verificada pelo Google antes de ser gravada.</li>
+        <li class="flex gap-2.5"><i data-lucide="user-check" class="w-4 h-4 text-cyan-400 shrink-0"></i> Seus lançamentos ficam vinculados somente à sua conta Google.</li>
+        <li class="flex gap-2.5"><i data-lucide="eye-off" class="w-4 h-4 text-cyan-400 shrink-0"></i> Você pode excluir todos os seus dados quando quiser, em Configurações.</li>
+      </ul>
+    </div>
+    <footer class="mt-8 text-center text-[10px] text-slate-500 space-y-1">
+      <p>&copy; PlanilhaViva. Programador: <span class="text-slate-400 font-semibold">Gilnei Laurindo</span></p>
+      <p>Ideias e dedicatória: <span class="text-slate-400">Samuel Danilo</span></p>
+    </footer>
+  </section>
+
+  <!-- ============ APP ============ -->
+  <section id="view-app" class="hidden flex-1 flex-col pb-32">
+
+    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <div id="avatar" class="w-11 h-11 rounded-2xl bg-slate-800 border-2 border-cyan-400/40 overflow-hidden flex items-center justify-center shrink-0"></div>
+        <div class="min-w-0">
+          <p class="text-[11px] text-slate-400">Olá,</p>
+          <h2 id="user-name" class="text-sm font-bold text-white truncate"></h2>
+        </div>
+      </div>
+      <span class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-medium">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        Conectado
+      </span>
+    </header>
+
+    <div class="px-5 pt-5">
+
+      <!-- ---- FLUXO ---- -->
+      <div id="view-fluxo" class="view active space-y-5">
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title"><i data-lucide="plus-circle" class="w-4 h-4"></i> Novo lançamento</h3>
+          <form id="txForm" novalidate class="space-y-4">
+            <div>
+              <label for="desc" class="label">Descrição</label>
+              <input id="desc" class="input" maxlength="80" autocomplete="off" placeholder="Ex.: Venda de produto, compra no mercado">
+              <p class="err" data-for="desc"></p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="amount" class="label">Valor (R$)</label>
+                <input id="amount" type="number" class="input" step="0.01" min="0.01" max="99999999.99" inputmode="decimal" placeholder="0,00">
+                <p class="err" data-for="amount"></p>
+              </div>
+              <div>
+                <span class="label">Natureza</span>
+                <div class="seg" role="group" aria-label="Natureza do lançamento">
+                  <button type="button" class="seg-btn" data-type="in" aria-pressed="true">Entrada</button>
+                  <button type="button" class="seg-btn" data-type="out" aria-pressed="false">Saída</button>
+                </div>
+                <input type="hidden" id="type" value="in">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="category" class="label">Categoria</label>
+                <select id="category" class="input"></select>
+              </div>
+              <div>
+                <label for="date" class="label">Data</label>
+                <input id="date" type="date" class="input">
+                <p class="err" data-for="date"></p>
+              </div>
+            </div>
+            <button id="btnSave" type="submit" class="btn-primary w-full py-3.5 rounded-xl flex items-center justify-center gap-2">
+              <i data-lucide="save" class="w-4 h-4"></i> Salvar lançamento
+            </button>
+          </form>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="section-title">Últimos lançamentos</h3>
+            <button id="btnRefreshFluxo" class="icon-btn spin" aria-label="Atualizar lista">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <ul id="list-fluxo" class="space-y-2"></ul>
+        </div>
+      </div>
+
+      <!-- ---- RESUMO ---- -->
+      <div id="view-resumo" class="view space-y-5">
+        <div class="glass rounded-3xl p-6 relative overflow-hidden">
+          <div class="glow"></div>
+          <p class="text-[11px] uppercase tracking-widest text-slate-400">Saldo do período</p>
+          <p id="saldo" class="text-4xl font-black mt-2 tabular-nums">R$ 0,00</p>
+          <div class="grid grid-cols-2 gap-3 mt-5">
+            <div class="rounded-xl bg-slate-900/60 border border-emerald-500/20 p-3">
+              <p class="text-[10px] uppercase tracking-wider text-slate-400">Entradas</p>
+              <p id="ent" class="text-sm font-bold text-emerald-400 tabular-nums mt-1">R$ 0,00</p>
+            </div>
+            <div class="rounded-xl bg-slate-900/60 border border-rose-500/20 p-3">
+              <p class="text-[10px] uppercase tracking-wider text-slate-400">Saídas</p>
+              <p id="sai" class="text-sm font-bold text-rose-400 tabular-nums mt-1">R$ 0,00</p>
+            </div>
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title"><i data-lucide="chart-pie" class="w-4 h-4"></i> Gastos por categoria</h3>
+          <div id="cats" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <!-- ---- INVESTIR ---- -->
+      <div id="view-investir" class="view space-y-5">
+        <div class="glass rounded-3xl p-6 text-center relative overflow-hidden">
+          <div class="glow"></div>
+          <p class="text-[11px] uppercase tracking-widest text-slate-400">Total investido</p>
+          <p id="invest-total" class="text-4xl font-black text-amber-300 tabular-nums mt-2">R$ 0,00</p>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Soma de todos os lançamentos da categoria Investimento.</p>
+          <button id="btnNewInvest" class="btn-primary w-full py-3 rounded-xl mt-5 flex items-center justify-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i> Registrar aporte
+          </button>
+        </div>
+        <div class="space-y-3">
+          <h3 class="section-title">Aportes recentes</h3>
+          <ul id="list-invest" class="space-y-2"></ul>
+        </div>
+      </div>
+
+      <!-- ---- CONFIG ---- -->
+      <div id="view-config" class="view space-y-5">
+        <div class="glass rounded-2xl p-5 flex items-center gap-4">
+          <div id="cfg-avatar" class="w-14 h-14 rounded-2xl bg-slate-800 border-2 border-cyan-400/40 overflow-hidden flex items-center justify-center shrink-0"></div>
+          <div class="min-w-0">
+            <p id="cfg-name" class="font-bold text-white truncate"></p>
+            <p id="cfg-email" class="text-[11px] text-slate-400 font-mono truncate"></p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="glass rounded-2xl p-4">
+            <p class="text-[10px] uppercase tracking-wider text-slate-400">Usuários cadastrados</p>
+            <p id="user-count" class="text-2xl font-black text-cyan-300 tabular-nums mt-1">—</p>
+          </div>
+          <div class="glass rounded-2xl p-4">
+            <p class="text-[10px] uppercase tracking-wider text-slate-400">Seus lançamentos</p>
+            <p id="my-count" class="text-2xl font-black text-white tabular-nums mt-1">—</p>
+          </div>
+        </div>
+
+        <button id="btnInstall" class="hidden btn-primary w-full py-3 rounded-xl flex items-center justify-center gap-2">
+          <i data-lucide="download" class="w-4 h-4"></i> Instalar aplicativo
+        </button>
+
+        <div class="glass rounded-2xl p-5 space-y-3">
+          <h3 class="section-title"><i data-lucide="shield" class="w-4 h-4"></i> Privacidade e dados</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Você pode excluir permanentemente todos os seus lançamentos e o seu cadastro neste aplicativo. Essa ação não pode ser desfeita.</p>
+          <button id="btnDelete" class="danger-btn w-full py-3 rounded-xl flex items-center justify-center gap-2">
+            <i data-lucide="trash-2" class="w-4 h-4"></i> Excluir meus dados
+          </button>
+        </div>
+
+        <button id="btnLogout" class="ghost-btn w-full py-3 rounded-xl flex items-center justify-center gap-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i> Sair da conta
+        </button>
+
+        <footer class="text-center text-[10px] text-slate-500 space-y-1 pt-2">
+          <p>&copy; PlanilhaViva. Programador: <span class="text-cyan-400 font-medium">Gilnei Laurindo</span></p>
+          <p>Dedicatória: <span class="text-slate-400">Samuel Danilo</span></p>
+        </footer>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ NAVEGAÇÃO INFERIOR ============ -->
+<nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40" aria-label="Navegação principal">
+  <div class="glass rounded-2xl relative grid grid-cols-4 p-0">
+    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-cyan-500/15 border border-cyan-400/30 w-[calc((100%-0.5rem)/4)]"></span>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-cyan-300" data-view="fluxo" aria-current="page"><i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Fluxo</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-200" data-view="resumo" aria-current="false"><i data-lucide="chart-pie" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Resumo</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-200" data-view="investir" aria-current="false"><i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Investir</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-200" data-view="config" aria-current="false"><i data-lucide="settings" class="w-5 h-5"></i><span class="text-[9px] font-semibold uppercase tracking-wider">Config</span></button>
+  </div>
+</nav>
+
+<!-- ============ MODAL DE CONFIRMAÇÃO ============ -->
+<div id="modal" class="fixed inset-0 z-[70] flex items-center justify-center p-6 bg-slate-950/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="panel glass rounded-2xl p-6 w-full max-w-sm space-y-4">
+    <h3 id="modal-title" class="text-base font-bold text-white"></h3>
+    <p id="modal-text" class="text-xs text-slate-400 leading-relaxed"></p>
+    <div class="grid grid-cols-2 gap-3 pt-2">
+      <button id="modal-cancel" class="ghost-btn py-2.5 rounded-xl">Cancelar</button>
+      <button id="modal-ok" class="btn-primary py-2.5 rounded-xl">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ CONFIGURAÇÕES ============
+const GOOGLE_CLIENT_ID = "599756107964-ob0m7i1asuc0t7ng7rn6qc1106elf2ou.apps.googleusercontent.com";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0sEDYsnx1i6isQCGKQaHne1wuEs6UsQ7rn0F6pXYjUSip9yLxnasJSypeaqWu4HTGfQ/exec";
+const CATEGORIES = ["Receita","Dízimo","Fixos","Pessoal","Saúde","Dívidas","Investimento","Outros"];
+const CAT_COLORS = { Receita:"#22d3ee", Dízimo:"#a78bfa", Fixos:"#60a5fa", Pessoal:"#f472b6", Saúde:"#34d399", Dívidas:"#fb7185", Investimento:"#fbbf24", Outros:"#94a3b8" };
 const MAX_AMOUNT = 99999999.99;
 
-class AppError extends Error {
-  constructor(message, code) { super(message); this.code = code || "APP"; }
-}
+const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
+const intFmt = v => Math.round(v).toLocaleString("pt-BR");
+const $ = id => document.getElementById(id);
+const state = { token:null, user:null, deferredPrompt:null };
 
-function doGet() {
-  return json({ status: "success", message: "PlanilhaViva online" });
-}
+// ============ UTILITÁRIOS ============
+const icons = () => { if (window.lucide) lucide.createIcons(); };
+const el = (tag, cls = "", text) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined) n.textContent = text;
+  return n;
+};
+const iconEl = (name, cls = "w-4 h-4") => { const i = document.createElement("i"); i.dataset.lucide = name; i.className = cls; return i; };
+const fmtDate = iso => { const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; };
+const today = () => new Date().toLocaleDateString("en-CA");
 
-function doPost(e) {
+function decodeJwt(token) {
   try {
-    const req = JSON.parse(e.postData.contents || "{}");
-    const user = verifyGoogleToken(req.token);
-    switch (req.action) {
-      case "login":             return json(registerUser(user));
-      case "add_transaction":   return json(addTransaction(user, req));
-      case "list_transactions": return json(listTransactions(user));
-      case "summary":           return json(summary(user));
-      case "count_users":       return json(countUsers());
-      case "delete_my_data":    return json(deleteUserData(user));
-      default: throw new AppError("Ação inválida.");
-    }
-  } catch (err) {
-    if (err instanceof AppError && err.code === "AUTH")
-      return json({ status: "error", code: "AUTH", message: err.message });
-    if (err instanceof AppError)
-      return json({ status: "error", message: err.message });
-    console.error(err);
-    return json({ status: "error", message: "Erro interno. Tente novamente em instantes." });
-  }
+    const b = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const json = decodeURIComponent(atob(b).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join(""));
+    return JSON.parse(json);
+  } catch { return null; }
 }
 
-/* ---------- Segurança: valida o token do Google no servidor ---------- */
-function verifyGoogleToken(token) {
-  if (!token || typeof token !== "string" || token.length > 4096)
-    throw new AppError("Sessão ausente. Entre novamente.", "AUTH");
-
-  const res = UrlFetchApp.fetch(
-    "https://oauth2.googleapis.com/tokeninfo?id_token=" + encodeURIComponent(token),
-    { muteHttpExceptions: true }
-  );
-  if (res.getResponseCode() !== 200)
-    throw new AppError("Sessão inválida. Entre novamente.", "AUTH");
-
-  const info = JSON.parse(res.getContentText());
-  if (info.aud !== CLIENT_ID) throw new AppError("Sessão inválida. Entre novamente.", "AUTH");
-  if (Number(info.exp) * 1000 < Date.now()) throw new AppError("Sessão expirada. Entre novamente.", "AUTH");
-  if (String(info.email_verified) !== "true") throw new AppError("E-mail da conta Google não verificado.", "AUTH");
-
-  return { email: String(info.email).toLowerCase(), name: info.name || info.given_name || "" };
+function countUp(node, to, fmt = v => brl.format(v), dur = 900) {
+  const from = Number(node.dataset.value || 0);
+  node.dataset.value = to;
+  const start = performance.now();
+  const step = now => {
+    const p = Math.min((now - start) / dur, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    node.textContent = fmt(from + (to - from) * e);
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
 }
 
-/* ---------- Utilitários ---------- */
-function json(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+function toast(msg, type = "info") {
+  const colors = { success:"text-emerald-400", error:"text-rose-400", info:"text-cyan-400" };
+  const icon = { success:"circle-check", error:"circle-alert", info:"info" }[type];
+  const t = el("div", "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 pointer-events-auto");
+  t.setAttribute("role", type === "error" ? "alert" : "status");
+  t.append(iconEl(icon, `w-4 h-4 mt-0.5 shrink-0 ${colors[type]}`), el("span", "leading-relaxed", msg));
+  $("toasts").append(t);
+  icons();
+  requestAnimationFrame(() => t.classList.add("show"));
+  setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 350); }, 3800);
 }
 
-function getSheet(name, headers) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sh = ss.getSheetByName(name);
-  if (!sh) {
-    sh = ss.insertSheet(name);
-    sh.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight("bold");
-    sh.setFrozenRows(1);
-  }
-  return sh;
-}
-
-// Evita injeção de fórmulas na planilha (ex.: "=IMPORTRANGE(...)")
-function safeText(v) {
-  const s = String(v).trim().slice(0, 80);
-  return /^[=+\-@]/.test(s) ? "'" + s : s;
-}
-
-function parseIsoDate(s) {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || ""));
-  if (!m) return null;
-  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-  return isNaN(d.getTime()) ? null : d;
-}
-
-function formatDate(d) {
-  return d instanceof Date ? Utilities.formatDate(d, Session.getScriptTimeZone(), "yyyy-MM-dd") : String(d);
-}
-
-const round2 = v => Math.round(v * 100) / 100;
-
-/* ---------- Usuários ---------- */
-function registerUser(user) {
-  const sh = getSheet(SHEET_USERS, USER_HEADERS);
-  const data = sh.getDataRange().getValues();
-  const now = new Date();
-  let found = false;
-  for (let i = 1; i < data.length; i++) {
-    if (String(data[i][0]).toLowerCase() === user.email) {
-      sh.getRange(i + 1, 2).setValue(user.name);
-      sh.getRange(i + 1, 4).setValue(now);
-      found = true;
-      break;
-    }
-  }
-  if (!found) sh.appendRow([user.email, user.name, now, now]);
-  return { status: "success", total: Math.max(0, sh.getLastRow() - 1) };
-}
-
-function countUsers() {
-  const sh = getSheet(SHEET_USERS, USER_HEADERS);
-  return { status: "success", total: Math.max(0, sh.getLastRow() - 1) };
-}
-
-/* ---------- Lançamentos ---------- */
-function addTransaction(user, req) {
-  const desc = String(req.desc || "").trim();
-  const amount = round2(Number(req.amount));
-  const type = req.type === "in" ? "Entrada" : req.type === "out" ? "Saída" : "";
-  const category = CATEGORIES.indexOf(req.category) >= 0 ? req.category : "";
-  const date = parseIsoDate(req.date);
-
-  if (desc.length < 2 || desc.length > 80) throw new AppError("A descrição deve ter entre 2 e 80 caracteres.");
-  if (!(amount > 0) || amount > MAX_AMOUNT) throw new AppError("Valor inválido.");
-  if (!type) throw new AppError("Natureza do lançamento inválida.");
-  if (!category) throw new AppError("Categoria inválida.");
-  if (!date) throw new AppError("Data inválida.");
-
-  const sh = getSheet(SHEET_TX, TX_HEADERS);
-  sh.appendRow([Utilities.getUuid(), user.email, date, safeText(desc), type, category, amount, new Date()]);
-  return { status: "success", message: "Lançamento gravado." };
-}
-
-function readRowsFor(email) {
-  const sh = getSheet(SHEET_TX, TX_HEADERS);
-  return sh.getDataRange().getValues().slice(1)
-    .filter(r => String(r[1]).toLowerCase() === email)
-    .map(r => ({
-      id: String(r[0]),
-      date: formatDate(r[2]),
-      desc: String(r[3]).replace(/^'/, ""),
-      type: r[4] === "Entrada" ? "in" : "out",
-      category: String(r[5]),
-      amount: Number(r[6])
-    }));
-}
-
-function listTransactions(user) {
-  const rows = readRowsFor(user.email)
-    .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
-    .slice(0, 30);
-  return { status: "success", lancamentos: rows };
-}
-
-function summary(user) {
-  const rows = readRowsFor(user.email);
-  let entradas = 0, saidas = 0, investido = 0;
-  const gastosPorCategoria = {};
-  rows.forEach(r => {
-    if (r.category === "Investimento") investido += r.amount;
-    if (r.type === "in") {
-      entradas += r.amount;
-    } else {
-      saidas += r.amount;
-      gastosPorCategoria[r.category] = round2((gastosPorCategoria[r.category] || 0) + r.amount);
-    }
+function confirmDialog({ title, text, ok = "Confirmar", danger = false }) {
+  return new Promise(resolve => {
+    const m = $("modal"), okB = $("modal-ok"), cancelB = $("modal-cancel");
+    $("modal-title").textContent = title;
+    $("modal-text").textContent = text;
+    okB.textContent = ok;
+    okB.className = (danger ? "danger-btn" : "btn-primary") + " py-2.5 rounded-xl";
+    m.classList.add("show");
+    const onKey = e => { if (e.key === "Escape") done(false); };
+    const done = v => {
+      m.classList.remove("show");
+      document.removeEventListener("keydown", onKey);
+      okB.onclick = cancelB.onclick = m.onclick = null;
+      resolve(v);
+    };
+    document.addEventListener("keydown", onKey);
+    okB.onclick = () => done(true);
+    cancelB.onclick = () => done(false);
+    m.onclick = e => { if (e.target === m) done(false); };
+    cancelB.focus();
   });
+}
+
+function setBusy(btn, busy, label = "") {
+  if (busy) {
+    btn.dataset.html = btn.innerHTML;
+    btn.disabled = true;
+    btn.replaceChildren(iconEl("loader-2", "w-4 h-4 animate-spin"), document.createTextNode(" " + label));
+  } else {
+    btn.innerHTML = btn.dataset.html;
+    btn.disabled = false;
+  }
+  icons();
+}
+
+function setAvatar(box, u) {
+  box.replaceChildren();
+  if (u.picture && u.picture.startsWith("https://")) {
+    const img = el("img", "w-full h-full object-cover");
+    img.src = u.picture;
+    img.alt = u.name;
+    img.referrerPolicy = "no-referrer";
+    box.append(img);
+  } else {
+    box.append(iconEl("user", "w-5 h-5 text-slate-400"));
+  }
+  icons();
+}
+
+function skeleton(container, n = 3, h = "h-16") {
+  container.replaceChildren(...Array.from({ length: n }, () => el("div", `skeleton ${h}`)));
+}
+
+function emptyState(text) {
+  const box = el("div", "text-center py-8 text-slate-500 text-xs space-y-2");
+  box.append(iconEl("inbox", "w-8 h-8 mx-auto text-slate-600"), el("p", "", text));
+  return box;
+}
+
+function renderError(container, msg, retry) {
+  const box = el("div", "text-center py-8 space-y-3");
+  box.append(el("p", "text-xs text-rose-400", msg));
+  const b = el("button", "ghost-btn px-4 py-2 rounded-xl", "Tentar novamente");
+  b.onclick = retry;
+  box.append(b);
+  container.replaceChildren(box);
+}
+
+// ============ FUNDO ANIMADO ============
+function initParticles() {
+  const c = $("bg"), x = c.getContext("2d");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let pts = [];
+  const size = () => {
+    c.width = innerWidth; c.height = innerHeight;
+    const n = Math.min(40, Math.floor(c.width * c.height / 22000));
+    pts = Array.from({ length: n }, () => ({
+      x: Math.random() * c.width, y: Math.random() * c.height,
+      vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
+      r: Math.random() * 1.6 + .4
+    }));
+  };
+  size();
+  addEventListener("resize", size);
+  const frame = () => {
+    x.clearRect(0, 0, c.width, c.height);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > c.width) p.vx *= -1;
+      if (p.y < 0 || p.y > c.height) p.vy *= -1;
+      x.fillStyle = "rgba(34,211,238,.45)";
+      x.beginPath(); x.arc(p.x, p.y, p.r, 0, Math.PI * 2); x.fill();
+    });
+    for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+      const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+      if (d < 110) {
+        x.strokeStyle = `rgba(34,211,238,${.12 * (1 - d / 110)})`;
+        x.beginPath(); x.moveTo(pts[i].x, pts[i].y); x.lineTo(pts[j].x, pts[j].y); x.stroke();
+      }
+    }
+    if (!reduce) requestAnimationFrame(frame);
+  };
+  frame();
+}
+
+// ============ COMUNICAÇÃO COM O BACKEND ============
+async function api(action, payload = {}) {
+  if (!state.token) throw new Error("Sua sessão expirou. Entre novamente.");
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 20000);
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action, token: state.token, ...payload }),
+      signal: ctrl.signal
+    });
+    const data = await res.json();
+    if (data.status !== "success") {
+      if (data.code === "AUTH") { logout(data.message); }
+      throw new Error(data.message || "Não foi possível concluir a operação.");
+    }
+    return data;
+  } catch (err) {
+    if (err.name === "AbortError") throw new Error("O servidor demorou para responder. Tente novamente.");
+    if (err instanceof TypeError) throw new Error("Sem conexão com o servidor. Verifique sua internet.");
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// ============ LOGIN ============
+function initGoogle() {
+  if (!window.google || !google.accounts || !google.accounts.id) {
+    $("login-error").textContent = "Não foi possível carregar o login do Google. Verifique sua conexão e recarregue a página.";
+    $("login-error").classList.remove("hidden");
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleCredential,
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+  google.accounts.id.renderButton($("google-btn"), {
+    theme: "filled_black", size: "large", shape: "pill", text: "continue_with", width: 260, locale: "pt-BR"
+  });
+}
+
+async function handleCredential(resp) {
+  const p = decodeJwt(resp.credential);
+  if (!p || !p.email || String(p.email_verified) !== "true") {
+    $("login-error").textContent = "Não foi possível validar sua conta Google.";
+    $("login-error").classList.remove("hidden");
+    return;
+  }
+  $("login-error").classList.add("hidden");
+  $("login-status").classList.remove("hidden");
+  state.token = resp.credential;
+  state.user = { name: p.name || p.given_name || "Usuário", email: p.email, picture: p.picture || "" };
+  await enterApp();
+  $("login-status").classList.add("hidden");
+}
+
+async function enterApp() {
+  try {
+    await api("login");
+  } catch (e) {
+    if (state.token) toast(e.message, "error");
+    return;
+  }
+  const u = state.user;
+  $("user-name").textContent = u.name;
+  setAvatar($("avatar"), u);
+  $("view-auth").classList.add("hidden");
+  $("view-app").classList.remove("hidden");
+  $("view-app").classList.add("flex", "enter");
+  $("bottom-nav").classList.remove("hidden");
+  go("fluxo");
+  toast(`Bem-vindo, ${u.name.split(" ")[0]}!`, "success");
+}
+
+function logout(message) {
+  state.token = null;
+  state.user = null;
+  if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+  $("view-app").classList.add("hidden");
+  $("view-app").classList.remove("flex", "enter");
+  $("bottom-nav").classList.add("hidden");
+  $("view-auth").classList.remove("hidden");
+  $("list-fluxo").replaceChildren();
+  $("list-invest").replaceChildren();
+  $("cats").replaceChildren();
+  resetForm();
+  if (message) toast(message, "info");
+  icons();
+}
+
+// ============ NAVEGAÇÃO ============
+const VIEWS = ["fluxo", "resumo", "investir", "config"];
+function go(name) {
+  VIEWS.forEach((v, i) => {
+    const on = v === name;
+    $("view-" + v).classList.toggle("active", on);
+    const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
+    btn.setAttribute("aria-current", on ? "page" : "false");
+    btn.classList.toggle("text-cyan-300", on);
+    btn.classList.toggle("text-slate-400", !on);
+    if (on) $("nav-pill").style.transform = `translateX(${i * 100}%)`;
+  });
+  icons();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (name === "fluxo") loadFluxo();
+  if (name === "resumo") loadResumo();
+  if (name === "investir") loadInvest();
+  if (name === "config") loadConfig();
+}
+
+// ============ FORMULÁRIO ============
+function setType(t) {
+  $("type").value = t;
+  document.querySelectorAll(".seg-btn").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.type === t)));
+}
+
+function clearErrors() {
+  document.querySelectorAll(".err").forEach(e => e.textContent = "");
+  ["desc", "amount", "date"].forEach(id => $(id).removeAttribute("aria-invalid"));
+}
+
+function fieldErr(id, msg) {
+  const input = $(id);
+  document.querySelector(`.err[data-for="${id}"]`).textContent = msg;
+  input.setAttribute("aria-invalid", "true");
+  input.classList.remove("shake");
+  void input.offsetWidth;
+  input.classList.add("shake");
+}
+
+function validate() {
+  clearErrors();
+  let ok = true;
+  const desc = $("desc").value.trim();
+  const raw = $("amount").value;
+  const amount = Number(raw);
+  if (desc.length < 2) { fieldErr("desc", "Descreva o lançamento com pelo menos 2 caracteres."); ok = false; }
+  if (!raw || !(amount > 0) || amount > MAX_AMOUNT) { fieldErr("amount", "Informe um valor maior que zero."); ok = false; }
+  if (!$("date").value) { fieldErr("date", "Escolha a data do lançamento."); ok = false; }
+  if (!ok) return null;
   return {
-    status: "success",
-    entradas: round2(entradas),
-    saidas: round2(saidas),
-    saldo: round2(entradas - saidas),
-    investido: round2(investido),
-    gastosPorCategoria: gastosPorCategoria,
-    quantidade: rows.length
+    desc,
+    amount: Math.round(amount * 100) / 100,
+    type: $("type").value,
+    category: $("category").value,
+    date: $("date").value
   };
 }
 
-/* ---------- Exclusão de dados (LGPD: direito de eliminação) ---------- */
-function deleteUserData(user) {
-  const tx = getSheet(SHEET_TX, TX_HEADERS);
-  const txRows = tx.getDataRange().getValues();
-  for (let i = txRows.length - 1; i >= 1; i--) {
-    if (String(txRows[i][1]).toLowerCase() === user.email) tx.deleteRow(i + 1);
-  }
-  const us = getSheet(SHEET_USERS, USER_HEADERS);
-  const uRows = us.getDataRange().getValues();
-  for (let i = uRows.length - 1; i >= 1; i--) {
-    if (String(uRows[i][0]).toLowerCase() === user.email) us.deleteRow(i + 1);
-  }
-  return { status: "success", message: "Seus dados foram excluídos." };
+function resetForm() {
+  $("txForm").reset();
+  setType("in");
+  $("date").value = today();
+  clearErrors();
 }
+
+// ============ LISTAS ============
+function renderTransactions(list, items, emptyText) {
+  list.replaceChildren();
+  if (!items.length) { list.append(emptyState(emptyText)); icons(); return; }
+  items.forEach((t, i) => {
+    const li = el("li", "glass rounded-xl p-3.5 flex items-center gap-3 item-in");
+    li.style.animationDelay = `${Math.min(i, 10) * 40}ms`;
+    const dot = el("span", "w-2.5 h-2.5 rounded-full shrink-0");
+    dot.style.background = CAT_COLORS[t.category] || "#94a3b8";
+    const body = el("div", "min-w-0 flex-1");
+    body.append(el("p", "text-sm font-semibold text-white truncate", t.desc),
+                el("p", "text-[11px] text-slate-400", `${fmtDate(t.date)} · ${t.category}`));
+    const isIn = t.type === "in";
+    const val = el("p", `text-sm font-bold tabular-nums ${isIn ? "text-emerald-400" : "text-rose-400"}`,
+                   `${isIn ? "+" : "−"} ${brl.format(t.amount)}`);
+    li.append(dot, body, val);
+    list.append(li);
+  });
+}
+
+async function loadFluxo() {
+  const list = $("list-fluxo");
+  skeleton(list, 3);
+  try {
+    const r = await api("list_transactions");
+    renderTransactions(list, r.lancamentos, "Nenhum lançamento ainda. Registre o primeiro acima.");
+  } catch (e) {
+    renderError(list, e.message, loadFluxo);
+  }
+}
+
+function renderCategories(map, total) {
+  const box = $("cats");
+  box.replaceChildren();
+  const entries = Object.entries(map).sort((a, b) => b[1] - a[1]);
+  if (!entries.length) { box.append(emptyState("Nenhum gasto registrado neste período.")); icons(); return; }
+  entries.forEach(([cat, val], i) => {
+    const pct = total > 0 ? (val / total) * 100 : 0;
+    const row = el("div", "space-y-1.5 item-in");
+    row.style.animationDelay = `${i * 70}ms`;
+    const head = el("div", "flex justify-between text-xs");
+    head.append(el("span", "text-slate-200 font-medium", cat),
+                el("span", "text-slate-400 tabular-nums", `${brl.format(val)} · ${pct.toFixed(0)}%`));
+    const track = el("div", "h-2 rounded-full bg-slate-800/80 overflow-hidden");
+    const bar = el("div", "bar");
+    bar.style.background = `linear-gradient(90deg, ${CAT_COLORS[cat] || "#22d3ee"}, #6366f1)`;
+    track.append(bar);
+    row.append(head, track);
+    box.append(row);
+    requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = pct.toFixed(1) + "%"; }));
+  });
+}
+
+async function loadResumo() {
+  const box = $("cats");
+  skeleton(box, 3, "h-10");
+  try {
+    const s = await api("summary");
+    countUp($("saldo"), s.saldo);
+    countUp($("ent"), s.entradas);
+    countUp($("sai"), s.saidas);
+    $("saldo").classList.toggle("text-rose-400", s.saldo < 0);
+    $("saldo").classList.toggle("text-white", s.saldo >= 0);
+    renderCategories(s.gastosPorCategoria, s.saidas);
+  } catch (e) {
+    renderError(box, e.message, loadResumo);
+  }
+}
+
+async function loadInvest() {
+  const list = $("list-invest");
+  skeleton(list, 2, "h-14");
+  try {
+    const [s, r] = await Promise.all([api("summary"), api("list_transactions")]);
+    countUp($("invest-total"), s.investido);
+    renderTransactions(
+      list,
+      r.lancamentos.filter(t => t.category === "Investimento"),
+      "Nenhum aporte registrado. Use o botão acima para começar."
+    );
+  } catch (e) {
+    renderError(list, e.message, loadInvest);
+  }
+}
+
+async function loadConfig() {
+  const u = state.user;
+  if (!u) return;
+  $("cfg-name").textContent = u.name;
+  $("cfg-email").textContent = u.email;
+  setAvatar($("cfg-avatar"), u);
+  try {
+    const [c, s] = await Promise.all([api("count_users"), api("summary")]);
+    countUp($("user-count"), c.total, intFmt);
+    countUp($("my-count"), s.quantidade, intFmt);
+  } catch (e) {
+    $("user-count").textContent = "—";
+    $("my-count").textContent = "—";
+    toast(e.message, "error");
+  }
+}
+
+// ============ EVENTOS ============
+function init() {
+  const sel = $("category");
+  CATEGORIES.forEach(c => { const o = el("option", "", c); o.value = c; sel.append(o); });
+  resetForm();
+  icons();
+  initParticles();
+
+  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
+  document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => setType(b.dataset.type)));
+
+  $("txForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const payload = validate();
+    if (!payload) return;
+    const btn = $("btnSave");
+    setBusy(btn, true, "Gravando...");
+    try {
+      await api("add_transaction", payload);
+      toast("Lançamento gravado com sucesso!", "success");
+      resetForm();
+      loadFluxo();
+    } catch (err) {
+      toast(err.message, "error");
+    } finally {
+      setBusy(btn, false);
+    }
+  });
+
+  $("btnRefreshFluxo").addEventListener("click", loadFluxo);
+
+  $("btnNewInvest").addEventListener("click", () => {
+    go("fluxo");
+    setType("out");
+    $("category").value = "Investimento";
+    setTimeout(() => $("desc").focus(), 300);
+  });
+
+  $("btnLogout").addEventListener("click", async () => {
+    const ok = await confirmDialog({
+      title: "Sair da conta?",
+      text: "Você precisará entrar novamente com o Google para acessar seus dados.",
+      ok: "Sair"
+    });
+    if (ok) logout("Você saiu da conta com segurança.");
+  });
+
+  $("btnDelete").addEventListener("click", async () => {
+    const ok = await confirmDialog({
+      title: "Excluir todos os seus dados?",
+      text: "Seus lançamentos e seu cadastro serão apagados permanentemente. Esta ação não pode ser desfeita.",
+      ok: "Excluir definitivamente",
+      danger: true
+    });
+    if (!ok) return;
+    const btn = $("btnDelete");
+    setBusy(btn, true, "Excluindo...");
+    try {
+      await api("delete_my_data");
+      logout("Seus dados foram excluídos com sucesso.");
+    } catch (err) {
+      toast(err.message, "error");
+      setBusy(btn, false);
+    }
+  });
+
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault();
+    state.deferredPrompt = e;
+    $("btnInstall").classList.remove("hidden");
+  });
+  $("btnInstall").addEventListener("click", async () => {
+    const p = state.deferredPrompt;
+    if (!p) return;
+    p.prompt();
+    const { outcome } = await p.userChoice;
+    state.deferredPrompt = null;
+    $("btnInstall").classList.add("hidden");
+    toast(outcome === "accepted" ? "Aplicativo instalado!" : "Instalação cancelada.", outcome === "accepted" ? "success" : "info");
+  });
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
