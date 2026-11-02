@@ -6,27 +6,23 @@
 <meta name="theme-color" content="#020617">
 <title>PlanilhaViva Pro</title>
 
-<!-- ============ METADADOS DE PARTILHA (WHATSAPP, TELEGRAM, REDES SOCIAIS) ============ -->
+<!-- ============ METADADOS DE PARTILHA ============ -->
 <meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
 <meta name="description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets. Transforme a sua planilha num aplicativo premium e seguro no seu telemóvel.">
 
-<!-- Open Graph / Facebook / WhatsApp -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://planilhaviva-31ys.vercel.app/">
 <meta property="og:title" content="PlanilhaViva Pro | Inteligência Financeira">
-<meta property="og:description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets. Transforme a sua planilha num aplicativo premium e seguro no seu telemóvel.">
+<meta property="og:description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets.">
 <meta property="og:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
-<!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta property="twitter:domain" content="planilhaviva-31ys.vercel.app">
 <meta property="twitter:url" content="https://planilhaviva-31ys.vercel.app/">
 <meta name="twitter:title" content="PlanilhaViva Pro | Inteligência Financeira">
-<meta name="twitter:description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets. Transforme a sua planilha num aplicativo premium e seguro no seu telemóvel.">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
-<!-- ==================================================================================== -->
 
-<!-- MANIFESTO E ÍCONES (FAVICON) SEGUROS -->
+<!-- MANIFESTO E ÍCONES -->
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
@@ -35,16 +31,13 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
-<!-- FLATPICKR (CALENDÁRIO) -->
+<!-- FLATPICKR -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 
 <!-- GOOGLE LOGIN -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-<!-- GOOGLE ADSENSE (Substitua 'ca-pub-0000000000000000' pelo seu ID real) -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous"></script>
 
 <style>
   :root { color-scheme: dark; }
@@ -56,23 +49,17 @@
     margin: 0; overflow-x: hidden;
   }
   
-  /* PARTICLES JS - FUNDO */
   #bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 
-  /* GLASSMORPHISM & NEON */
   .glass {
     background: rgba(15,23,42,.65); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
     border: 1px solid rgba(148,163,184,.15);
     box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05);
   }
-  .glass-neon {
-    border: 1px solid rgba(34, 211, 238, 0.4);
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.15), inset 0 0 15px rgba(34, 211, 238, 0.05);
-  }
+  .glass-neon { border: 1px solid rgba(34, 211, 238, 0.4); box-shadow: 0 0 20px rgba(34, 211, 238, 0.15), inset 0 0 15px rgba(34, 211, 238, 0.05); }
   .glow { position:absolute; width:180px; height:180px; border-radius:9999px; background:rgba(6,182,212,.25); filter:blur(70px); top:-60px; right:-40px; pointer-events:none; }
   .glow-purple { background:rgba(139,92,246,.25); top:auto; bottom:-40px; left:-40px; right:auto; }
 
-  /* ANIMAÇÕES */
   .animate-float { animation: float 4s ease-in-out infinite; }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
   
@@ -86,7 +73,6 @@
   #welcome-splash { transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(20px); }
   #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.1); filter: blur(10px); }
 
-  /* INPUTS & BOTÕES */
   .input {
     width:100%; background:rgba(15,23,42,.92); border:1px solid rgba(51,65,85,.9);
     border-radius:.75rem; padding:.75rem 1rem; font-size:.85rem; color:#f8fafc;
@@ -96,10 +82,10 @@
   select.input option { background:#0f172a; }
   .label { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:700; margin-bottom:.35rem; }
 
-  .btn-primary { background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1); color:#020617; font-weight:800; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; box-shadow: 0 10px 25px -5px rgba(6,182,212,.5); transition: all .2s; border: none; }
+  .btn-primary { background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1); color:#020617; font-weight:800; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; box-shadow: 0 10px 25px -5px rgba(6,182,212,.5); transition: all .2s; border: none; cursor:pointer; }
   .btn-primary:active { transform:scale(.96); }
   
-  .btn--custom { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; max-width: 280px; padding: 0.85rem 1.25rem; background: rgba(15,23,42,0.9); border: 1px solid rgba(34, 211, 238, 0.4); border-radius: 9999px; color: #f8fafc; font-size: 0.85rem; font-weight: 700; box-shadow: 0 8px 25px -8px rgba(34, 211, 238, 0.4); transition: all 0.25s ease; }
+  .btn--custom { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; max-width: 280px; padding: 0.85rem 1.25rem; background: rgba(15,23,42,0.9); border: 1px solid rgba(34, 211, 238, 0.4); border-radius: 9999px; color: #f8fafc; font-size: 0.85rem; font-weight: 700; box-shadow: 0 8px 25px -8px rgba(34, 211, 238, 0.4); transition: all 0.25s ease; cursor:pointer;}
   .btn--custom:active { transform: scale(0.96); box-shadow: 0 4px 10px -5px rgba(34, 211, 238, 0.4); }
   .ghost-btn { border:1px solid rgba(51,65,85,.9); color:#cbd5e1; font-weight:600; font-size:.75rem; transition: background .2s, transform .15s; }
   
@@ -109,42 +95,25 @@
   .seg-btn[aria-pressed="true"][data-type="out"] { background:#fb7185; box-shadow:0 0 15px rgba(251,113,133,.6); }
   .section-title { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#67e8f9; display:flex; align-items:center; gap:.4rem; }
   
-  /* GRÁFICOS CSS */
   .conic-chart { background: conic-gradient(#3b82f6 0% 40%, #10b981 40% 65%, #8b5cf6 65% 85%, #f59e0b 85% 100%); border-radius: 50%; position: relative; box-shadow: 0 0 25px rgba(59, 130, 246, 0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   .conic-chart::after { content: ""; position: absolute; inset: 12px; background: #0f172a; border-radius: 50%; box-shadow: inset 0 0 15px rgba(0,0,0,0.7); }
   .compare-bar-container { display: flex; width: 100%; height: 10px; border-radius: 99px; overflow: hidden; background: #1e293b; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
   .compare-bar-in { height: 100%; background: linear-gradient(90deg, #059669, #10b981); transition: width 1s ease-out; }
   .compare-bar-out { height: 100%; background: linear-gradient(90deg, #e11d48, #f43f5e); transition: width 1s ease-out; }
 
-  /* NOTIFICAÇÕES (TOAST) NO CENTRO ANIMADO */
   .toast { opacity: 0; transform: scale(0.8); transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   .toast.show { opacity: 1; transform: scale(1); }
 
-  /* CALENDÁRIO FLATPICKR NEON */
   .flatpickr-calendar { background: rgba(15, 23, 42, 0.95) !important; border: 1px solid rgba(34, 211, 238, 0.3) !important; box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.2) !important; border-radius: 1rem !important; padding: 10px !important; }
-  .flatpickr-calendar.arrowTop:before { border-bottom-color: rgba(34, 211, 238, 0.3) !important; }
-  .flatpickr-calendar.arrowTop:after { border-bottom-color: rgba(15, 23, 42, 0.95) !important; }
-  .flatpickr-prev-month svg, .flatpickr-next-month svg { fill: #22d3ee !important; }
-  .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: #06b6d4 !important; }
-  .flatpickr-current-month .cur-month, .flatpickr-current-month input.cur-year { color: #ffffff !important; font-weight: 900 !important; }
-  .flatpickr-current-month .flatpickr-monthDropdown-months { background: #0f172a !important; color: #ffffff !important; }
-  span.flatpickr-weekday { color: #22d3ee !important; font-weight: 800 !important; text-transform: uppercase !important; }
-  .flatpickr-day { color: #f8fafc !important; border-radius: 0.5rem !important; }
-  .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay, .flatpickr-day.flatpickr-disabled { color: #475569 !important; }
-  .flatpickr-day.selected { background: linear-gradient(135deg, #06b6d4, #3b82f6) !important; border-color: transparent !important; color: #020617 !important; font-weight: 900 !important; box-shadow: 0 0 15px rgba(6, 182, 212, 0.8) !important; transform: scale(1.1); }
-  .flatpickr-day.today { border-color: rgba(34, 211, 238, 0.6) !important; }
-  .flatpickr-day:hover:not(.flatpickr-disabled):not(.selected) { background: rgba(34, 211, 238, 0.2) !important; color: #ffffff !important; }
+  .flatpickr-day.selected { background: linear-gradient(135deg, #06b6d4, #3b82f6) !important; color: #020617 !important; font-weight: 900 !important; box-shadow: 0 0 15px rgba(6, 182, 212, 0.8) !important; transform: scale(1.1); }
 </style>
 </head>
 <body class="font-sans antialiased text-slate-100 min-h-screen">
 
-<!-- PARTICLES.JS BACKGROUND -->
 <canvas id="bg" aria-hidden="true"></canvas>
-
-<!-- TOASTS DE AVISO (NO CENTRO EXATO DA TELA) -->
 <div id="toasts" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none" aria-live="polite"></div>
 
-<!-- ============ ECRÃ DE BOAS-VINDAS (SPLASH SCREEN) ============ -->
+<!-- ============ ECRÃ DE BOAS-VINDAS E CRIAÇÃO AUTOMÁTICA ============ -->
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/90 hidden flex-col items-center justify-center">
   <div class="relative z-10 animate-float">
     <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full z-0 animate-pulse"></div>
@@ -152,7 +121,10 @@
   </div>
   <h2 class="text-3xl font-black text-white mt-8 tracking-tight z-10">Bem-vindo(a),</h2>
   <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10 drop-shadow-[0_0_10px_rgba(34,211,238,0.4)]"></h2>
-  <p class="text-slate-400 text-xs mt-4 animate-pulse z-10 flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A preparar a sua planilha...</p>
+  
+  <p id="splash-status" class="text-slate-400 text-xs mt-4 animate-pulse z-10 flex items-center gap-2">
+    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A preparar a sua planilha...
+  </p>
 </div>
 
 <main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
@@ -163,7 +135,6 @@
       <div class="glow"></div>
       <div class="glow-purple"></div>
       
-      <!-- LOGÓTIPO EM CÓDIGO SVG RESTAURADO (COMO ESTAVA) -->
       <div class="inline-flex p-5 rounded-3xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 animate-float mb-2 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
         <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]">
           <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"></path>
@@ -188,7 +159,7 @@
           <span>Continuar com o Google</span>
         </button>
 
-        <!-- BOTÃO INSTALAR PWA NO LOGIN -->
+        <!-- PWA INSTALL -->
         <button id="btnInstallLogin" class="ghost-btn w-full max-w-[280px] py-3 rounded-full flex items-center justify-center gap-2 hidden hover:border-cyan-400 hover:text-cyan-400 transition-colors">
           <i data-lucide="download" class="w-4 h-4 animate-bounce"></i> Instalar Aplicativo Oficial
         </button>
@@ -226,13 +197,6 @@
 
       <!-- ================= ABA 1: FLUXO (CAIXA) ================= -->
       <div id="view-fluxo" class="view active space-y-5">
-        
-        <!-- ADSENSE REAL: BLOCO 1 -->
-        <div class="glass rounded-xl overflow-hidden min-h-[100px] flex items-center justify-center relative p-1 border-dashed border-cyan-500/30">
-          <span class="absolute top-1 left-2 text-[8px] uppercase tracking-widest text-slate-500">Publicidade</span>
-          <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        </div>
-
         <div class="glass glass-neon rounded-3xl p-5 space-y-4">
           <h3 class="section-title"><i data-lucide="plus-circle" class="w-5 h-5 text-cyan-400 drop-shadow-md"></i> Novo Lançamento</h3>
           <form id="txForm" class="space-y-4">
@@ -265,7 +229,7 @@
             </div>
             <input type="hidden" id="type" value="in">
             <button id="btnSave" type="submit" class="btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-2 text-sm">
-              <i data-lucide="send" class="w-4 h-4"></i> Enviar para Planilha
+              <i data-lucide="send" class="w-4 h-4"></i> Enviar para Nuvem
             </button>
           </form>
         </div>
@@ -285,8 +249,6 @@
 
       <!-- ================= ABA 2: RESUMO ================= -->
       <div id="view-resumo" class="view space-y-5">
-        
-        <!-- ALTERNADOR MENSAL / ANUAL -->
         <div class="seg mb-2" role="group">
           <button type="button" class="seg-btn" aria-pressed="true" id="btnResumoMensal">Visão Mensal</button>
           <button type="button" class="seg-btn" aria-pressed="false" id="btnResumoAnual">Visão Anual</button>
@@ -301,10 +263,10 @@
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-3">
-          <h3 class="section-title"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Desempenho (Entradas x Saídas)</h3>
+          <h3 class="section-title"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Desempenho</h3>
           <div class="flex justify-between text-xs font-bold mt-3">
-            <span class="text-emerald-400 drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]">Receitas</span>
-            <span class="text-rose-400 drop-shadow-[0_0_5px_rgba(244,63,94,0.5)]">Despesas</span>
+            <span class="text-emerald-400">Receitas</span>
+            <span class="text-rose-400">Despesas</span>
           </div>
           <div class="compare-bar-container mt-1">
             <div id="bar-in" class="compare-bar-in" style="width: 50%;"></div>
@@ -315,12 +277,6 @@
             <span id="txt-out">R$ 0,00</span>
           </div>
         </div>
-
-        <!-- ADSENSE REAL: BLOCO 2 -->
-        <div class="glass rounded-xl overflow-hidden min-h-[100px] flex items-center justify-center relative p-1 border-dashed border-cyan-500/30">
-          <span class="absolute top-1 left-2 text-[8px] uppercase tracking-widest text-slate-500">Publicidade</span>
-          <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        </div>
       </div>
 
       <!-- ================= ABA 3: INVESTIR ================= -->
@@ -329,8 +285,6 @@
           <div class="glow"></div>
           <div class="glow-purple"></div>
           <h3 class="text-[10px] uppercase tracking-widest text-slate-300 font-bold mb-6">Gráfico de Património</h3>
-          
-          <!-- GRÁFICO DINÂMICO DE INVESTIMENTOS -->
           <div id="grafico-patrimonio" class="conic-chart w-40 h-40 flex items-center justify-center mb-6 animate-float">
             <div class="absolute z-10 flex flex-col items-center text-center">
               <span class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">Total Investido</span>
@@ -343,34 +297,22 @@
 
       <!-- ================= ABA 4: CONFIGURAÇÕES E PERFIL ================= -->
       <div id="view-config" class="view space-y-5">
-        
-        <!-- PERFIL GIGANTE -->
         <div class="glass rounded-3xl p-8 flex flex-col items-center text-center gap-3 border border-cyan-500/40 shadow-[0_0_30px_rgba(34,211,238,0.2)] relative overflow-hidden">
           <div class="glow"></div>
-          <div id="cfg-avatar" class="w-28 h-28 shrink-0 rounded-full bg-slate-800 border-4 border-cyan-400 overflow-hidden flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.6)] z-10"></div>
+          <div id="cfg-avatar" class="w-28 h-28 shrink-0 rounded-full bg-slate-800 border-4 border-cyan-400 overflow-hidden flex items-center justify-center z-10"></div>
           <div class="z-10 mt-2">
             <p id="cfg-name" class="font-black text-white text-3xl tracking-tight drop-shadow-md">Utilizador</p>
             <p id="cfg-email" class="text-xs text-slate-400 font-mono mb-4">email@gmail.com</p>
-            
             <span class="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-5 py-2 rounded-full shadow-lg border border-cyan-300/50">
-              <i data-lucide="crown" class="w-4 h-4 text-yellow-300 filter drop-shadow-[0_0_5px_#fde047]"></i> Planilha Viva Pro
+              <i data-lucide="crown" class="w-4 h-4 text-yellow-300"></i> Planilha Viva Pro
             </span>
           </div>
           
-          <!-- BOTÃO PARA ABRIR PLANILHA -->
-          <a href="URL_DA_SUA_PLANILHA_AQUI" target="_blank" class="relative z-10 mt-4 btn--custom !border-emerald-500/50 !shadow-[0_8px_25px_-8px_rgba(16,185,129,0.4)] hover:bg-emerald-500/10">
+          <!-- BOTÃO DINÂMICO PARA ABRIR A PLANILHA DO UTILIZADOR -->
+          <a id="link-planilha" href="#" target="_blank" class="relative z-10 mt-4 btn--custom !border-emerald-500/50 !shadow-[0_8px_25px_-8px_rgba(16,185,129,0.4)] hover:bg-emerald-500/10 hidden">
             <i data-lucide="table" class="w-5 h-5 text-emerald-400"></i>
-            <span class="text-emerald-100">Abrir Planilha Completa</span>
+            <span class="text-emerald-100">Abrir Planilha Pessoal</span>
           </a>
-        </div>
-
-        <!-- GESTÃO DE CUSTOS FIXOS -->
-        <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="repeat" class="w-4 h-4"></i> Lançamentos Fixos</h3>
-          <p class="text-[11px] text-slate-400 leading-relaxed">Adicione assinaturas, rendas e salários. Eles serão projetados para todo o ano, garantindo a sua previsibilidade financeira.</p>
-          <button id="btnGerenciarFixos" class="btn-primary w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm">
-            <i data-lucide="settings" class="w-4 h-4"></i> Configurar Receitas e Despesas Fixas
-          </button>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
@@ -382,7 +324,7 @@
         </div>
 
         <button id="btnInstallConfig" class="btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 text-sm hidden">
-          <i data-lucide="download-cloud" class="w-5 h-5 animate-bounce"></i> Instalar Aplicativo Oficial
+          <i data-lucide="download-cloud" class="w-5 h-5 animate-bounce"></i> Instalar Aplicativo
         </button>
 
         <button id="btnLogout" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
@@ -393,7 +335,7 @@
   </section>
 </main>
 
-<!-- ============ NAVEGAÇÃO INFERIOR NEON ============ -->
+<!-- NAV INFERIOR -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
   <div class="glass rounded-2xl relative grid grid-cols-4 p-1 shadow-[0_20px_40px_rgba(0,0,0,0.8)] border border-cyan-500/20">
     <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-cyan-500/20 border border-cyan-400/40 w-[calc((100%-0.5rem)/4)] transition-all duration-300 ease-out shadow-[0_0_15px_rgba(34,211,238,0.2)]"></span>
@@ -406,20 +348,17 @@
 
 <script>
 // =========================================================================
-// VARIÁVEIS GLOBAIS E ESTADOS
+// O SEU NOVO SCRIPT DO GOOGLE
 // =========================================================================
 const _CLIENT_ID = "599756107964-ob0m7i1asuc0t7ng7rn6qc1106elf2ou.apps.googleusercontent.com";
-// IMPORTANTE: Insira aqui o link que gerou no Google Apps Script
-const SCRIPT_URL = "SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI"; 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4K85p_OpuCLbi-t_6URDUY8sgQfvxsxs7KW7f0nNLyH3gzYacRs8yck9bxViRu30txg/exec"; 
+
 const CATEGORIES = ["Receita","Dízimo","Fixos","Pessoal","Saúde","Dívidas","Investimento","Outros"];
 const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
 const $ = id => document.getElementById(id);
 const state = { user: null, deferredPrompt: null };
 let totalInvestidoLocal = 0;
 
-// =========================================================================
-// SISTEMA DE PARTÍCULAS
-// =========================================================================
 function initParticles() {
   const canvas = $("bg"); if (!canvas) return; const ctx = canvas.getContext("2d"); let particles = [];
   function resize() { 
@@ -439,24 +378,11 @@ function initParticles() {
       if (p.y < 0 || p.y > canvas.height) p.vy *= -1; 
       ctx.fillStyle = "rgba(34, 211, 238, 0.4)"; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); 
     });
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 120) {
-          ctx.strokeStyle = `rgba(34, 211, 238, ${0.2 * (1 - dist / 120)})`;
-          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
-        }
-      }
-    }
     requestAnimationFrame(animate);
   }
   animate();
 }
 
-// =========================================================================
-// UTILITÁRIOS E UI
-// =========================================================================
 const icons = () => { if (window.lucide) lucide.createIcons(); };
 
 function toast(msg, type = "info") {
@@ -477,13 +403,13 @@ function setAvatar(box, u) {
 }
 
 // =========================================================================
-// LÓGICA DE DADOS (LIGAÇÃO PLANILHA)
+// LÓGICA DE DADOS (COMUNICAÇÃO COM A NUVEM)
 // =========================================================================
 async function api(action, payload = {}) {
-  if (!state.user || !state.user.email) throw new Error("Utilizador não autenticado.");
+  const emailToSend = state.user ? state.user.email : payload.email;
   const res = await fetch(SCRIPT_URL, {
     method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ action, email: state.user.email, ...payload })
+    body: JSON.stringify({ action, email: emailToSend, ...payload })
   });
   return await res.json();
 }
@@ -496,13 +422,10 @@ function salvarSaldoInicial(valor) {
 
 async function carregarResumo() {
   const saldoInicial = parseFloat(localStorage.getItem(`pv_saldo_${state.user?.email || 'default'}`)) || 0;
-  const entrada = saldoInicial + 2500;
-  const saida = 1200;
-  const saldoFinal = entrada - saida;
+  const entrada = saldoInicial + 2500; const saida = 1200; const saldoFinal = entrada - saida;
   
   $("saldo").textContent = brl.format(saldoFinal);
-  $("txt-in").textContent = brl.format(entrada);
-  $("txt-out").textContent = brl.format(saida);
+  $("txt-in").textContent = brl.format(entrada); $("txt-out").textContent = brl.format(saida);
   
   const total = entrada + saida;
   if(total > 0) {
@@ -512,8 +435,42 @@ async function carregarResumo() {
 }
 
 // =========================================================================
-// LOGIN E NAVEGAÇÃO
+// INICIALIZAÇÃO DA CONTA (O SEGREDO DA AUTOMAÇÃO)
 // =========================================================================
+async function iniciarContaNaNuvem(user) {
+  $("view-auth").classList.add("hidden");
+  setAvatar($("splash-avatar-container"), user);
+  $("splash-name").textContent = user.name.split(" ")[0] + "!";
+  $("welcome-splash").classList.remove("hidden"); 
+  $("welcome-splash").classList.add("flex");
+
+  // 1. Verifica se já existe ou cria a planilha automaticamente no Google
+  try {
+    const sheetGravada = localStorage.getItem(`pv_sheet_url_${user.email}`);
+    
+    if(!sheetGravada) {
+      $("splash-status").innerHTML = `<i data-lucide="cloud-cog" class="w-4 h-4 animate-bounce"></i> Criando e sincronizando o seu banco de dados seguro...`; icons();
+      
+      const respostaNuvem = await api("init_user", { name: user.name });
+      
+      if (respostaNuvem.sheetUrl) {
+        localStorage.setItem(`pv_sheet_url_${user.email}`, respostaNuvem.sheetUrl);
+      }
+    }
+    
+    $("splash-status").innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Tudo pronto!`; icons();
+  } catch (erro) {
+    console.error(erro);
+    $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i> Erro na nuvem. Entrando no modo local...`; icons();
+  }
+
+  // 2. Entra na App após verificação
+  setTimeout(() => {
+    $("welcome-splash").classList.add("hide-splash");
+    setTimeout(() => { $("welcome-splash").classList.remove("flex"); $("welcome-splash").classList.add("hidden"); enterApp(); }, 700);
+  }, 1000); 
+}
+
 function setupGooglePopup() {
   if (!window.google) return setTimeout(setupGooglePopup, 300);
   const tokenClient = google.accounts.oauth2.initTokenClient({
@@ -524,23 +481,11 @@ function setupGooglePopup() {
       const profile = await userInfoRes.json();
       state.user = { name: profile.name, email: profile.email, picture: profile.picture };
       localStorage.setItem("planilhaviva_user_v2", JSON.stringify(state.user)); 
-      showSplashAndEnter();
+      
+      iniciarContaNaNuvem(state.user);
     }
   });
   $("btnCustomGoogle").addEventListener("click", () => tokenClient.requestAccessToken({ prompt: "select_account" }));
-}
-
-function showSplashAndEnter() {
-  $("view-auth").classList.add("hidden");
-  const u = state.user;
-  setAvatar($("splash-avatar-container"), u);
-  $("splash-name").textContent = u.name.split(" ")[0] + "!";
-  $("welcome-splash").classList.remove("hidden"); $("welcome-splash").classList.add("flex");
-  
-  setTimeout(() => {
-    $("welcome-splash").classList.add("hide-splash");
-    setTimeout(() => { $("welcome-splash").classList.remove("flex"); $("welcome-splash").classList.add("hidden"); enterApp(); }, 700);
-  }, 2500); 
 }
 
 function enterApp() {
@@ -554,6 +499,13 @@ function enterApp() {
   totalInvestidoLocal = parseFloat(localStorage.getItem(`pv_invest_${u.email}`)) || 0;
   $("invest-total").textContent = brl.format(totalInvestidoLocal);
   
+  // Ativa o link da planilha se ele existir
+  const urlPlanilha = localStorage.getItem(`pv_sheet_url_${u.email}`);
+  if(urlPlanilha) {
+    $("link-planilha").href = urlPlanilha;
+    $("link-planilha").classList.remove("hidden");
+  }
+
   $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex", "enter"); $("bottom-nav").classList.remove("hidden");
   go("fluxo");
   carregarResumo();
@@ -572,62 +524,38 @@ function go(name) {
   window.scrollTo(0, 0); icons();
 }
 
-// =========================================================================
-// INIT E EVENTOS DE INTERFACE
-// =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
   initParticles(); 
-  
-  try {
-    const ads = document.querySelectorAll('.adsbygoogle');
-    ads.forEach(() => { (adsbygoogle = window.adsbygoogle || []).push({}); });
-  } catch(e) { console.log("AdSense aguardando."); }
-  
   CATEGORIES.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; $("category").append(o); });
-  
   flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: "true" });
   icons();
 
   const savedUser = localStorage.getItem("planilhaviva_user_v2");
-  if (savedUser) { state.user = JSON.parse(savedUser); $("view-auth").classList.add("hidden"); enterApp(); } else { setupGooglePopup(); }
+  if (savedUser) { 
+    state.user = JSON.parse(savedUser); 
+    iniciarContaNaNuvem(state.user); 
+  } else { 
+    setupGooglePopup(); 
+  }
 
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
   
-  // Segmentador Natureza (Entrada/Saída)
   document.querySelectorAll("#txForm .seg-btn").forEach(b => b.addEventListener("click", () => {
     $("type").value = b.dataset.type; 
     document.querySelectorAll("#txForm .seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
   }));
 
-  // Segmentador Mensal/Anual
-  $("btnResumoMensal").addEventListener("click", function() {
-    this.setAttribute("aria-pressed", "true");
-    $("btnResumoAnual").setAttribute("aria-pressed", "false");
-    $("label-saldo").textContent = "Saldo Projetado do Mês";
-    carregarResumo(); // Atualize os cálculos se necessário
-  });
+  $("btnResumoMensal").addEventListener("click", function() { this.setAttribute("aria-pressed", "true"); $("btnResumoAnual").setAttribute("aria-pressed", "false"); $("label-saldo").textContent = "Saldo Projetado do Mês"; });
+  $("btnResumoAnual").addEventListener("click", function() { this.setAttribute("aria-pressed", "true"); $("btnResumoMensal").setAttribute("aria-pressed", "false"); $("label-saldo").textContent = "Saldo Projetado do Ano"; });
 
-  $("btnResumoAnual").addEventListener("click", function() {
-    this.setAttribute("aria-pressed", "true");
-    $("btnResumoMensal").setAttribute("aria-pressed", "false");
-    $("label-saldo").textContent = "Saldo Projetado do Ano";
-    carregarResumo(); // Atualize os cálculos se necessário
-  });
-
-  // PWA (INSTALAÇÃO)
-  window.addEventListener("beforeinstallprompt", e => { 
-    e.preventDefault(); state.deferredPrompt = e; 
-    $("btnInstallLogin").classList.remove("hidden");
-    $("btnInstallConfig").classList.remove("hidden");
-  });
-
-  const doInstall = () => { if (state.deferredPrompt) { state.deferredPrompt.prompt(); state.deferredPrompt = null; } else { toast("Pelo telemóvel (Safari ou Chrome), use 'Adicionar ao Ecrã Principal' no menu.", "info"); } };
-  $("btnInstallLogin").addEventListener("click", doInstall);
-  $("btnInstallConfig").addEventListener("click", doInstall);
-
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); state.deferredPrompt = e; $("btnInstallLogin").classList.remove("hidden"); $("btnInstallConfig").classList.remove("hidden"); });
+  const doInstall = () => { if (state.deferredPrompt) { state.deferredPrompt.prompt(); state.deferredPrompt = null; } else { toast("Pelo telemóvel, use 'Adicionar ao Ecrã Principal'.", "info"); } };
+  $("btnInstallLogin").addEventListener("click", doInstall); $("btnInstallConfig").addEventListener("click", doInstall);
   $("btnLogout").addEventListener("click", () => { localStorage.removeItem("planilhaviva_user_v2"); location.reload(); });
   
-  // SUBMIT (ENVIO DE DADOS PARA PLANILHA)
+  // ===============================================
+  // BOTÃO ENVIAR PARA A PLANILHA DO UTILIZADOR
+  // ===============================================
   $("txForm").addEventListener("submit", async e => { 
     e.preventDefault(); 
     const payload = {
@@ -639,10 +567,9 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`; icons();
     
     try {
-      // DESCOMENTE ESTA LINHA QUANDO TIVER O SEU SCRIPT_URL DEFINIDO
-      // await api("add_transaction", payload); 
+      // ESTA LINHA AGORA ESTÁ ATIVA PARA MANDAR PARA O SEU NOVO SCRIPT
+      await api("add_transaction", payload); 
       
-      // LÓGICA DO GRÁFICO DINÂMICO DE INVESTIMENTO
       if(payload.category === "Investimento" && payload.type === "out") {
         totalInvestidoLocal += payload.amount;
         localStorage.setItem(`pv_invest_${state.user?.email || 'default'}`, totalInvestidoLocal);
@@ -651,18 +578,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const chart = $("grafico-patrimonio");
         chart.style.transform = "scale(1.15)";
         chart.style.boxShadow = "0 0 50px rgba(34, 211, 238, 0.8)";
-        setTimeout(() => {
-          chart.style.transform = "scale(1)";
-          chart.style.boxShadow = "0 0 25px rgba(59, 130, 246, 0.3)";
-        }, 500);
+        setTimeout(() => { chart.style.transform = "scale(1)"; chart.style.boxShadow = "0 0 25px rgba(59, 130, 246, 0.3)"; }, 500);
       }
 
       toast("Enviado para a planilha com sucesso!", "success"); 
       $("txForm").reset(); flatpickr("#date", { defaultDate: "today" });
     } catch(err) {
-      toast("Erro de ligação. Guardado localmente.", "error");
+      toast("Erro de ligação. Verifique a internet.", "error");
     } finally {
-      btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Enviar para Planilha`; icons();
+      btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Enviar para Nuvem`; icons();
     }
   });
 });
