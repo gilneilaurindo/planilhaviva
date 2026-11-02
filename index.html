@@ -32,18 +32,17 @@
   :root { color-scheme: dark; }
   body {
     background-color: #020617;
-    background-image:
-      radial-gradient(1000px 600px at 10% -10%, rgba(6,182,212,.2), transparent 60%),
-      radial-gradient(800px 600px at 110% 110%, rgba(139,92,246,.15), transparent 60%);
-    margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; font-family: ui-sans-serif, system-ui, sans-serif;
+    margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; 
+    font-family: ui-sans-serif, system-ui, sans-serif;
   }
 
-  /* EFEITOS NEON E CONEXÕES */
+  /* EFEITOS NEON E CONEXÕES REATIVAS */
   #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+  
   .glass { background: rgba(15,23,42,.65); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(148,163,184,.15); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
   .glass-neon { border: 1px solid rgba(34,211,238,.4); box-shadow: 0 0 35px rgba(34,211,238,.15), inset 0 0 20px rgba(34,211,238,.08); }
   
-  .glow { position: absolute; width: 220px; height: 220px; border-radius: 9999px; background: rgba(6,182,212,.25); filter: blur(80px); top: -60px; right: -60px; pointer-events: none; }
+  .glow { position: absolute; width: 220px; height: 220px; border-radius: 9999px; background: rgba(6,182,212,.25); filter: blur(80px); top: -60px; right: -60px; pointer-events: none; transition: background 0.8s ease; }
   .glow-purple { background: rgba(168,85,247,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
   .glow-green { background: rgba(16,185,129,.25); }
   .glow-red { background: rgba(244,63,94,.25); }
@@ -53,6 +52,8 @@
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
   .icon-pop svg { animation: pop .5s cubic-bezier(.175,.885,.32,1.275) both; }
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+  .slide-down { animation: slideDown 0.4s ease-out forwards; }
+  @keyframes slideDown { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
 
   .view { display: none; opacity: 0; }
   .view.active { display: block; animation: viewIn .5s ease-out forwards; }
@@ -66,6 +67,10 @@
   .input:focus { border-color: #22d3ee; box-shadow: 0 0 20px rgba(34,211,238,.3); }
   select.input option { background: #0f172a; }
   .label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #94a3b8; font-weight: 800; margin-bottom: .4rem; }
+
+  /* Chips Valores Rápidos */
+  .quick-chip { padding: 0.35rem 0.7rem; border-radius: 9999px; background: rgba(30,41,59,0.8); border: 1px solid rgba(51,65,85,1); font-size: 0.7rem; font-weight: 700; color: #94a3b8; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .quick-chip:hover, .quick-chip:active { background: #22d3ee; color: #020617; border-color: #22d3ee; }
 
   /* Botões e Segmentos por Cor */
   .btn-primary { background: linear-gradient(135deg,#06b6d4,#3b82f6); color: #020617; font-weight: 800; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 10px 30px -5px rgba(6,182,212,.6); transition: all .2s; cursor: pointer; border:none;}
@@ -98,20 +103,20 @@
   .flatpickr-day.selected { background: linear-gradient(135deg,#06b6d4,#3b82f6) !important; color: #020617 !important; font-weight: 900 !important; box-shadow: 0 0 20px rgba(6,182,212,.9) !important; }
 </style>
 </head>
-<body class="text-slate-100 min-h-screen pb-24">
+<body class="text-slate-100 min-h-screen pb-24 relative">
 
-<!-- EFEITO LUMINOSO DE CONEXÕES (RESTAURADO E MELHORADO) -->
+<!-- EFEITO LUMINOSO REATIVO (Partículas que mudam de cor com a ação) -->
 <canvas id="bg" aria-hidden="true"></canvas>
 
 <div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none" aria-live="polite"></div>
 
-<!-- SPLASH SCREEN -->
+<!-- SPLASH SCREEN INTELIGENTE -->
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center">
   <div class="relative z-10 animate-float">
     <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full z-0 animate-pulse"></div>
     <div id="splash-avatar" class="relative z-10 w-32 h-32 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
   </div>
-  <h2 class="text-3xl font-black text-white mt-8 tracking-tight z-10">Olá,</h2>
+  <h2 id="greeting-text" class="text-3xl font-black text-white mt-8 tracking-tight z-10">Olá,</h2>
   <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10">Investidor!</h2>
   <p id="splash-status" class="text-cyan-200 text-xs mt-6 font-mono flex items-center gap-2 z-10 font-bold">
     <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Inicializando IA Financeira...
@@ -120,7 +125,7 @@
 
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
 
-  <!-- ==================== TELA DE LOGIN (COM CRÉDITOS) ==================== -->
+  <!-- ==================== TELA DE LOGIN (COM CRÉDITOS E HONRA) ==================== -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 relative">
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_40px_rgba(34,211,238,.1)]">
       <div class="glow"></div>
@@ -132,7 +137,7 @@
 
       <div>
         <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
-        <p class="text-xs text-cyan-100/70 mt-2 font-medium leading-relaxed">Seu banco de dados financeiro blindado e conectado à nuvem.</p>
+        <p class="text-xs text-cyan-100/70 mt-2 font-medium leading-relaxed">O seu banco de dados financeiro contínuo e conectado à nuvem.</p>
       </div>
 
       <div class="pt-4 flex flex-col items-center gap-4 relative z-20">
@@ -143,7 +148,7 @@
       </div>
     </div>
 
-    <!-- RODAPÉ DE HONRA (RESTAURADO E ELEGANTE) -->
+    <!-- RODAPÉ DE HONRA -->
     <footer class="mt-10 text-center text-[10px] text-slate-500 space-y-1.5 z-10 font-medium tracking-wide">
       <p>© Direitos reservados <span class="text-cyan-400 font-bold">PlanilhaViva Pro</span>.</p>
       <p>Programador: <span class="text-slate-300 font-bold">Gilnei Laurindo</span></p>
@@ -168,10 +173,9 @@
 
     <div class="px-5 pt-6 space-y-6">
 
-      <!-- ==================== ABA 1: LANÇAMENTOS ==================== -->
+      <!-- ==================== ABA 1: LANÇAMENTOS DINÂMICOS ==================== -->
       <div id="view-fluxo" class="view active space-y-5">
         
-        <!-- Ad Topo -->
         <div class="ad-block">
           <span class="ad-label">Publicidade</span>
           <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="horizontal"></ins>
@@ -192,25 +196,45 @@
               <label class="label" for="desc">Descrição do Movimento</label>
               <input id="desc" class="input" placeholder="Ex: Conta de Luz, Salário..." required>
             </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="label" for="amount">Valor (R$)</label>
-                <input id="amount" type="number" step="0.01" class="input font-bold text-lg" placeholder="0,00" required>
-              </div>
-              <div>
-                <label class="label" for="date">Data</label>
-                <input id="date" type="text" class="input font-bold text-center" placeholder="Hoje" required>
+            
+            <div>
+              <label class="label" for="amount">Valor (R$)</label>
+              <input id="amount" type="number" step="0.01" class="input font-bold text-lg" placeholder="0,00" required>
+              <!-- Valores Rápidos (Chips) -->
+              <div class="flex gap-2 mt-2 overflow-x-auto no-scrollbar py-1">
+                <button type="button" class="quick-chip" onclick="$('amount').value=10">+ R$ 10</button>
+                <button type="button" class="quick-chip" onclick="$('amount').value=50">+ R$ 50</button>
+                <button type="button" class="quick-chip" onclick="$('amount').value=100">+ R$ 100</button>
+                <button type="button" class="quick-chip" onclick="$('amount').value=500">+ R$ 500</button>
               </div>
             </div>
-            <div id="cat-container">
-              <label class="label" for="category">Categoria Estratégica</label>
-              <select id="category" class="input font-medium"></select>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label" for="date">Data Exata</label>
+                <input id="date" type="text" class="input font-bold text-center" placeholder="Hoje" required>
+              </div>
+              <div id="cat-container">
+                <label class="label" for="category">Categoria</label>
+                <select id="category" class="input font-medium text-xs h-[42px]"></select>
+              </div>
             </div>
             <button id="btnSave" type="submit" class="btn-primary btn-red w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300">
               <i data-lucide="check-circle" class="w-5 h-5"></i> Confirmar Transação
             </button>
           </form>
         </div>
+
+        <!-- Histórico Local (Novidade) -->
+        <div class="glass rounded-2xl p-4">
+          <h3 class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
+            <i data-lucide="history" class="w-3 h-3"></i> Lançamentos desta Sessão
+          </h3>
+          <div id="local-history" class="space-y-2 text-xs">
+            <p class="text-slate-500 text-center py-2 italic" id="empty-history">Aguardando lançamentos...</p>
+          </div>
+        </div>
+
       </div>
 
       <!-- ==================== ABA 2: RESUMO ==================== -->
@@ -224,7 +248,7 @@
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="pie-chart" class="w-4 h-4"></i> Fluxo do Mês</h3>
+          <h3 class="section-title"><i data-lucide="pie-chart" class="w-4 h-4"></i> Fluxo Consolidado</h3>
           <div class="relative w-full aspect-square max-h-[220px] flex justify-center mx-auto">
             <canvas id="chartFluxo"></canvas>
           </div>
@@ -235,11 +259,10 @@
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="bar-chart" class="w-4 h-4"></i> Desempenho Contínuo</h3>
+          <h3 class="section-title"><i data-lucide="bar-chart" class="w-4 h-4"></i> Desempenho</h3>
           <div class="w-full max-h-[200px]"><canvas id="chartDesempenho"></canvas></div>
         </div>
 
-        <!-- Ad Rodapé Resumo -->
         <div class="ad-block">
           <span class="ad-label">Publicidade</span>
           <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto"></ins>
@@ -280,14 +303,13 @@
           </div>
         </div>
 
-        <!-- Ad Rodapé Investir -->
         <div class="ad-block">
           <span class="ad-label">Publicidade</span>
           <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto"></ins>
         </div>
       </div>
 
-      <!-- ==================== ABA 4: CONFIGURAÇÕES E PERFIL ==================== -->
+      <!-- ==================== ABA 4: CONFIGURAÇÕES E PROVA SOCIAL ==================== -->
       <div id="view-config" class="view space-y-5">
         
         <div class="glass rounded-3xl p-6 text-center relative overflow-hidden border border-cyan-500/30">
@@ -303,42 +325,39 @@
           </div>
           <div class="text-center">
             <h3 class="font-black text-emerald-400 text-lg uppercase tracking-wide">Meu Banco de Dados</h3>
-            <p class="text-xs text-slate-300 mt-1">Acessar a Planilha Completa no Google Sheets</p>
+            <p class="text-xs text-slate-300 mt-1">Acessar a Planilha no Google Sheets</p>
           </div>
         </a>
 
-        <!-- PROVA SOCIAL COM AVATARES (NOVIDADE) -->
+        <!-- PROVA SOCIAL COM AVATARES REAIS -->
         <div class="space-y-3">
           <h3 class="section-title text-yellow-400"><i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i> Avaliações da Comunidade</h3>
           <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar pb-2">
             
-            <!-- Review 1 -->
             <div class="snap-center shrink-0 w-64 glass rounded-xl p-4 border border-slate-700">
               <div class="flex items-center gap-3 mb-2">
-                <img src="https://i.pravatar.cc/150?img=11" alt="Foto Carlos" class="w-10 h-10 rounded-full border border-yellow-400">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" class="w-10 h-10 rounded-full border border-yellow-400">
                 <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
               </div>
               <p class="text-xs text-slate-200 italic">"O app que faltava! Ter tudo registrado automaticamente no meu Google Drive com a hora exata é fantástico."</p>
               <p class="text-[10px] text-slate-400 font-bold mt-2">— Carlos M., Empreendedor</p>
             </div>
             
-            <!-- Review 2 -->
             <div class="snap-center shrink-0 w-64 glass rounded-xl p-4 border border-slate-700">
               <div class="flex items-center gap-3 mb-2">
-                <img src="https://i.pravatar.cc/150?img=32" alt="Foto Ana" class="w-10 h-10 rounded-full border border-yellow-400">
+                <img src="https://i.pravatar.cc/150?img=32" alt="Ana" class="w-10 h-10 rounded-full border border-yellow-400">
                 <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
               </div>
-              <p class="text-xs text-slate-200 italic">"Os gráficos de desempenho são lindos e o fato de nunca acabar (ser contínuo) salvou o meu controle."</p>
+              <p class="text-xs text-slate-200 italic">"Os gráficos de desempenho são lindos e o fato de ser um sistema contínuo infinito salvou o meu controle."</p>
               <p class="text-[10px] text-slate-400 font-bold mt-2">— Ana P., Médica</p>
             </div>
 
-            <!-- Review 3 -->
             <div class="snap-center shrink-0 w-64 glass rounded-xl p-4 border border-slate-700">
               <div class="flex items-center gap-3 mb-2">
-                <img src="https://i.pravatar.cc/150?img=15" alt="Foto Roberto" class="w-10 h-10 rounded-full border border-yellow-400">
+                <img src="https://i.pravatar.cc/150?img=15" alt="Roberto" class="w-10 h-10 rounded-full border border-yellow-400">
                 <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-slate-600"></i></div>
               </div>
-              <p class="text-xs text-slate-200 italic">"Simples, seguro e os efeitos de partículas deixam tudo com cara de app Premium."</p>
+              <p class="text-xs text-slate-200 italic">"Simples, seguro e os efeitos neon deixam tudo com cara de app Premium. A sincronização é perfeita."</p>
               <p class="text-[10px] text-slate-400 font-bold mt-2">— Roberto Silva, Designer</p>
             </div>
 
@@ -353,6 +372,7 @@
   </section>
 </main>
 
+<!-- BOTTOM NAVIGATION -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
   <div class="glass rounded-2xl relative grid grid-cols-4 p-1 shadow-[0_20px_40px_rgba(0,0,0,.9)] border border-slate-700">
     <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-slate-600 w-[calc((100%-0.5rem)/4)] transition-all duration-300 ease-out shadow-lg"></span>
@@ -373,19 +393,23 @@
 </nav>
 
 <script>
+// ============================================================================
+// CHAVES E CONFIGURAÇÕES
+// ============================================================================
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbws-p14naomLyDHNxBcZUwo-fShHkT-MDJ3Invvdkrj0Qe40m5isAM3-Ms10x6fwb1dEg/exec",
-  STORAGE_KEY: "planilhaviva_user_v3",
+  // O SEU SCRIPT ATUALIZADO
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwfbpENkvp0yHb7IIFeiNYrrswzTyploeg5ESTaqxfzhWaKILTW6tLZnR13uBqxFQk0/exec",
+  STORAGE_KEY: "planilhaviva_user_v4",
   CATEGORIES: ["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"] 
 };
 
-const State = { user: null, prefName: "", datePicker: null };
+const State = { user: null, prefName: "", datePicker: null, particleColor: "rgba(34,211,238,0.5)" };
 const $ = id => document.getElementById(id);
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
 // ============================================================================
-// EFEITOS LUMINOSOS E DE CONEXÃO (PARTÍCULAS INTELIGENTES)
+// EFEITOS LUMINOSOS E CONEXÕES REATIVAS (O FUNDO "RESPIRA" COM O UTILIZADOR)
 // ============================================================================
 function initParticles() {
   const canvas = $("bg"); const ctx = canvas.getContext("2d"); let p = [];
@@ -399,15 +423,19 @@ function initParticles() {
       p[i].x += p[i].vx; p[i].y += p[i].vy; 
       if(p[i].x<0||p[i].x>canvas.width) p[i].vx*=-1; 
       if(p[i].y<0||p[i].y>canvas.height) p[i].vy*=-1; 
-      ctx.fillStyle="rgba(34,211,238,0.5)"; ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = State.particleColor; 
+      ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
       
-      // Conexões Neon (Fios de energia quando se aproximam)
+      // Linhas de conexão
       for(let j=i+1; j<p.length; j++){
         let dx = p[i].x - p[j].x, dy = p[i].y - p[j].y;
         let dist = Math.sqrt(dx*dx + dy*dy);
         if(dist < 100) {
-          ctx.beginPath(); ctx.strokeStyle = `rgba(34,211,238,${0.25*(1-dist/100)})`;
-          ctx.lineWidth = 1; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke();
+          ctx.beginPath(); 
+          // O fio neon adapta-se à cor global
+          let rgb = State.particleColor.match(/\d+, *\d+, *\d+/)[0];
+          ctx.strokeStyle = `rgba(${rgb}, ${0.3*(1-dist/100)})`;
+          ctx.lineWidth = 1.5; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke();
         }
       }
     }
@@ -437,6 +465,11 @@ const UI = {
     if (user?.picture) el.innerHTML = `<img src="${user.picture}" class="w-full h-full object-cover" referrerpolicy="no-referrer">`;
   },
 
+  getGreeting: () => {
+    const hr = new Date().getHours();
+    return hr < 12 ? "Bom dia," : hr < 18 ? "Boa tarde," : "Boa noite,";
+  },
+
   setupColorSegments: () => {
     const btns = document.querySelectorAll(".seg-btn");
     const formGlow = $("form-glow"), formIcon = $("form-icon"), formTitle = $("form-title"), btnSave = $("btnSave"), catContainer = $("cat-container");
@@ -451,26 +484,47 @@ const UI = {
         formGlow.className = "glow transition-colors duration-500";
         catContainer.style.display = "block";
         
+        // A MAGIA DA COR: Altera o layout E as partículas de fundo!
         if(color === "green") {
           btnSave.classList.add("btn-green"); formGlow.classList.add("glow-green");
           formIcon.className = "w-5 h-5 text-emerald-400 transition-colors";
           formTitle.innerHTML = `<i data-lucide="arrow-down-circle" class="${formIcon.className}"></i> Lançar Receita`;
+          State.particleColor = "rgba(16,185,129,0.5)"; // Verde
         } else if(color === "red") {
           btnSave.classList.add("btn-red"); formGlow.classList.add("glow-red");
           formIcon.className = "w-5 h-5 text-rose-400 transition-colors";
           formTitle.innerHTML = `<i data-lucide="arrow-up-circle" class="${formIcon.className}"></i> Lançar Despesa`;
+          State.particleColor = "rgba(244,63,94,0.5)"; // Vermelho
         } else if(color === "purple") {
           btnSave.classList.add("btn-purple"); formGlow.classList.add("glow-purple");
           formIcon.className = "w-5 h-5 text-purple-400 transition-colors";
           formTitle.innerHTML = `<i data-lucide="trending-up" class="${formIcon.className}"></i> Realizar Aporte`;
           catContainer.style.display = "none";
+          State.particleColor = "rgba(168,85,247,0.5)"; // Roxo
         }
         UI.refreshIcons();
       });
     });
+  },
+
+  addLocalHistory: (desc, amount, typeColor) => {
+    const list = $("local-history");
+    if($("empty-history")) $("empty-history").remove();
+    
+    const div = document.createElement('div');
+    const color = typeColor === 'in' ? 'text-emerald-400' : typeColor === 'invest' ? 'text-purple-400' : 'text-rose-400';
+    const sinal = typeColor === 'in' ? '+' : '-';
+    
+    div.className = "flex justify-between items-center bg-slate-900/50 p-2 rounded-lg border border-slate-700/50 slide-down";
+    div.innerHTML = `<span class="text-slate-300 truncate pr-2">${desc}</span> <span class="font-bold ${color}">${sinal} R$ ${amount}</span>`;
+    
+    list.prepend(div);
   }
 };
 
+// ============================================================================
+// GRÁFICOS (CHART.JS)
+// ============================================================================
 const Charts = {
   fluxo: null, desempenho: null, crescimento: null,
   
@@ -510,7 +564,7 @@ const Charts = {
 };
 
 // ============================================================================
-// API & BACKEND SYNC
+// API COM O SEU BACKEND
 // ============================================================================
 const API = {
   call: async (action, payload = {}) => {
@@ -541,7 +595,7 @@ const API = {
 };
 
 // ============================================================================
-// LÓGICA DO APP
+// LÓGICA CORE DO APP
 // ============================================================================
 const App = {
   init: () => {
@@ -552,6 +606,8 @@ const App = {
     
     Charts.init();
     App.bindEvents();
+    
+    $("greeting-text").textContent = UI.getGreeting();
 
     const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
     if(saved) { 
@@ -594,7 +650,7 @@ const App = {
       }
       $("splash-status").innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Segurança estabelecida!`; 
     } catch (e) {
-      $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i> Entrando no modo rápido...`; 
+      $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Verificando acesso...`; 
     }
     UI.refreshIcons();
 
@@ -638,6 +694,10 @@ const App = {
       }
     });
     window.scrollTo(0, 0); UI.refreshIcons();
+    
+    // Retorna cor ao padrão ciano se sair da aba de lançamentos para manter coerência visual do App
+    if(view !== 'fluxo') State.particleColor = "rgba(34,211,238,0.5)";
+    else document.querySelector('.seg-btn[aria-pressed="true"]').click(); // Força a cor do segmento atual
   },
 
   bindEvents: () => {
@@ -658,9 +718,7 @@ const App = {
       UI.toast("Nome de preferência guardado!", "success");
     });
 
-    // =========================================================================
-    // SUBMIT LANÇAMENTO COM DATA E HORA EXATA (CONTINUIDADE)
-    // =========================================================================
+    // SUBMIT LANÇAMENTO AVANÇADO COM HORÁRIO E LOCAL HISTORY
     $("txForm").addEventListener("submit", async e => {
       e.preventDefault();
       const btn = $("btnSave");
@@ -675,23 +733,28 @@ const App = {
       if(dataType === 'in') { finalType = 'in'; finalCat = "Receita"; }
       else if(dataType === 'invest') { finalType = 'out'; finalCat = "Investimento"; }
 
-      // Captura o momento exato do lançamento (Garante a perenidade do banco de dados)
       const dateVal = $("date").value;
+      const amountVal = $("amount").value;
+      const descVal = $("desc").value.trim();
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
 
       const payload = {
-        desc: $("desc").value.trim(), amount: parseFloat($("amount").value), 
+        desc: descVal, amount: parseFloat(amountVal), 
         type: finalType, category: finalCat, 
         date: dateVal,
-        timestamp: `${dateVal} ${timeStr}` // A hora exata vai para o banco de dados
+        timestamp: `${dateVal} ${timeStr}`
       };
 
       try {
         await API.call("add_transaction", payload);
-        UI.toast("Gravado com hora exata!", "success");
+        UI.toast("Transação guardada na Nuvem!", "success");
+        
+        // Adiciona à lista da sessão
+        UI.addLocalHistory(descVal, amountVal, dataType);
+
         $("txForm").reset();
-        document.querySelector('.seg-btn[data-color="red"]').click(); // Volta para Despesa
+        document.querySelector('.seg-btn[data-color="red"]').click(); 
         if(State.datePicker) State.datePicker.setDate("today");
         API.syncDashboard();
       } catch(err) { UI.toast(err.message, "error"); } 
