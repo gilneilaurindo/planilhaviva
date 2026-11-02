@@ -2,16 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=0">
-<meta name="theme-color" content="#020617">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>QG Estratégico | PlanilhaViva</title>
-
-<!-- SEO, Partilha & Favicon -->
-<meta name="title" content="PlanilhaViva Admin | Inteligência de Mercado">
-<meta name="description" content="Painel de Controle e Gestão Estratégica.">
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
-<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
 <!-- Bibliotecas -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -29,8 +21,6 @@
   .glass-neon { border: 1px solid rgba(251,191,36,.5); box-shadow: 0 0 35px rgba(251,191,36,.2), inset 0 0 20px rgba(251,191,36,.1); }
 
   .glow-amber { position: absolute; width: 250px; height: 250px; border-radius: 9999px; background: rgba(251,191,36,.15); filter: blur(80px); top: -50px; right: -50px; pointer-events: none; }
-  .glow-red { position: absolute; width: 200px; height: 200px; border-radius: 9999px; background: rgba(244,63,94,.15); filter: blur(80px); bottom: -50px; left: -50px; pointer-events: none; }
-  .glow-blue { position: absolute; width: 200px; height: 200px; border-radius: 9999px; background: rgba(59,130,246,.15); filter: blur(80px); bottom: -50px; right: -50px; pointer-events: none; }
 
   .view { display: none; opacity: 0; }
   .view.active { display: block; animation: viewIn .5s ease-out forwards; }
@@ -38,19 +28,11 @@
 
   .input { width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9); border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc; transition: all .3s; outline: none; }
   .input:focus { border-color: #fbbf24; box-shadow: 0 0 20px rgba(251,191,36,.3); }
-  select.input option { background: #0f172a; }
-  .label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #fbbf24; font-weight: 800; margin-bottom: .4rem; }
-
-  .btn-admin { background: linear-gradient(135deg,#fbbf24,#d97706); color: #020617; font-weight: 900; font-size: .8rem; text-transform: uppercase; border-radius: .75rem; padding: 1rem; width: 100%; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: transform .2s; cursor: pointer; }
-  .btn-admin:active { transform: scale(.96); }
 
   .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
   .toast.show { opacity: 1; transform: scale(1); }
-
   .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-  /* SKELETON LOADING */
+  
   .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 37%, rgba(255,255,255,0.05) 63%); background-size: 400% 100%; animation: skeleton-loading 1.4s ease infinite; border-radius: 4px; color: transparent !important; }
   @keyframes skeleton-loading { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
 </style>
@@ -60,61 +42,41 @@
 <canvas id="bg" aria-hidden="true"></canvas>
 <div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none"></div>
 
-<!-- SPLASH SCREEN -->
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center transition-all duration-500">
-  <div class="relative z-10">
-    <div class="w-32 h-32 rounded-full border-4 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(251,191,36,.5)]" id="splash-avatar">
-      <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-16 h-16 object-contain" alt="Logo">
-    </div>
+  <div class="w-32 h-32 rounded-full border-4 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(251,191,36,.5)]">
+    <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-16 h-16 object-contain" alt="Logo">
   </div>
   <h2 class="text-3xl font-black text-white mt-6">QG <span class="text-amber-400">Admin</span></h2>
-  <p class="text-amber-200/70 text-xs mt-2 font-mono" id="splash-status">Autenticando credenciais estratégicas...</p>
+  <p class="text-amber-200/70 text-xs mt-2 font-mono">Autenticando credenciais...</p>
 </div>
 
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
-
-  <!-- LOGIN ADMIN -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6">
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow-amber"></div>
-      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-amber-400/50 shadow-[0_0_20px_rgba(251,191,36,0.5)]">
-        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-10 h-10 object-contain" alt="Logo">
-      </div>
-      <div>
-        <h1 class="text-3xl font-black text-white">Controle <span class="text-amber-400">Pro</span></h1>
-        <p class="text-xs text-amber-100/70 mt-2 font-medium">Inteligência de Mercado e Gestão.</p>
-      </div>
-      <button id="btnLogin" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-amber-400/50 rounded-full font-bold hover:bg-slate-700 transition relative z-20 cursor-pointer text-sm">
+      <h1 class="text-3xl font-black text-white">Controle <span class="text-amber-400">Pro</span></h1>
+      <button id="btnLogin" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-amber-400/50 rounded-full font-bold hover:bg-slate-700 transition cursor-pointer text-sm">
         <i data-lucide="key" class="w-5 h-5 text-amber-400"></i> Acesso Restrito ao Google
       </button>
     </div>
   </section>
 
-  <!-- PAINEL DE CONTROLE -->
   <section id="view-app" class="hidden flex-1 flex-col w-full">
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between shadow-lg border-b border-amber-500/20">
       <div class="flex items-center gap-3">
-        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800 shrink-0">
-          <i data-lucide="user" class="w-5 h-5 text-amber-400"></i>
-        </div>
+        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-amber-400 flex items-center justify-center bg-slate-800"><i data-lucide="user" class="w-5 h-5 text-amber-400"></i></div>
         <div>
           <span class="text-[9px] text-amber-400 font-black uppercase tracking-widest block mb-0.5">Visão Estratégica</span>
           <h2 class="text-xs font-bold text-white truncate w-32" id="admin-name">Líder</h2>
         </div>
       </div>
-      <div class="flex items-center gap-2">
-        <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition cursor-pointer" title="Sincronizar Dados" onclick="Admin.syncData()">
-          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-        </button>
-        <button class="text-rose-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition cursor-pointer" title="Sair do Sistema" onclick="App.logout()">
-          <i data-lucide="log-out" class="w-4 h-4"></i>
-        </button>
+      <div class="flex gap-2">
+        <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700" onclick="Admin.syncData()"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+        <button class="text-rose-400 bg-slate-800 p-2 rounded-full border border-slate-700" onclick="App.logout()"><i data-lucide="log-out" class="w-4 h-4"></i></button>
       </div>
     </header>
 
     <div class="px-5 pt-6 space-y-6">
-
-      <!-- ABA 1: INTELIGÊNCIA & INDICADORES (KPIs) -->
       <div id="view-dashboard" class="view active space-y-5">
         <div class="grid grid-cols-2 gap-3">
           <div class="glass p-4 rounded-2xl border border-emerald-500/30">
@@ -135,116 +97,61 @@
           </div>
         </div>
 
-        <div class="glass p-4 rounded-2xl border border-purple-500/40 bg-purple-950/20 flex items-center justify-between">
-          <div>
-            <p class="text-[9px] uppercase tracking-widest text-purple-400 font-bold mb-1">A Vencer (5 Dias)</p>
-            <p class="text-xl font-black text-white skeleton w-12 h-7 inline-block" id="kpi-vencendo">0</p>
-          </div>
-          <div class="p-3 bg-purple-900/40 border border-purple-500/50 rounded-xl text-purple-400">
-            <i data-lucide="clock" class="w-6 h-6"></i>
-          </div>
-        </div>
-
         <div class="glass rounded-2xl p-5 border border-blue-500/20">
           <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4"><i data-lucide="activity" class="w-4 h-4"></i> Saúde da Base</h3>
           <div class="w-full h-[180px] relative">
-            <div id="chart-loader" class="absolute inset-0 flex items-center justify-center text-slate-500 text-xs font-bold animate-pulse">Buscando dados da planilha...</div>
+            <div id="chart-loader" class="absolute inset-0 flex items-center justify-center text-slate-500 text-xs font-bold animate-pulse">Carregando dados...</div>
             <canvas id="chartUsage"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- ABA 2: CRM & BLOQUEIOS -->
       <div id="view-crm" class="view space-y-5">
-        <div class="glass rounded-2xl p-5 border border-blue-500/30 relative overflow-hidden">
-          <div class="glow-blue absolute right-0 bottom-0"></div>
-          <div class="flex items-center justify-between mb-4 relative z-10">
+        <div class="glass rounded-2xl p-5 border border-blue-500/30 relative">
+          <div class="flex justify-between mb-4">
             <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Clientes</h3>
-            <div class="flex items-center gap-2">
-              <a id="open-sheet-link" href="#" target="_blank" rel="noopener" class="hidden text-[9px] font-bold uppercase text-amber-400 border border-amber-500/40 rounded-full px-3 py-1.5 hover:bg-amber-500/10 transition flex items-center gap-1">
-                <i data-lucide="external-link" class="w-3 h-3"></i> Planilha
-              </a>
-            </div>
+            <a id="open-sheet-link" href="#" target="_blank" class="hidden text-[9px] font-bold text-amber-400 border border-amber-500/40 rounded-full px-3 py-1 flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> Planilha</a>
           </div>
-
-          <div class="relative z-10 mb-4">
-            <input type="text" class="input text-xs h-10" id="search-user" placeholder="Buscar e-mail ou nome..." onkeyup="Admin.filterUsers()">
-          </div>
-
-          <div class="space-y-3 relative z-10 max-h-[400px] overflow-y-auto pr-2 no-scrollbar" id="real-user-list">
-            <!-- Loading Skeleton -->
-            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full skeleton"></div>
-                <div class="flex-1 space-y-2">
-                  <div class="h-3 w-1/2 skeleton"></div>
-                  <div class="h-2 w-3/4 skeleton"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <input type="text" class="input text-xs h-10 mb-4" id="search-user" placeholder="Buscar..." onkeyup="Admin.filterUsers()">
+          <div class="space-y-3 max-h-[400px] overflow-y-auto pr-2 no-scrollbar" id="real-user-list"></div>
         </div>
       </div>
 
-      <!-- ABA 3: MENSAGENS -->
       <div id="view-comunicacao" class="view space-y-5">
-        <div class="glass rounded-2xl p-5 border border-purple-500/30 relative overflow-hidden">
-          <div class="glow-red absolute left-0 bottom-0 opacity-40"></div>
-          <h3 class="text-xs font-black uppercase text-purple-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="radio" class="w-4 h-4"></i> Central de Campanhas</h3>
-
-          <form class="space-y-4 relative z-10" onsubmit="event.preventDefault(); Admin.sendMessage();">
-            <div>
-              <label class="label text-purple-400">Público</label>
-              <select id="msg-target" class="input text-xs border-purple-500/30">
-                <option value="all">Base Completa (Massivo)</option>
-                <option value="ativos">Apenas Adimplentes (Upsell)</option>
-                <option value="inativos">Apenas Inativos (Recuperar Churn)</option>
-              </select>
-            </div>
-            <div>
-              <label class="label">Título do E-mail</label>
-              <input id="msg-title" type="text" class="input text-xs" placeholder="Ex: Evite o bloqueio da sua conta..." required>
-            </div>
-            <div>
-              <label class="label">Mensagem Interativa</label>
-              <textarea id="msg-body" class="input h-24 resize-none text-xs" placeholder="Conteúdo que irá aparecer no e-mail do usuário..." required></textarea>
-            </div>
-            <button type="submit" class="btn-admin border-none" style="background: linear-gradient(135deg,#a855f7,#7e22ce); color: #fff;" id="btn-disparar">
-              <i data-lucide="send" class="w-4 h-4"></i> Disparar Email
+        <div class="glass rounded-2xl p-5 border border-purple-500/30">
+          <h3 class="text-xs font-black uppercase text-purple-400 flex items-center gap-2 mb-4"><i data-lucide="radio" class="w-4 h-4"></i> Campanhas</h3>
+          <form class="space-y-4" onsubmit="event.preventDefault(); Admin.sendMessage();">
+            <select id="msg-target" class="input text-xs border-purple-500/30">
+              <option value="all">Base Completa (Massivo)</option>
+              <option value="ativos">Adimplentes (Upsell)</option>
+              <option value="inativos">Inativos (Recuperar Churn)</option>
+            </select>
+            <input id="msg-title" type="text" class="input text-xs" placeholder="Assunto do email" required>
+            <textarea id="msg-body" class="input h-24 text-xs" placeholder="Conteúdo..." required></textarea>
+            <button type="submit" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2" id="btn-disparar">
+              <i data-lucide="send" class="w-4 h-4"></i> Disparar
             </button>
           </form>
         </div>
       </div>
-
     </div>
   </section>
 </main>
 
-<!-- BOTTOM NAVIGATION ADMIN -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
   <div class="glass rounded-2xl relative grid grid-cols-3 p-1 shadow-2xl border border-slate-700">
-    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-amber-500/50 w-[calc((100%-0.5rem)/3)] transition-transform duration-300 ease-out shadow-[0_0_15px_rgba(251,191,36,.2)]"></span>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white cursor-pointer" data-view="dashboard">
-      <i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Métricas</span>
-    </button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 cursor-pointer" data-view="crm">
-      <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Clientes</span>
-    </button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 cursor-pointer" data-view="comunicacao">
-      <i data-lucide="radio" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase">Disparos</span>
-    </button>
+    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-amber-500/50 w-[calc((100%-0.5rem)/3)] transition-transform duration-300"></span>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="dashboard"><i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold">Métricas</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="crm"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold">Clientes</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="comunicacao"><i data-lucide="radio" class="w-4 h-4"></i><span class="text-[9px] font-bold">Disparos</span></button>
   </div>
 </nav>
 
-<!-- ============================================================================
-    JAVASCRIPT (NÚCLEO DO SISTEMA E GOOGLE LOGIN)
-============================================================================ -->
 <script>
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  // ⚠️ ATENÇÃO: USE AQUI A URL DO SEU BACKEND ADMIN!
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwfbpENkvp0yHb7IIFeiNYrrswzTyploeg5ESTaqxfzhWaKILTW6tLZnR13uBqxFQk0/exec",
-  STORAGE_KEY: "planilhaviva_admin_auth",
+  // ⚠️ ATENÇÃO: COLOQUE AQUI A SUA URL DA NOVA IMPLANTAÇÃO DO APPS SCRIPT
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycby5J7e17lGshotOUgwq-8YpJd7UMZFQ5qw0cnuEuK-O4sWpHHjnpXnEWPJeWTB5OF9Q/exec",
   ADMIN_EMAILS: ["gilneycriative@gmail.com", "samueldanilo11@gmail.com", "gilneilaurindo@gmail.com"]
 };
 
@@ -253,47 +160,32 @@ const $ = id => document.getElementById(id);
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 let chartInstance = null;
 
-// FUNDO ANIMADO
 function initParticles() {
   const canvas = $("bg"); if(!canvas) return;
   const ctx = canvas.getContext("2d"); let p = [];
   const rz = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; p = Array.from({length: 40}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.5, vy: (Math.random()-.5)*.5, r: Math.random()*2+.5})); };
-  const an = () => {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for(let i=0; i<p.length; i++) {
-      p[i].x += p[i].vx; p[i].y += p[i].vy;
-      if(p[i].x<0||p[i].x>canvas.width) p[i].vx*=-1; if(p[i].y<0||p[i].y>canvas.height) p[i].vy*=-1;
-      ctx.fillStyle = "rgba(251,191,36,0.3)"; ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
-      for(let j=i+1; j<p.length; j++){
-        let dx = p[i].x - p[j].x, dy = p[i].y - p[j].y; let dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 120) { ctx.beginPath(); ctx.strokeStyle = `rgba(251,191,36,${0.2*(1-dist/120)})`; ctx.lineWidth = 1; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke(); }
-      }
-    }
-    requestAnimationFrame(an);
-  };
+  const an = () => { ctx.clearRect(0,0,canvas.width,canvas.height); p.forEach(i=>{ i.x+=i.vx; i.y+=i.vy; if(i.x<0||i.x>canvas.width)i.vx*=-1; if(i.y<0||i.y>canvas.height)i.vy*=-1; ctx.fillStyle="rgba(251,191,36,0.3)"; ctx.beginPath(); ctx.arc(i.x,i.y,i.r,0,Math.PI*2); ctx.fill(); }); requestAnimationFrame(an); };
   window.addEventListener("resize", rz); rz(); an();
 }
 
 const UI = {
-  refreshIcons: () => { if (window.lucide) lucide.createIcons(); },
   toast: (msg, type = "success") => {
     const icon = type === "error" ? "alert-triangle" : "check-circle";
     const color = type === "error" ? "text-rose-400" : "text-emerald-400";
-    const t = document.createElement("div");
-    t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-slate-700 z-[9999]";
-    t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 shrink-0 ${color}"></i><span>${msg}</span>`;
-    $("toasts").append(t); UI.refreshIcons();
+    const t = document.createElement("div"); t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white z-[9999]";
+    t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 ${color}"></i><span>${msg}</span>`;
+    $("toasts").append(t); if(window.lucide) lucide.createIcons();
     requestAnimationFrame(() => t.classList.add("show"));
-    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 4000);
+    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3000);
   }
 };
 
 const API = {
   call: async (action, payload = {}) => {
-    if (!State.user || !State.user.email) throw new Error("Não autenticado.");
+    if (!State.user) throw new Error("Acesso não validado.");
     const res = await fetch(CONFIG.SCRIPT_URL, {
       method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: action, email: State.user.email, name: State.user.name, ...payload })
+      body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
     });
     const json = await res.json();
     if (json.status !== "success") throw new Error(json.message);
@@ -307,53 +199,44 @@ const Admin = {
       UI.toast("Buscando dados...", "success");
       $("chart-loader").classList.remove("hidden");
       
-      // Chama a rota "get_admin_data" do backend mais recente
-      const res = await API.call("get_admin_data"); 
-      const data = res.data;
+      const res = await API.call("get_admin_data");
+      const { kpis, usuarios, planilhaUrl } = res.data;
       
-      if(data.planilhaUrl && $("open-sheet-link")) {
-        $("open-sheet-link").href = data.planilhaUrl;
+      if(planilhaUrl && $("open-sheet-link")) {
+        $("open-sheet-link").href = planilhaUrl;
         $("open-sheet-link").classList.remove("hidden");
       }
 
-      $("kpi-mrr").classList.remove("skeleton"); $("kpi-mrr").textContent = brl.format(data.kpis.mrr || 0);
-      $("kpi-ativos").classList.remove("skeleton"); $("kpi-ativos").textContent = data.kpis.ativos || 0;
-      $("kpi-inativos").classList.remove("skeleton"); $("kpi-inativos").textContent = data.kpis.inativos || 0;
-      $("kpi-total").classList.remove("skeleton"); $("kpi-total").textContent = data.kpis.totalBase || 0;
-      $("kpi-vencendo").classList.remove("skeleton"); $("kpi-vencendo").textContent = data.kpis.vencendoEmBreve || 0;
+      $("kpi-mrr").classList.remove("skeleton"); $("kpi-mrr").textContent = brl.format(kpis.mrr || 0);
+      $("kpi-ativos").classList.remove("skeleton"); $("kpi-ativos").textContent = kpis.ativos || 0;
+      $("kpi-inativos").classList.remove("skeleton"); $("kpi-inativos").textContent = kpis.inativos || 0;
+      $("kpi-total").classList.remove("skeleton"); $("kpi-total").textContent = kpis.totalBase || 0;
+      $("kpi-vencendo").classList.remove("skeleton"); $("kpi-vencendo").textContent = kpis.vencendoEmBreve || 0;
 
-      // Renderiza Gráfico
       $("chart-loader").classList.add("hidden");
       if(chartInstance) chartInstance.destroy();
-      Chart.defaults.color = '#94a3b8';
       chartInstance = new Chart($("chartUsage"), {
         type: 'doughnut',
-        data: { labels: ['Ativos', 'Inativos'], datasets: [{ data: [data.kpis.ativos, data.kpis.inativos], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] },
+        data: { labels: ['Ativos', 'Inativos'], datasets: [{ data: [kpis.ativos, kpis.inativos], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
       });
 
-      // Renderiza Lista CRM
       const list = $("real-user-list");
       list.innerHTML = "";
-      if(!data.usuarios || data.usuarios.length === 0) {
+      if(!usuarios || usuarios.length === 0) {
         list.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum cliente cadastrado.</p>`;
       } else {
-        data.usuarios.forEach(u => {
+        usuarios.forEach(u => {
           const isAtivo = u.status === "Ativo";
           const corBadge = isAtivo ? "bg-emerald-900/40 text-emerald-400 border-emerald-500/50" : "bg-rose-900/40 text-rose-400 border-rose-500/50";
-          
           list.innerHTML += `
             <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 user-card" data-search="${u.email.toLowerCase()}">
               <div class="flex justify-between items-start">
                 <div>
-                  <p class="text-xs font-bold text-white">${u.nome || "Cliente"}</p>
+                  <p class="text-xs font-bold text-white">${u.nome}</p>
                   <p class="text-[10px] text-slate-400 font-mono">${u.email}</p>
                 </div>
                 <span class="border px-2 py-0.5 rounded text-[9px] font-bold uppercase ${corBadge}">${u.status}</span>
-              </div>
-              <div class="grid grid-cols-2 gap-2 text-[9px] text-slate-400">
-                <div class="bg-slate-800 p-1.5 rounded truncate">Acessos: <b class="text-amber-300">${u.acessos || 0}</b></div>
-                <div class="bg-slate-800 p-1.5 rounded truncate">Plano: R$ ${u.plano || 0}</div>
               </div>
               <button class="border py-1.5 rounded text-[10px] font-bold transition ${isAtivo ? 'bg-rose-900/30 text-rose-400 border-rose-500/50' : 'bg-emerald-900/30 text-emerald-400 border-emerald-500/50'}" onclick="Admin.toggleStatus('${u.email}', '${isAtivo ? 'Inativo' : 'Ativo'}')">
                 ${isAtivo ? 'Suspender Acesso' : 'Liberar Acesso'}
@@ -362,60 +245,41 @@ const Admin = {
           `;
         });
       }
-    } catch(e) {
-      UI.toast(e.message || "Erro de sincronização", "error");
-    }
+    } catch(e) { UI.toast(e.message, "error"); }
   },
 
   toggleStatus: async (email, newStatus) => {
     try {
       await API.call("toggle_user_status", { targetEmail: email, status: newStatus });
-      UI.toast("Status atualizado!", "success");
-      Admin.syncData();
+      UI.toast("Status atualizado!", "success"); Admin.syncData();
     } catch(e) { UI.toast("Falha ao atualizar.", "error"); }
   },
 
   filterUsers: () => {
     const term = $("search-user").value.toLowerCase();
-    document.querySelectorAll(".user-card").forEach(c => {
-      c.style.display = c.dataset.search.includes(term) ? "flex" : "none";
-    });
+    document.querySelectorAll(".user-card").forEach(c => c.style.display = c.dataset.search.includes(term) ? "flex" : "none");
   },
 
   sendMessage: async () => {
     const btn = $("btn-disparar");
-    const html = btn.innerHTML;
     btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Disparando...`;
-    
     try {
-      await API.call("send_message", {
-        target: $("msg-target").value,
-        messageData: { title: $("msg-title").value, body: $("msg-body").value }
-      });
+      await API.call("send_message", { target: $("msg-target").value, messageData: { title: $("msg-title").value, body: $("msg-body").value }});
       UI.toast("Campanha enviada com sucesso!", "success");
       $("msg-title").value = ""; $("msg-body").value = "";
-    } catch(e) {
-      UI.toast("Erro ao enviar campanha.", "error");
-    } finally {
-      btn.innerHTML = html; UI.refreshIcons();
-    }
+    } catch(e) { UI.toast("Erro ao disparar campanha.", "error"); }
+    finally { btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Disparar`; if(window.lucide) lucide.createIcons(); }
   }
 };
 
 const App = {
   init: () => {
-    initParticles(); UI.refreshIcons();
+    initParticles(); if(window.lucide) lucide.createIcons();
     document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
 
-    const savedUser = localStorage.getItem(CONFIG.STORAGE_KEY);
-    if (savedUser) {
-      try {
-        State.user = JSON.parse(savedUser);
-        App.startSession();
-      } catch(e) { localStorage.removeItem(CONFIG.STORAGE_KEY); App.setupGoogleLogin(); }
-    } else {
-      App.setupGoogleLogin();
-    }
+    const savedUser = localStorage.getItem("planilhaviva_admin_auth");
+    if (savedUser) { State.user = JSON.parse(savedUser); App.startSession(); }
+    else App.setupGoogleLogin();
   },
 
   setupGoogleLogin: () => {
@@ -427,15 +291,11 @@ const App = {
         try {
           const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
           const p = await res.json();
-          
-          if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === p.email.toLowerCase())) {
-            return UI.toast("Acesso Negado: Sem credenciais de Líder.", "error");
-          }
-
+          if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === p.email.toLowerCase())) return UI.toast("Acesso Negado.", "error");
           State.user = { name: p.name, email: p.email, picture: p.picture };
-          localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State.user));
+          localStorage.setItem("planilhaviva_admin_auth", JSON.stringify(State.user));
           App.startSession();
-        } catch(err) { UI.toast("Erro ao validar conta.", "error"); }
+        } catch(err) { UI.toast("Erro na validação.", "error"); }
       }
     });
     $("btnLogin").addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
@@ -445,28 +305,12 @@ const App = {
     $("view-auth").classList.replace("flex", "hidden");
     const splash = $("welcome-splash");
     splash.classList.remove("hidden"); splash.classList.add("flex");
-    
     if(State.user.picture && $("avatar")) $("avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
     $("admin-name").textContent = State.user.name ? State.user.name.split(" ")[0] : "Líder";
-
-    setTimeout(() => {
-      $("splash-status").textContent = "Acesso autorizado!";
-      setTimeout(() => {
-        splash.classList.add("opacity-0");
-        setTimeout(() => { 
-          splash.classList.replace("flex", "hidden"); 
-          $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex");
-          $("bottom-nav").classList.remove("hidden");
-          App.nav("dashboard"); Admin.syncData();
-        }, 500);
-      }, 500);
-    }, 1000);
+    setTimeout(() => { splash.classList.add("opacity-0"); setTimeout(() => { splash.classList.replace("flex", "hidden"); $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex"); $("bottom-nav").classList.remove("hidden"); App.nav("dashboard"); Admin.syncData(); }, 500); }, 1000);
   },
 
-  logout: () => {
-    localStorage.removeItem(CONFIG.STORAGE_KEY);
-    location.reload();
-  },
+  logout: () => { localStorage.removeItem("planilhaviva_admin_auth"); location.reload(); },
 
   nav: (view) => {
     ["dashboard", "crm", "comunicacao"].forEach((v, i) => {
@@ -474,12 +318,9 @@ const App = {
       $("view-" + v).classList.toggle("active", act);
       $("view-" + v).classList.toggle("hidden", !act);
       const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
-      if(b) {
-        b.classList.toggle("text-white", act); b.classList.toggle("text-slate-400", !act);
-        if (act) $("nav-pill").style.transform = `translateX(${i * 100}%)`;
-      }
+      if(b) { b.classList.toggle("text-white", act); b.classList.toggle("text-slate-400", !act); if (act) $("nav-pill").style.transform = `translateX(${i * 100}%)`; }
     });
-    window.scrollTo(0, 0); UI.refreshIcons();
+    window.scrollTo(0, 0); if(window.lucide) lucide.createIcons();
   }
 };
 
