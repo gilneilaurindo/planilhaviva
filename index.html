@@ -129,7 +129,7 @@
 
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
 
-  <!-- ==================== TELA DE LOGIN (COM CRÉDITOS E HONRA) ==================== -->
+  <!-- ==================== TELA DE LOGIN (COM CRÉDITOS) ==================== -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 relative">
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_40px_rgba(34,211,238,.1)]">
       <div class="glow"></div>
@@ -373,7 +373,7 @@
                 <div class="flex items-center gap-3 mb-2">
                   <img src="https://i.pravatar.cc/150?img=15" alt="Roberto" class="w-10 h-10 rounded-full border border-yellow-400">
                   <div>
-                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
+                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-slate-600"></i></div>
                     <p class="text-[10px] text-slate-400 font-bold mt-0.5">Roberto S., Designer</p>
                   </div>
                 </div>
@@ -443,7 +443,7 @@
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwfbpENkvp0yHb7IIFeiNYrrswzTyploeg5ESTaqxfzhWaKILTW6tLZnR13uBqxFQk0/exec",
-  STORAGE_KEY: "planilhaviva_user_v6",
+  STORAGE_KEY: "planilhaviva_user_v7",
   CATEGORIES: ["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"] 
 };
 
@@ -455,7 +455,9 @@ const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" 
 // EFEITOS LUMINOSOS E CONEXÕES REATIVAS
 // ============================================================================
 function initParticles() {
-  const canvas = $("bg"); const ctx = canvas.getContext("2d"); let p = [];
+  const canvas = $("bg"); 
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d"); let p = [];
   const rz = () => { 
     canvas.width = window.innerWidth; canvas.height = window.innerHeight; 
     p = Array.from({length: Math.min(60, Math.floor(canvas.width*canvas.height/9000))}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.7, vy: (Math.random()-.5)*.7, r: Math.random()*2+.5})); 
@@ -474,7 +476,8 @@ function initParticles() {
         let dist = Math.sqrt(dx*dx + dy*dy);
         if(dist < 100) {
           ctx.beginPath(); 
-          let rgb = State.particleColor.match(/\d+, *\d+, *\d+/)[0];
+          let rgbMatch = State.particleColor.match(/\d+, *\d+, *\d+/);
+          let rgb = rgbMatch ? rgbMatch[0] : "34, 211, 238"; 
           ctx.strokeStyle = `rgba(${rgb}, ${0.3*(1-dist/100)})`;
           ctx.lineWidth = 1.5; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke();
         }
@@ -492,12 +495,12 @@ const TimeManager = {
   startClock: () => {
     setInterval(() => {
       const now = new Date();
-      $("header-time").textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      if($("header-time")) $("header-time").textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       
       const options = { weekday: 'short', day: 'numeric', month: 'short' };
-      $("header-date").textContent = now.toLocaleDateString('pt-BR', options).toUpperCase();
+      if($("header-date")) $("header-date").textContent = now.toLocaleDateString('pt-BR', options).toUpperCase();
       
-      $("resumo-mes-nome").textContent = "FLUXO DE " + now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
+      if($("resumo-mes-nome")) $("resumo-mes-nome").textContent = "FLUXO DE " + now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
     }, 1000);
   },
   
@@ -519,6 +522,7 @@ const UI = {
   refreshIcons: () => { if (window.lucide) lucide.createIcons(); },
   
   toast: (msg, type = "success") => {
+    if(!$("toasts")) return;
     const icon = type === "error" ? "alert-triangle" : "check-circle";
     const color = type === "error" ? "text-rose-400" : "text-cyan-400";
     const t = document.createElement("div");
@@ -530,7 +534,10 @@ const UI = {
   },
 
   setAvatar: (el, user) => {
-    if (user?.picture) el.innerHTML = `<img src="${user.picture}" class="w-full h-full object-cover" referrerpolicy="no-referrer">`;
+    if(el) {
+        if (user?.picture) el.innerHTML = `<img src="${user.picture}" class="w-full h-full object-cover" referrerpolicy="no-referrer">`;
+        else { el.innerHTML = `<i data-lucide="user" class="w-1/2 h-1/2 text-slate-400"></i>`; UI.refreshIcons(); }
+    }
   },
 
   getGreeting: () => {
@@ -547,27 +554,30 @@ const UI = {
         btns.forEach(b => b.setAttribute("aria-pressed", "false"));
         btn.setAttribute("aria-pressed", "true");
         
-        const color = btn.dataset.color, type = btn.dataset.type;
-        btnSave.className = "btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300";
-        formGlow.className = "glow transition-colors duration-500";
-        catContainer.style.display = "block";
+        const color = btn.dataset.color;
+        if(btnSave) btnSave.className = "btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300";
+        if(formGlow) formGlow.className = "glow transition-colors duration-500";
+        if(catContainer) catContainer.style.display = "block";
         
         if(color === "green") {
-          btnSave.classList.add("btn-green"); formGlow.classList.add("glow-green");
-          formIcon.className = "w-5 h-5 text-emerald-400 transition-colors";
-          formTitle.innerHTML = `<i data-lucide="arrow-down-circle" class="${formIcon.className}"></i> Lançar Receita`;
-          State.particleColor = "rgba(16,185,129,0.5)"; // Verde
+          if(btnSave) btnSave.classList.add("btn-green"); 
+          if(formGlow) formGlow.classList.add("glow-green");
+          if(formIcon) formIcon.className = "w-5 h-5 text-emerald-400 transition-colors";
+          if(formTitle && formIcon) formTitle.innerHTML = `<i data-lucide="arrow-down-circle" class="${formIcon.className}"></i> Lançar Receita`;
+          State.particleColor = "rgba(16,185,129,0.5)"; 
         } else if(color === "red") {
-          btnSave.classList.add("btn-red"); formGlow.classList.add("glow-red");
-          formIcon.className = "w-5 h-5 text-rose-400 transition-colors";
-          formTitle.innerHTML = `<i data-lucide="arrow-up-circle" class="${formIcon.className}"></i> Lançar Despesa`;
-          State.particleColor = "rgba(244,63,94,0.5)"; // Vermelho
+          if(btnSave) btnSave.classList.add("btn-red"); 
+          if(formGlow) formGlow.classList.add("glow-red");
+          if(formIcon) formIcon.className = "w-5 h-5 text-rose-400 transition-colors";
+          if(formTitle && formIcon) formTitle.innerHTML = `<i data-lucide="arrow-up-circle" class="${formIcon.className}"></i> Lançar Despesa`;
+          State.particleColor = "rgba(244,63,94,0.5)"; 
         } else if(color === "purple") {
-          btnSave.classList.add("btn-purple"); formGlow.classList.add("glow-purple");
-          formIcon.className = "w-5 h-5 text-purple-400 transition-colors";
-          formTitle.innerHTML = `<i data-lucide="trending-up" class="${formIcon.className}"></i> Realizar Aporte`;
-          catContainer.style.display = "none";
-          State.particleColor = "rgba(168,85,247,0.5)"; // Roxo
+          if(btnSave) btnSave.classList.add("btn-purple"); 
+          if(formGlow) formGlow.classList.add("glow-purple");
+          if(formIcon) formIcon.className = "w-5 h-5 text-purple-400 transition-colors";
+          if(formTitle && formIcon) formTitle.innerHTML = `<i data-lucide="trending-up" class="${formIcon.className}"></i> Realizar Aporte`;
+          if(catContainer) catContainer.style.display = "none";
+          State.particleColor = "rgba(168,85,247,0.5)"; 
         }
         UI.refreshIcons();
       });
@@ -576,6 +586,7 @@ const UI = {
 
   addLocalHistory: (desc, amount, typeColor) => {
     const list = $("local-history");
+    if(!list) return;
     if($("empty-history")) $("empty-history").remove();
     
     const div = document.createElement('div');
@@ -590,7 +601,7 @@ const UI = {
 };
 
 // ============================================================================
-// GRÁFICOS (CHART.JS) - COM LABELS DINÂMICOS NO TEMPO
+// GRÁFICOS (CHART.JS)
 // ============================================================================
 const Charts = {
   fluxo: null, desempenho: null, crescimento: null,
@@ -599,35 +610,45 @@ const Charts = {
     Chart.defaults.color = '#94a3b8'; Chart.defaults.font.family = 'system-ui';
     const dynamicLabels = TimeManager.getDynamicMonthLabels();
     
-    Charts.fluxo = new Chart($("chartFluxo"), {
-      type: 'doughnut',
-      data: { labels: ['Receitas', 'Despesas'], datasets: [{ data: [1, 1], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, animation: { animateScale: true } }
-    });
+    if($("chartFluxo")) {
+        Charts.fluxo = new Chart($("chartFluxo"), {
+          type: 'doughnut',
+          data: { labels: ['Receitas', 'Despesas'], datasets: [{ data: [1, 1], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, animation: { animateScale: true } }
+        });
+    }
 
-    Charts.desempenho = new Chart($("chartDesempenho"), {
-      type: 'bar',
-      data: { labels: dynamicLabels, datasets: [
-        { label: 'Receitas', data: [0,0,0,0], backgroundColor: '#10b981', borderRadius: 4 },
-        { label: 'Despesas', data: [0,0,0,0], backgroundColor: '#f43f5e', borderRadius: 4 }
-      ]},
-      options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
-    });
+    if($("chartDesempenho")) {
+        Charts.desempenho = new Chart($("chartDesempenho"), {
+          type: 'bar',
+          data: { labels: dynamicLabels, datasets: [
+            { label: 'Receitas', data: [0,0,0,0], backgroundColor: '#10b981', borderRadius: 4 },
+            { label: 'Despesas', data: [0,0,0,0], backgroundColor: '#f43f5e', borderRadius: 4 }
+          ]},
+          options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+        });
+    }
 
-    Charts.crescimento = new Chart($("chartCrescimento"), {
-      type: 'line',
-      data: { labels: dynamicLabels, datasets: [{ label: 'Patrimônio', data: [0,0,0,0], borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] },
-      options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { color: '#334155' } } }, plugins: { legend: { display: false } }, elements: { point: { radius: 0 } } }
-    });
+    if($("chartCrescimento")) {
+        Charts.crescimento = new Chart($("chartCrescimento"), {
+          type: 'line',
+          data: { labels: dynamicLabels, datasets: [{ label: 'Patrimônio', data: [0,0,0,0], borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] },
+          options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { color: '#334155' } } }, plugins: { legend: { display: false } }, elements: { point: { radius: 0 } } }
+        });
+    }
   },
 
   update: (inVal, outVal, invVal) => {
-    Charts.fluxo.data.datasets[0].data = [inVal || 1, outVal || 1]; Charts.fluxo.update();
-    Charts.desempenho.data.datasets[0].data = [inVal*0.8, inVal*0.9, inVal*1.1, inVal];
-    Charts.desempenho.data.datasets[1].data = [outVal*1.1, outVal*0.8, outVal*0.9, outVal];
-    Charts.desempenho.update();
-    Charts.crescimento.data.datasets[0].data = [invVal*0.5, invVal*0.7, invVal*0.85, invVal];
-    Charts.crescimento.update();
+    if(Charts.fluxo) { Charts.fluxo.data.datasets[0].data = [inVal || 1, outVal || 1]; Charts.fluxo.update(); }
+    if(Charts.desempenho) {
+        Charts.desempenho.data.datasets[0].data = [inVal*0.8, inVal*0.9, inVal*1.1, inVal];
+        Charts.desempenho.data.datasets[1].data = [outVal*1.1, outVal*0.8, outVal*0.9, outVal];
+        Charts.desempenho.update();
+    }
+    if(Charts.crescimento) {
+        Charts.crescimento.data.datasets[0].data = [invVal*0.5, invVal*0.7, invVal*0.85, invVal];
+        Charts.crescimento.update();
+    }
   }
 };
 
@@ -636,6 +657,7 @@ const Charts = {
 // ============================================================================
 const API = {
   call: async (action, payload = {}) => {
+    if (!State.user || !State.user.email) throw new Error("Usuário não logado.");
     const res = await fetch(CONFIG.SCRIPT_URL, {
       method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
@@ -650,10 +672,10 @@ const API = {
       const data = await API.call("get_dashboard");
       const { totalInvestido, totalSaidas, totalEntradas, saldoAtual } = data.data;
 
-      $("saldo").textContent = brl.format(saldoAtual);
-      $("txt-in").textContent = brl.format(totalEntradas);
-      $("txt-out").textContent = brl.format(totalSaidas);
-      $("invest-total").textContent = brl.format(totalInvestido);
+      if($("saldo")) $("saldo").textContent = brl.format(saldoAtual);
+      if($("txt-in")) $("txt-in").textContent = brl.format(totalEntradas);
+      if($("txt-out")) $("txt-out").textContent = brl.format(totalSaidas);
+      if($("invest-total")) $("invest-total").textContent = brl.format(totalInvestido);
       
       Charts.update(totalEntradas, totalSaidas, totalInvestido);
     } catch (e) {
@@ -663,7 +685,7 @@ const API = {
 };
 
 // ============================================================================
-// LÓGICA CORE DO APP (TRY CATCHES DE BLINDAGEM)
+// LÓGICA CORE DO APP COM TRATAMENTO DE ERROS BLINDADO
 // ============================================================================
 const App = {
   init: () => {
@@ -671,22 +693,38 @@ const App = {
       initParticles();
       TimeManager.startClock();
       UI.setupColorSegments();
-      CONFIG.CATEGORIES.forEach(c => $("category").append(new Option(c, c)));
-      State.datePicker = flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
+      
+      const catSelect = $("category");
+      if(catSelect) {
+          CONFIG.CATEGORIES.forEach(c => catSelect.append(new Option(c, c)));
+      }
+      
+      if($("date")) {
+          State.datePicker = flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
+      }
       
       Charts.init();
       App.bindEvents();
       
-      $("greeting-text").textContent = UI.getGreeting();
+      if($("greeting-text")) $("greeting-text").textContent = UI.getGreeting();
 
       const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
       if(saved) { 
         State.user = JSON.parse(saved);
-        State.prefName = localStorage.getItem("pv_pref_name_" + State.user.email) || (State.user.name || "Usuário").split(" ")[0];
+        State.prefName = localStorage.getItem("pv_pref_name_" + State.user.email) || (State.user.name ? State.user.name.split(" ")[0] : "Investidor");
         App.startSession(); 
       }
-      else { App.setupGoogleLogin(); }
-    } catch(e) { console.error("Erro no INIT:", e); }
+      else { 
+          if($("view-auth")) {
+             $("view-auth").classList.remove("hidden");
+             $("view-auth").classList.add("flex");
+          }
+          if($("view-app")) $("view-app").classList.replace("flex", "hidden");
+          App.setupGoogleLogin(); 
+      }
+    } catch (error) {
+        console.error("Initialization error:", error);
+    }
   },
 
   setupGoogleLogin: () => {
@@ -696,147 +734,200 @@ const App = {
       callback: async (t) => {
         if(t.error) return UI.toast("Erro no Login.", "error");
         try {
-          const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
-          const p = await res.json();
-          State.user = { name: p.name, email: p.email, picture: p.picture };
-          State.prefName = (p.given_name || p.name || "Usuário").split(" ")[0];
-          localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State.user));
-          App.startSession();
-        } catch(e) { UI.toast("Falha ao ler perfil do Google.", "error"); }
+            const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
+            const p = await res.json();
+            State.user = { name: p.name, email: p.email, picture: p.picture };
+            State.prefName = p.given_name || (p.name ? p.name.split(" ")[0] : "Investidor");
+            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State.user));
+            App.startSession();
+        } catch (e) {
+            UI.toast("Erro ao processar dados de login.", "error");
+            console.error(e);
+        }
       }
     });
-    $("btnGoogleLogin").addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
+    const btnGoogleLogin = $("btnGoogleLogin");
+    if(btnGoogleLogin) {
+        btnGoogleLogin.addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
+    }
   },
 
   startSession: async () => {
     try {
-      $("view-auth").classList.add("hidden");
-      UI.setAvatar($("splash-avatar"), State.user);
-      $("splash-name").textContent = State.prefName + "!";
-      $("welcome-splash").classList.remove("hidden", "hide-splash"); 
-      $("welcome-splash").classList.add("flex");
-    } catch(e) { console.error("Erro visual Splash:", e); }
-    
-    try {
-      const savedUrl = localStorage.getItem(`pv_url_${State.user.email}`);
-      if (!savedUrl) {
-        const res = await API.call("init_user");
-        localStorage.setItem(`pv_url_${State.user.email}`, res.sheetUrl);
-      }
-      $("splash-status").innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Segurança estabelecida!`; 
-    } catch (e) {
-      $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Entrando no modo rápido...`; 
-    }
-    UI.refreshIcons();
+        if($("view-auth")) $("view-auth").classList.replace("flex", "hidden");
+        UI.setAvatar($("splash-avatar"), State.user);
+        if($("splash-name")) $("splash-name").textContent = State.prefName + "!";
+        
+        const splash = $("welcome-splash");
+        if(splash) {
+            splash.classList.remove("hidden", "hide-splash"); 
+            splash.classList.add("flex");
+        }
+        
+        try {
+          const savedUrl = localStorage.getItem(`pv_url_${State.user.email}`);
+          if (!savedUrl) {
+            const res = await API.call("init_user");
+            localStorage.setItem(`pv_url_${State.user.email}`, res.sheetUrl);
+          }
+          if($("splash-status")) $("splash-status").innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Segurança estabelecida!`; 
+        } catch (e) {
+          if($("splash-status")) $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Entrando no modo rápido...`; 
+          console.error("API call failed during session start:", e);
+        }
+        UI.refreshIcons();
 
-    setTimeout(() => {
-      try {
-        $("welcome-splash").classList.add("hide-splash");
-        setTimeout(() => { 
-          $("welcome-splash").classList.remove("flex", "hide-splash"); 
-          $("welcome-splash").classList.add("hidden"); 
-          App.enter(); 
-        }, 600);
-      } catch(e) { console.error("Erro saída Splash:", e); App.enter(); }
-    }, 1000);
+        setTimeout(() => {
+          if(splash) splash.classList.add("hide-splash");
+          setTimeout(() => { 
+              if(splash) {
+                  splash.classList.replace("flex", "hidden"); 
+              }
+              App.enter(); 
+          }, 600);
+        }, 1000);
+    } catch(e) {
+        console.error("Session start error:", e);
+        App.enter(); // Force entry if splash fails
+    }
   },
 
   enter: () => {
     try {
-      $("user-name").textContent = State.prefName;
-      $("pref-name").value = State.prefName;
-      $("cfg-email").textContent = State.user.email;
-      
-      UI.setAvatar($("avatar"), State.user);
-      UI.setAvatar($("cfg-avatar"), State.user);
-      
-      const url = localStorage.getItem(`pv_url_${State.user.email}`);
-      if(url) {
-        const btn = $("link-planilha");
-        btn.href = url;
-        btn.classList.remove("pointer-events-none", "opacity-50");
-      }
+        if($("user-name")) $("user-name").textContent = State.prefName;
+        if($("pref-name")) $("pref-name").value = State.prefName;
+        if($("cfg-email")) $("cfg-email").textContent = State.user.email;
+        
+        UI.setAvatar($("avatar"), State.user);
+        UI.setAvatar($("cfg-avatar"), State.user);
+        
+        const url = localStorage.getItem(`pv_url_${State.user.email}`);
+        if(url) {
+          const btn = $("link-planilha");
+          if(btn) {
+              btn.href = url;
+              btn.classList.remove("pointer-events-none", "opacity-50");
+          }
+        }
 
-      $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex", "flex-col", "w-full");
-      $("bottom-nav").classList.remove("hidden");
-      
-      App.nav("fluxo");
-      API.syncDashboard();
-    } catch(e) { console.error("Erro Enter:", e); UI.toast("Carregamento concluído com ressalvas.", "warning"); }
+        if($("view-app")) {
+            $("view-app").classList.remove("hidden"); 
+            $("view-app").classList.add("flex");
+        }
+        if($("bottom-nav")) $("bottom-nav").classList.remove("hidden");
+        
+        App.nav("fluxo");
+        API.syncDashboard();
+    } catch(e) {
+        console.error("Enter app error:", e);
+    }
   },
 
   nav: (view) => {
-    try {
-      ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
-        const act = v === view;
-        $("view-" + v).classList.toggle("active", act);
-        const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
-        b.classList.toggle("text-white", act); b.classList.toggle("text-slate-400", !act);
-        if (act) {
-          $("nav-pill").style.transform = `translateX(${i * 100}%)`;
-          b.classList.remove("icon-pop"); void b.offsetWidth; b.classList.add("icon-pop");
-        }
-      });
-      window.scrollTo(0, 0); UI.refreshIcons();
-      if(view !== 'fluxo') State.particleColor = "rgba(34,211,238,0.5)";
-      else document.querySelector('.seg-btn[aria-pressed="true"]').click();
-    } catch(e) { console.error("Erro na Navegação:", e); }
+    ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
+      const act = v === view;
+      const el = $("view-" + v);
+      if(el) el.classList.toggle("active", act);
+      
+      const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
+      if(b) {
+          b.classList.toggle("text-white", act); 
+          b.classList.toggle("text-slate-400", !act);
+          if (act) {
+            if($("nav-pill")) $("nav-pill").style.transform = `translateX(${i * 100}%)`;
+            b.classList.remove("icon-pop"); void b.offsetWidth; b.classList.add("icon-pop");
+          }
+      }
+    });
+    window.scrollTo(0, 0); UI.refreshIcons();
+    
+    if(view !== 'fluxo') {
+        State.particleColor = "rgba(34,211,238,0.5)";
+    } else {
+        const activeSegBtn = document.querySelector('.seg-btn[aria-pressed="true"]');
+        if(activeSegBtn) activeSegBtn.click();
+    }
   },
 
   bindEvents: () => {
     document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
     
-    $("btnLogout").addEventListener("click", () => { localStorage.clear(); location.reload(); });
-    $("btnRefreshHeader").addEventListener("click", async () => {
-      $("btnRefreshHeader").classList.add("animate-spin");
-      await API.syncDashboard();
-      setTimeout(()=> $("btnRefreshHeader").classList.remove("animate-spin"), 500);
-    });
+    if($("btnLogout")) {
+        $("btnLogout").addEventListener("click", () => { 
+            localStorage.removeItem(CONFIG.STORAGE_KEY); 
+            location.reload(); 
+        });
+    }
+    
+    if($("btnRefreshHeader")) {
+        $("btnRefreshHeader").addEventListener("click", async () => {
+          $("btnRefreshHeader").classList.add("animate-spin");
+          await API.syncDashboard();
+          setTimeout(()=> $("btnRefreshHeader").classList.remove("animate-spin"), 500);
+        });
+    }
 
-    $("pref-name").addEventListener("change", (e) => {
-      const novo = e.target.value.trim() || (State.user.name || "Usuário").split(" ")[0];
-      State.prefName = novo;
-      localStorage.setItem("pv_pref_name_" + State.user.email, novo);
-      $("user-name").textContent = novo;
-      UI.toast("Nome de preferência guardado!", "success");
-    });
+    if($("pref-name")) {
+        $("pref-name").addEventListener("change", (e) => {
+          const novo = e.target.value.trim() || (State.user.name || "Usuário").split(" ")[0];
+          State.prefName = novo;
+          localStorage.setItem("pv_pref_name_" + State.user.email, novo);
+          if($("user-name")) $("user-name").textContent = novo;
+          UI.toast("Nome de preferência guardado!", "success");
+        });
+    }
 
-    $("txForm").addEventListener("submit", async e => {
-      e.preventDefault();
-      const btn = $("btnSave");
-      const originalHTML = btn.innerHTML;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Guardando...`; UI.refreshIcons();
-      btn.disabled = true;
+    const txForm = $("txForm");
+    if(txForm) {
+        txForm.addEventListener("submit", async e => {
+          e.preventDefault();
+          const btn = $("btnSave");
+          const originalHTML = btn ? btn.innerHTML : "Salvar";
+          if(btn) {
+              btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Guardando...`; 
+              btn.disabled = true;
+          }
+          UI.refreshIcons();
 
-      const activeSeg = document.querySelector('.seg-btn[aria-pressed="true"]');
-      const dataType = activeSeg.dataset.type; 
-      
-      let finalType = 'out', finalCat = $("category").value;
-      if(dataType === 'in') { finalType = 'in'; finalCat = "Receita"; }
-      else if(dataType === 'invest') { finalType = 'out'; finalCat = "Investimento"; }
+          const activeSeg = document.querySelector('.seg-btn[aria-pressed="true"]');
+          const dataType = activeSeg ? activeSeg.dataset.type : 'out'; 
+          
+          let finalType = 'out', finalCat = $("category") ? $("category").value : "Outros";
+          if(dataType === 'in') { finalType = 'in'; finalCat = "Receita"; }
+          else if(dataType === 'invest') { finalType = 'out'; finalCat = "Investimento"; }
 
-      const dateVal = $("date").value;
-      const amountVal = $("amount").value;
-      const descVal = $("desc").value.trim();
-      const now = new Date();
-      const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+          const dateVal = $("date") ? $("date").value : new Date().toISOString().split('T')[0];
+          const amountVal = $("amount") ? $("amount").value : "0";
+          const descVal = $("desc") ? $("desc").value.trim() : "";
+          const now = new Date();
+          const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
 
-      const payload = {
-        desc: descVal, amount: parseFloat(amountVal), type: finalType, category: finalCat, 
-        date: dateVal, timestamp: `${dateVal} ${timeStr}`
-      };
+          const payload = {
+            desc: descVal, amount: parseFloat(amountVal), type: finalType, category: finalCat, 
+            date: dateVal, timestamp: `${dateVal} ${timeStr}`
+          };
 
-      try {
-        await API.call("add_transaction", payload);
-        UI.toast("Transação guardada na Nuvem!", "success");
-        UI.addLocalHistory(descVal, amountVal, dataType);
-        $("txForm").reset();
-        document.querySelector('.seg-btn[data-color="red"]').click(); 
-        if(State.datePicker) State.datePicker.setDate("today");
-        API.syncDashboard();
-      } catch(err) { UI.toast("Gravado localmente (Offline)", "warning"); } 
-      finally { btn.innerHTML = originalHTML; btn.disabled = false; UI.refreshIcons(); }
-    });
+          try {
+            await API.call("add_transaction", payload);
+            UI.toast("Transação guardada na Nuvem!", "success");
+            UI.addLocalHistory(descVal, amountVal, dataType);
+            $("txForm").reset();
+            const redBtn = document.querySelector('.seg-btn[data-color="red"]');
+            if(redBtn) redBtn.click(); 
+            if(State.datePicker) State.datePicker.setDate("today");
+            API.syncDashboard();
+          } catch(err) { 
+            UI.toast(err.message || "Guardado localmente (Modo Offline).", "warning"); 
+          } 
+          finally { 
+            if(btn) {
+                btn.innerHTML = originalHTML; 
+                btn.disabled = false; 
+            }
+            UI.refreshIcons(); 
+          }
+        });
+    }
   }
 };
 
