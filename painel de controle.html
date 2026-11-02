@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=0">
+<meta name="theme-color" content="#020617">
+<title>PlanilhaViva Pro</title>
+
+<!-- SEO & Manifest -->
+<meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
+<meta name="description" content="A sua central financeira pessoal ligada ao Google Sheets.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
+
+<!-- Bibliotecas -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous"></script>
+
+<style>
+  :root { color-scheme: dark; }
+  body { background-color: #020617; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; font-family: ui-sans-serif, system-ui, sans-serif; }
+  #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+  
+  .glass { background: rgba(15,23,42,.65); backdrop-filter: blur(28px); border: 1px solid rgba(148,163,184,.15); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
+  .glass-neon { border: 1px solid rgba(34,211,238,.4); box-shadow: 0 0 35px rgba(34,211,238,.15), inset 0 0 20px rgba(34,211,238,.08); }
+  .glass-admin { border: 1px solid rgba(251,191,36,.5); box-shadow: 0 0 35px rgba(251,191,36,.2), inset 0 0 20px rgba(251,191,36,.1); }
+  
+  .glow { position: absolute; width: 220px; height: 220px; border-radius: 9999px; background: rgba(6,182,212,.25); filter: blur(80px); top: -60px; right: -60px; pointer-events: none; transition: background 0.8s ease; }
+  .glow-purple { background: rgba(168,85,247,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
+  .glow-green { background: rgba(16,185,129,.25); }
+  .glow-red { background: rgba(244,63,94,.25); }
+  .glow-amber { background: rgba(251,191,36,.25); }
+
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .icon-pop svg { animation: pop .5s cubic-bezier(.175,.885,.32,1.275) both; }
+  @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+  .slide-down { animation: slideDown 0.4s ease-out forwards; }
+  @keyframes slideDown { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
+  
+  .carousel-wrapper { overflow: hidden; width: 100%; white-space: nowrap; position: relative; }
+  .carousel-track { display: inline-flex; gap: 1rem; animation: scroll 30s linear infinite; }
+  .carousel-track:hover { animation-play-state: paused; }
+  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 0.5rem)); } }
+
+  .view { display: none; opacity: 0; }
+  .view.active { display: block; animation: viewIn .5s ease-out forwards; }
+  @keyframes viewIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+
+  #welcome-splash { transition: all .6s ease; backdrop-filter: blur(25px); }
+  #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(15px); }
+
+  .input { width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9); border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc; transition: all .3s; outline: none; }
+  .input:focus { border-color: #22d3ee; box-shadow: 0 0 20px rgba(34,211,238,.3); }
+  select.input option { background: #0f172a; }
+  .label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #94a3b8; font-weight: 800; margin-bottom: .4rem; }
+
+  .quick-chip { padding: 0.35rem 0.7rem; border-radius: 9999px; background: rgba(30,41,59,0.8); border: 1px solid rgba(51,65,85,1); font-size: 0.7rem; font-weight: 700; color: #94a3b8; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .quick-chip:hover, .quick-chip:active { background: #22d3ee; color: #020617; border-color: #22d3ee; }
+
+  .btn-primary { background: linear-gradient(135deg,#06b6d4,#3b82f6); color: #020617; font-weight: 800; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 10px 30px -5px rgba(6,182,212,.6); transition: all .2s; cursor: pointer; border:none;}
+  .btn-primary:active { transform: scale(.96); }
+  .btn-green { background: linear-gradient(135deg,#10b981,#059669); box-shadow: 0 10px 30px -5px rgba(16,185,129,.6); color: #fff; }
+  .btn-red { background: linear-gradient(135deg,#f43f5e,#e11d48); box-shadow: 0 10px 30px -5px rgba(244,63,94,.6); color: #fff; }
+  .btn-purple { background: linear-gradient(135deg,#a855f7,#7e22ce); box-shadow: 0 10px 30px -5px rgba(168,85,247,.6); color: #fff; }
+  
+  .btn--custom { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; width: 100%; max-width: 280px; padding: 1rem 1.25rem; background: rgba(15,23,42,.9); border: 1px solid rgba(34,211,238,.5); border-radius: 9999px; color: #f8fafc; font-size: .85rem; font-weight: 700; box-shadow: 0 8px 30px -8px rgba(34,211,238,.5); transition: all .2s; cursor: pointer; }
+  .btn--custom:hover { background: rgba(30,41,59,.9); transform: translateY(-2px); }
+  .btn--custom:active { transform: scale(.96); }
+
+  .seg-container { display: flex; gap: 4px; padding: 4px; border-radius: .75rem; background: rgba(15,23,42,.9); border: 1px solid rgba(51,65,85,.9); }
+  .seg-btn { flex: 1; padding: .65rem; border-radius: .55rem; font-size: .75rem; font-weight: 800; color: #94a3b8; transition: all .3s cubic-bezier(.16,1,.3,1); cursor: pointer; text-align: center; }
+  
+  .seg-btn[data-color="green"][aria-pressed="true"] { color: #fff; background: #10b981; box-shadow: 0 0 20px rgba(16,185,129,.7); }
+  .seg-btn[data-color="red"][aria-pressed="true"] { color: #fff; background: #f43f5e; box-shadow: 0 0 20px rgba(244,63,94,.7); }
+  .seg-btn[data-color="purple"][aria-pressed="true"] { color: #fff; background: #a855f7; box-shadow: 0 0 20px rgba(168,85,247,.7); }
+
+  .ad-block { background: rgba(15,23,42,.4); border: 1px dashed rgba(34,211,238,.3); border-radius: 1rem; padding: 0.5rem; text-align: center; position: relative; min-height: 80px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 1rem; margin-bottom: 1rem;}
+  .ad-label { position: absolute; top: 4px; left: 8px; font-size: 8px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; font-weight:bold; }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
+  .toast.show { opacity: 1; transform: scale(1); }
+  .flatpickr-calendar { background: rgba(15,23,42,.95) !important; border: 1px solid rgba(34,211,238,.4) !important; border-radius: 1rem !important; }
+</style>
+</head>
+<body class="text-slate-100 min-h-screen pb-24 relative">
+
+<canvas id="bg" aria-hidden="true"></canvas>
+<div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none"></div>
+
+<!-- SPLASH SCREEN -->
+<div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center">
+  <div class="relative z-10 animate-float">
+    <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full z-0 animate-pulse"></div>
+    <div id="splash-avatar" class="relative z-10 w-32 h-32 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
+  </div>
+  <h2 id="greeting-text" class="text-3xl font-black text-white mt-8 tracking-tight z-10">Olá,</h2>
+  <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10">Investidor!</h2>
+</div>
+
+<main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
+  <!-- TELA DE LOGIN -->
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 relative">
+    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
+      <div class="glow"></div><div class="glow-purple"></div>
+      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-cyan-400/50 animate-float">
+        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-20 h-20 object-contain drop-shadow-[0_0_20px_rgba(34,211,238,1)]">
+      </div>
+      <div>
+        <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
+        <p class="text-xs text-cyan-100/70 mt-2 font-medium">O seu banco de dados financeiro contínuo e conectado à nuvem.</p>
+      </div>
+      <div class="pt-4 flex flex-col items-center gap-4 relative z-20">
+        <button id="btnGoogleLogin" class="btn--custom hover:bg-slate-800">
+          <i data-lucide="mail" class="w-5 h-5"></i> <span class="font-bold">Acessar com Google</span>
+        </button>
+      </div>
+    </div>
+    <footer class="mt-10 text-center text-[10px] text-slate-500 space-y-1.5 z-10 font-medium">
+      <p>© Direitos reservados <span class="text-cyan-400 font-bold">PlanilhaViva Pro</span>.</p>
+      <p>Programador: <span class="text-slate-300 font-bold">Gilnei Laurindo</span></p>
+      <p>Ideias: <span class="text-slate-400 font-bold">Samuel Danilo</span></p>
+    </footer>
+  </section>
+
+  <!-- APP PRINCIPAL -->
+  <section id="view-app" class="hidden flex-1 flex-col w-full">
+    <!-- HEADER -->
+    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
+      <div class="flex items-center gap-3">
+        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-cyan-400 overflow-hidden shadow-[0_0_15px_rgba(34,211,238,.4)]"></div>
+        <div class="flex flex-col">
+          <span class="text-[9px] text-cyan-400 font-black uppercase flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> <span id="header-time">00:00</span></span>
+          <h2 id="header-date" class="text-xs font-bold text-white"></h2>
+        </div>
+      </div>
+      
+      <div class="flex gap-2">
+        <!-- BOTÃO ADMIN MODO DEUS (Oculto por padrão) -->
+        <button id="btnAdminPanel" class="hidden text-amber-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-amber-700/50 transition-colors" onclick="App.nav('admin')">
+          <i data-lucide="crown" class="w-4 h-4"></i>
+        </button>
+        <button id="btnRefreshHeader" class="text-cyan-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700 transition-colors">
+          <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="px-5 pt-6 space-y-6">
+
+      <!-- ABA 1: LANÇAMENTOS -->
+      <div id="view-fluxo" class="view active space-y-5">
+        <div class="ad-block"><span class="ad-label">Publicidade</span></div>
+        <div class="glass glass-neon rounded-3xl p-6 relative overflow-hidden" id="form-container">
+          <div class="glow transition-colors duration-500" id="form-glow"></div>
+          <h3 class="section-title mb-5 text-white" id="form-title"><i data-lucide="zap" class="w-5 h-5 text-rose-400" id="form-icon"></i> Lançar Despesa</h3>
+          <div class="seg-container mb-6">
+            <button type="button" class="seg-btn" data-color="green" data-type="in" aria-pressed="false">Receita</button>
+            <button type="button" class="seg-btn" data-color="red" data-type="out" aria-pressed="true">Despesa</button>
+            <button type="button" class="seg-btn" data-color="purple" data-type="invest" aria-pressed="false">Investir</button>
+          </div>
+          <form id="txForm" class="space-y-4">
+            <div><input id="desc" class="input" placeholder="Descrição da Transação..." required></div>
+            <div>
+              <input id="amount" type="number" step="0.01" class="input font-bold text-lg" placeholder="R$ 0,00" required>
+              <div class="flex gap-2 mt-2 overflow-x-auto no-scrollbar py-1">
+                <button type="button" class="quick-chip" onclick="$('amount').value=10">+ R$ 10</button>
+                <button type="button" class="quick-chip" onclick="$('amount').value=50">+ R$ 50</button>
+                <button type="button" class="quick-chip" onclick="$('amount').value=100">+ R$ 100</button>
+                <button type="button" class="quick-chip" onclick="$('amount').value=500">+ R$ 500</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><input id="date" type="text" class="input font-bold text-center" placeholder="Hoje" required></div>
+              <div id="cat-container"><select id="category" class="input font-medium text-xs h-[42px]"></select></div>
+            </div>
+            <button id="btnSave" type="submit" class="btn-primary btn-red w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all">
+              <i data-lucide="send" class="w-5 h-5 animate-pulse"></i> Confirmar Transação
+            </button>
+          </form>
+        </div>
+        <div class="glass rounded-2xl p-4 border border-cyan-500/20">
+          <h3 class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="history" class="w-3 h-3"></i> Lançamentos desta Sessão</h3>
+          <div id="local-history" class="space-y-2 text-xs"><p class="text-slate-500 text-center py-2 italic" id="empty-history">Aguardando lançamentos...</p></div>
+        </div>
+      </div>
+
+      <!-- ABA 2: RESUMO -->
+      <div id="view-resumo" class="view space-y-5">
+        <div class="glass rounded-3xl p-6 relative flex flex-col justify-center border border-cyan-500/40">
+          <p class="text-xs uppercase text-cyan-400 font-bold mb-1">Saldo Consolidado</p>
+          <p id="saldo" class="text-4xl font-black tabular-nums text-white">R$ 0,00</p>
+        </div>
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title"><i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Fluxo do Período</h3>
+          <div class="relative w-full max-h-[220px] flex justify-center mx-auto"><canvas id="chartFluxo"></canvas></div>
+        </div>
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title"><i data-lucide="bar-chart" class="w-4 h-4 text-cyan-400"></i> Desempenho Contínuo</h3>
+          <div class="w-full max-h-[200px]"><canvas id="chartDesempenho"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ABA 3: INVESTIR -->
+      <div id="view-investir" class="view space-y-5">
+        <div class="glass rounded-3xl p-6 text-center border border-purple-500/50">
+          <h3 class="text-xs uppercase text-purple-300 font-bold mb-2">Patrimônio Acumulado</h3>
+          <p id="invest-total" class="text-4xl font-black text-white tabular-nums">R$ 0,00</p>
+        </div>
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title text-purple-400"><i data-lucide="trending-up" class="w-4 h-4"></i> Evolução de Aportes</h3>
+          <div class="w-full max-h-[220px]"><canvas id="chartCrescimento"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ABA 4: CONFIGURAÇÕES -->
+      <div id="view-config" class="view space-y-5">
+        <div class="glass rounded-3xl p-6 text-center border border-cyan-500/30">
+          <div id="cfg-avatar" class="w-20 h-20 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3"></div>
+          <input id="pref-name" type="text" class="bg-transparent text-2xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1" placeholder="Seu Nome">
+          <p id="cfg-email" class="text-xs text-slate-500 font-mono mt-2"></p>
+        </div>
+        
+        <a id="link-planilha" href="#" target="_blank" class="glass bg-emerald-900/40 border border-emerald-500/50 p-6 rounded-3xl flex flex-col items-center justify-center gap-3">
+          <div class="w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center"><i data-lucide="database" class="w-6 h-6 text-white"></i></div>
+          <div class="text-center">
+            <h3 class="font-black text-emerald-400 text-lg uppercase">Meu Banco de Dados</h3>
+            <p class="text-[11px] text-slate-300 mt-1">Acessar a Planilha no Google Sheets</p>
+          </div>
+        </a>
+
+        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 mt-6">
+          <i data-lucide="log-out" class="w-4 h-4"></i> Encerrar Sessão
+        </button>
+      </div>
+
+      <!-- ==================== ABA 5: MODO DEUS (ADMIN) ==================== -->
+      <div id="view-admin" class="view space-y-5 hidden">
+        <div class="glass glass-admin rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center border border-amber-500/40 shadow-[0_0_40px_rgba(251,191,36,.2)]">
+          <div class="glow-amber"></div>
+          <p class="text-xs uppercase tracking-widest text-amber-400 font-bold flex items-center gap-2 mb-1">
+            <i data-lucide="crown" class="w-4 h-4"></i> Painel de Licenças
+          </p>
+          <p class="text-sm text-slate-300 mt-2">Visão Geral dos Utilizadores e Assinaturas</p>
+        </div>
+
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title text-amber-400"><i data-lucide="pie-chart" class="w-4 h-4"></i> Inadimplência</h3>
+          <div class="relative w-full aspect-square max-h-[220px] flex justify-center mx-auto">
+            <canvas id="chartAdmin"></canvas>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title text-blue-400"><i data-lucide="users" class="w-4 h-4"></i> Utilizadores Registados</h3>
+          <button onclick="API.syncAdmin()" class="w-full text-xs bg-slate-800 text-slate-300 p-2 rounded-lg border border-slate-700 hover:bg-slate-700 transition">
+            <i data-lucide="refresh-cw" class="w-3 h-3 inline"></i> Sincronizar Base de Dados
+          </button>
+          <div id="admin-user-list" class="space-y-3 mt-4 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
+            <!-- Lista populada por JS -->
+            <p class="text-xs text-slate-500 text-center">Clique em Sincronizar...</p>
+          </div>
+        </div>
+      </div>
+      <!-- FIM MODO DEUS -->
+
+    </div>
+  </section>
+</main>
+
+<!-- BOTTOM NAVIGATION -->
+<nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
+  <div class="glass rounded-2xl relative grid grid-cols-4 p-1 shadow-[0_20px_40px_rgba(0,0,0,.9)] border border-slate-700">
+    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-slate-600 w-[calc((100%-0.5rem)/4)] transition-all duration-300 ease-out shadow-lg"></span>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="fluxo">
+      <i data-lucide="plus-square" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Lançar</span>
+    </button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="resumo">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Resumo</span>
+    </button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="investir">
+      <i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Investir</span>
+    </button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config">
+      <i data-lucide="user" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Perfil</span>
+    </button>
+  </div>
+</nav>
+
+<script>
+// ============================================================================
+// CONFIGURAÇÕES GLOBAIS E CREDENCIAIS
+// ============================================================================
+const CONFIG = {
+  CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwfbpENkvp0yHb7IIFeiNYrrswzTyploeg5ESTaqxfzhWaKILTW6tLZnR13uBqxFQk0/exec",
+  STORAGE_KEY: "planilhaviva_user_admin", 
+  ADMIN_EMAIL: "seuemail@gmail.com", // COLOQUE AQUI O SEU E-MAIL
+  CATEGORIES: ["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"] 
+};
+
+const State = { user: null, prefName: "", datePicker: null, particleColor: "rgba(34,211,238,0.5)" };
+const $ = id => document.getElementById(id);
+const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+
+// ============================================================================
+// EFEITOS LUMINOSOS E RELÓGIO
+// ============================================================================
+function initParticles() {
+  const canvas = $("bg"); if(!canvas) return;
+  const ctx = canvas.getContext("2d"); let p = [];
+  const rz = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; p = Array.from({length: Math.min(60, Math.floor(canvas.width*canvas.height/9000))}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.7, vy: (Math.random()-.5)*.7, r: Math.random()*2+.5})); };
+  const an = () => { 
+    ctx.clearRect(0,0,canvas.width,canvas.height); 
+    for(let i=0; i<p.length; i++) {
+      p[i].x += p[i].vx; p[i].y += p[i].vy; 
+      if(p[i].x<0||p[i].x>canvas.width) p[i].vx*=-1; if(p[i].y<0||p[i].y>canvas.height) p[i].vy*=-1; 
+      ctx.fillStyle = State.particleColor; ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
+      for(let j=i+1; j<p.length; j++){
+        let dx = p[i].x - p[j].x, dy = p[i].y - p[j].y; let dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < 100) { ctx.beginPath(); let rgb = State.particleColor.match(/\d+, *\d+, *\d+/)[0]; ctx.strokeStyle = `rgba(${rgb}, ${0.3*(1-dist/100)})`; ctx.lineWidth = 1.5; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke(); }
+      }
+    }
+    requestAnimationFrame(an); 
+  };
+  window.addEventListener("resize", rz); rz(); an();
+}
+
+const TimeManager = {
+  startClock: () => {
+    setInterval(() => {
+      const now = new Date();
+      if($("header-time")) $("header-time").textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      if($("header-date")) $("header-date").textContent = now.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase();
+      if($("resumo-mes-nome")) $("resumo-mes-nome").textContent = "FLUXO DE " + now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
+    }, 1000);
+  },
+  getDynamicMonthLabels: () => {
+    const labels = []; const date = new Date();
+    for(let i=3; i>=0; i--) { labels.push(new Date(date.getFullYear(), date.getMonth() - i, 1).toLocaleDateString('pt-BR', { month: 'short' }).replace('.','').toUpperCase()); }
+    return labels;
+  }
+};
+
+// ============================================================================
+// GRÁFICOS E UI
+// ============================================================================
+const UI = {
+  refreshIcons: () => { if (window.lucide) lucide.createIcons(); },
+  toast: (msg, type = "success") => {
+    if(!$("toasts")) return;
+    const icon = type === "error" ? "alert-triangle" : "check-circle";
+    const color = type === "error" ? "text-rose-400" : "text-cyan-400";
+    const t = document.createElement("div"); t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-cyan-400/50 z-[9999]";
+    t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 shrink-0 ${color}"></i><span>${msg}</span>`;
+    $("toasts").append(t); UI.refreshIcons(); requestAnimationFrame(() => t.classList.add("show"));
+    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3000);
+  },
+  setAvatar: (el, user) => { if(el) { if (user?.picture) el.innerHTML = `<img src="${user.picture}" class="w-full h-full object-cover">`; else { el.innerHTML = `<i data-lucide="user" class="w-1/2 h-1/2 text-slate-400"></i>`; UI.refreshIcons(); } } }
+};
+
+const Charts = {
+  fluxo: null, desempenho: null, crescimento: null, adminChart: null,
+  init: () => {
+    Chart.defaults.color = '#94a3b8'; Chart.defaults.font.family = 'system-ui';
+    const dynamicLabels = TimeManager.getDynamicMonthLabels();
+    if($("chartFluxo")) Charts.fluxo = new Chart($("chartFluxo"), { type: 'doughnut', data: { labels: ['Receitas', 'Despesas'], datasets: [{ data: [1, 1], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+    if($("chartDesempenho")) Charts.desempenho = new Chart($("chartDesempenho"), { type: 'bar', data: { labels: dynamicLabels, datasets: [{ label: 'Receitas', data: [0,0,0,0], backgroundColor: '#10b981', borderRadius: 4 }, { label: 'Despesas', data: [0,0,0,0], backgroundColor: '#f43f5e', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } } });
+    if($("chartCrescimento")) Charts.crescimento = new Chart($("chartCrescimento"), { type: 'line', data: { labels: dynamicLabels, datasets: [{ label: 'Patrimônio', data: [0,0,0,0], borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { color: '#334155' } } }, plugins: { legend: { display: false } }, elements: { point: { radius: 0 } } } });
+    
+    // Gráfico do MODO DEUS
+    if($("chartAdmin")) Charts.adminChart = new Chart($("chartAdmin"), { type: 'doughnut', data: { labels: ['Ativos', 'Devendo'], datasets: [{ data: [1, 1], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '70%' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: {color: '#fff'} } } } });
+  }
+};
+
+// ============================================================================
+// API
+// ============================================================================
+const API = {
+  call: async (action, payload = {}) => {
+    if (!State.user || !State.user.email) throw new Error("Usuário não logado.");
+    const res = await fetch(CONFIG.SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload }) });
+    const json = await res.json();
+    if (json.status !== "success") throw new Error(json.message);
+    return json;
+  },
+
+  syncDashboard: async () => {
+    try {
+      const data = await API.call("get_dashboard");
+      const { totalInvestido, totalSaidas, totalEntradas, saldoAtual } = data.data;
+      if($("saldo")) $("saldo").textContent = brl.format(saldoAtual);
+      if(Charts.fluxo) { Charts.fluxo.data.datasets[0].data = [totalEntradas || 1, totalSaidas || 1]; Charts.fluxo.update(); }
+    } catch (e) { console.log(e); }
+  },
+
+  // Busca dados para o Painel de Administração
+  syncAdmin: async () => {
+    try {
+      const data = await API.call("get_admin_data");
+      const users = data.data;
+      
+      const list = $("admin-user-list");
+      list.innerHTML = "";
+      
+      let ativos = 0, devendo = 0;
+      
+      users.forEach(u => {
+        if(u.status === "Devendo") devendo++; else ativos++;
+        
+        const corStatus = u.status === "Devendo" ? "text-rose-400 bg-rose-900/30 border-rose-500/50" : "text-emerald-400 bg-emerald-900/30 border-emerald-500/50";
+        
+        list.innerHTML += `
+          <div class="glass p-3 rounded-xl border border-slate-700/50 flex justify-between items-center">
+            <div class="overflow-hidden">
+              <p class="text-xs text-white font-bold truncate">${u.email}</p>
+              <p class="text-[9px] text-slate-400 mt-1">Vence: ${u.vencimento}</p>
+            </div>
+            <span class="text-[9px] uppercase font-bold px-2 py-1 rounded-md border ${corStatus}">${u.status}</span>
+          </div>
+        `;
+      });
+      
+      Charts.adminChart.data.datasets[0].data = [ativos, devendo];
+      Charts.adminChart.update();
+      UI.toast("Base de dados Admin atualizada.", "success");
+    } catch (e) {
+      UI.toast(e.message, "error");
+    }
+  }
+};
+
+// ============================================================================
+// LÓGICA DO APP E LOGIN
+// ============================================================================
+const App = {
+  init: () => {
+    initParticles(); TimeManager.startClock(); Charts.init();
+    
+    document.querySelectorAll(".seg-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".seg-btn").forEach(b => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
+        const c = btn.dataset.color;
+        if(c === "green") State.particleColor = "rgba(16,185,129,0.5)"; 
+        else if(c === "red") State.particleColor = "rgba(244,63,94,0.5)"; 
+        else if(c === "purple") State.particleColor = "rgba(168,85,247,0.5)"; 
+      });
+    });
+
+    CONFIG.CATEGORIES.forEach(c => $("category").append(new Option(c, c)));
+    State.datePicker = flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
+    
+    document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
+    $("btnLogout").addEventListener("click", () => { localStorage.removeItem(CONFIG.STORAGE_KEY); location.reload(); });
+    
+    const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
+    if(saved) { 
+      State.user = JSON.parse(saved); 
+      State.prefName = State.user.name.split(" ")[0]; 
+      App.startSession(); 
+    }
+    else { 
+      $("view-auth").classList.remove("hidden"); $("view-auth").classList.add("flex"); 
+      if (!window.google) return setTimeout(App.init, 300);
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: CONFIG.CLIENT_ID, scope: "email profile",
+        callback: async (t) => {
+          const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
+          const p = await res.json();
+          State.user = { name: p.name, email: p.email, picture: p.picture };
+          State.prefName = p.name.split(" ")[0];
+          localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State.user));
+          App.startSession();
+        }
+      });
+      $("btnGoogleLogin").addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
+    }
+
+    $("txForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const btn = $("btnSave"); const html = btn.innerHTML; btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>`;
+      const type = document.querySelector('.seg-btn[aria-pressed="true"]').dataset.type;
+      
+      try {
+        await API.call("add_transaction", {
+          desc: $("desc").value, amount: $("amount").value, type: type === 'invest' ? 'out' : type, category: type === 'invest' ? 'Investimento' : $("category").value, 
+          date: $("date").value, timestamp: $("date").value + " 00:00:00"
+        });
+        UI.toast("Gravado!", "success"); $("txForm").reset();
+      } catch(err) { UI.toast("Erro", "error"); } finally { btn.innerHTML = html; UI.refreshIcons(); }
+    });
+  },
+
+  startSession: async () => {
+    $("view-auth").classList.replace("flex", "hidden");
+    $("welcome-splash").classList.replace("hidden", "flex");
+    
+    // Liberta o Botão de Modo Deus se for o Admin
+    if(State.user.email.toLowerCase() === CONFIG.ADMIN_EMAIL.toLowerCase()) {
+      $("btnAdminPanel").classList.remove("hidden");
+    }
+    
+    setTimeout(() => {
+      $("welcome-splash").classList.replace("flex", "hidden");
+      $("view-app").classList.replace("hidden", "flex");
+      $("bottom-nav").classList.remove("hidden");
+      UI.setAvatar($("avatar"), State.user); UI.setAvatar($("cfg-avatar"), State.user);
+      $("user-name").textContent = State.prefName;
+      App.nav("fluxo"); API.syncDashboard();
+    }, 1000);
+  },
+
+  nav: (view) => {
+    // Esconde a nav-bar se entrar no Admin para imersão total
+    if (view === 'admin') {
+      $("view-admin").classList.remove("hidden");
+      ["fluxo", "resumo", "investir", "config"].forEach(v => $("view-"+v).classList.replace("active", "hidden"));
+      State.particleColor = "rgba(251,191,36,0.5)"; // Amarelo Admin
+      API.syncAdmin();
+      return;
+    }
+
+    $("view-admin").classList.add("hidden");
+    ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
+      const act = v === view;
+      $("view-" + v).classList.toggle("active", act);
+      $("view-" + v).classList.toggle("hidden", !act);
+      const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
+      if(b) {
+          b.classList.toggle("text-white", act); b.classList.toggle("text-slate-400", !act);
+          if (act) { $("nav-pill").style.transform = `translateX(${i * 100}%)`; b.classList.remove("icon-pop"); void b.offsetWidth; b.classList.add("icon-pop"); }
+      }
+    });
+    window.scrollTo(0, 0); UI.refreshIcons();
+    if(view !== 'fluxo') State.particleColor = "rgba(34,211,238,0.5)";
+    else document.querySelector('.seg-btn[aria-pressed="true"]').click();
+  }
+};
+
+document.addEventListener("DOMContentLoaded", App.init);
+</script>
+</body>
+</html>
