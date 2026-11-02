@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>QG Estratégico | PlanilhaViva</title>
 
-<!-- Bibliotecas -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,7 +15,6 @@
   body { background-color: #020617; margin: 0; overflow-x: hidden; font-family: ui-sans-serif, system-ui, sans-serif; }
   #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 
-  /* GLASSMORPHISM ADMIN */
   .glass { background: rgba(15,23,42,.7); backdrop-filter: blur(28px); border: 1px solid rgba(251,191,36,.2); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
   .glass-neon { border: 1px solid rgba(251,191,36,.5); box-shadow: 0 0 35px rgba(251,191,36,.2), inset 0 0 20px rgba(251,191,36,.1); }
 
@@ -92,7 +90,7 @@
             <p class="text-xl font-black text-white skeleton w-16 h-7 inline-block" id="kpi-inativos">0</p>
           </div>
           <div class="glass p-4 rounded-2xl border border-amber-500/30">
-            <p class="text-[9px] uppercase tracking-widest text-amber-400 font-bold mb-1">Total Usuários</p>
+            <p class="text-[9px] uppercase tracking-widest text-amber-400 font-bold mb-1">Total Utilizadores</p>
             <p class="text-xl font-black text-white skeleton w-16 h-7 inline-block" id="kpi-total">0</p>
           </div>
         </div>
@@ -100,7 +98,7 @@
         <div class="glass rounded-2xl p-5 border border-blue-500/20">
           <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4"><i data-lucide="activity" class="w-4 h-4"></i> Saúde da Base</h3>
           <div class="w-full h-[180px] relative">
-            <div id="chart-loader" class="absolute inset-0 flex items-center justify-center text-slate-500 text-xs font-bold animate-pulse">Carregando dados...</div>
+            <div id="chart-loader" class="absolute inset-0 flex items-center justify-center text-amber-500 text-xs font-bold animate-pulse">A carregar dados do servidor...</div>
             <canvas id="chartUsage"></canvas>
           </div>
         </div>
@@ -112,7 +110,7 @@
             <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Clientes</h3>
             <a id="open-sheet-link" href="#" target="_blank" class="hidden text-[9px] font-bold text-amber-400 border border-amber-500/40 rounded-full px-3 py-1 flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> Planilha</a>
           </div>
-          <input type="text" class="input text-xs h-10 mb-4" id="search-user" placeholder="Buscar..." onkeyup="Admin.filterUsers()">
+          <input type="text" class="input text-xs h-10 mb-4" id="search-user" placeholder="Procurar..." onkeyup="Admin.filterUsers()">
           <div class="space-y-3 max-h-[400px] overflow-y-auto pr-2 no-scrollbar" id="real-user-list"></div>
         </div>
       </div>
@@ -150,8 +148,11 @@
 <script>
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  // ⚠️ ATENÇÃO: COLOQUE AQUI A SUA URL DA NOVA IMPLANTAÇÃO DO APPS SCRIPT
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycby5J7e17lGshotOUgwq-8YpJd7UMZFQ5qw0cnuEuK-O4sWpHHjnpXnEWPJeWTB5OF9Q/exec",
+  
+  // ⚠️ ATENÇÃO: COLOQUE AQUI A SUA URL DA NOVA IMPLEMENTAÇÃO
+  // Substitua este link pelo gerado no "Passo 1"
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzBg4wutoNXwAV6Bi0fSc1xnxsPeKe1iB42YS7NRPovGYpRnyBybCeNRkT8fJ136k8/exec",
+  
   ADMIN_EMAILS: ["gilneycriative@gmail.com", "samueldanilo11@gmail.com", "gilneilaurindo@gmail.com"]
 };
 
@@ -176,19 +177,31 @@ const UI = {
     t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 ${color}"></i><span>${msg}</span>`;
     $("toasts").append(t); if(window.lucide) lucide.createIcons();
     requestAnimationFrame(() => t.classList.add("show"));
-    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3000);
+    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 4000);
   }
 };
 
 const API = {
   call: async (action, payload = {}) => {
     if (!State.user) throw new Error("Acesso não validado.");
-    const res = await fetch(CONFIG.SCRIPT_URL, {
-      method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
-    });
-    const json = await res.json();
-    if (json.status !== "success") throw new Error(json.message);
+    let res, json;
+    
+    try {
+      res = await fetch(CONFIG.SCRIPT_URL, {
+        method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
+      });
+    } catch(networkError) {
+      throw new Error("Erro de ligação. Verifique se autorizou o script no Google (Novo Deploy) e se copiou o URL certo.");
+    }
+    
+    try {
+      json = await res.json();
+    } catch(parseError) {
+      throw new Error("Resposta inválida do servidor. O Google pode estar a bloquear o script devido a permissões em falta.");
+    }
+
+    if (json.status !== "success") throw new Error(json.message || "Erro desconhecido do Servidor.");
     return json;
   }
 };
@@ -198,6 +211,7 @@ const Admin = {
     try {
       UI.toast("Buscando dados...", "success");
       $("chart-loader").classList.remove("hidden");
+      $("chart-loader").textContent = "A ler a Planilha Mestra...";
       
       const res = await API.call("get_admin_data");
       const { kpis, usuarios, planilhaUrl } = res.data;
@@ -224,7 +238,7 @@ const Admin = {
       const list = $("real-user-list");
       list.innerHTML = "";
       if(!usuarios || usuarios.length === 0) {
-        list.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum cliente cadastrado.</p>`;
+        list.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum cliente registado.</p>`;
       } else {
         usuarios.forEach(u => {
           const isAtivo = u.status === "Ativo";
@@ -239,20 +253,27 @@ const Admin = {
                 <span class="border px-2 py-0.5 rounded text-[9px] font-bold uppercase ${corBadge}">${u.status}</span>
               </div>
               <button class="border py-1.5 rounded text-[10px] font-bold transition ${isAtivo ? 'bg-rose-900/30 text-rose-400 border-rose-500/50' : 'bg-emerald-900/30 text-emerald-400 border-emerald-500/50'}" onclick="Admin.toggleStatus('${u.email}', '${isAtivo ? 'Inativo' : 'Ativo'}')">
-                ${isAtivo ? 'Suspender Acesso' : 'Liberar Acesso'}
+                ${isAtivo ? 'Suspender Acesso' : 'Ligar Acesso'}
               </button>
             </div>
           `;
         });
       }
-    } catch(e) { UI.toast(e.message, "error"); }
+    } catch(e) { 
+      UI.toast(e.message, "error"); 
+      $("chart-loader").textContent = "Falha ao carregar dados.";
+      ["kpi-mrr", "kpi-ativos", "kpi-inativos", "kpi-total", "kpi-vencendo"].forEach(id => {
+         $(id).classList.remove("skeleton");
+         $(id).textContent = "-";
+      });
+    }
   },
 
   toggleStatus: async (email, newStatus) => {
     try {
       await API.call("toggle_user_status", { targetEmail: email, status: newStatus });
-      UI.toast("Status atualizado!", "success"); Admin.syncData();
-    } catch(e) { UI.toast("Falha ao atualizar.", "error"); }
+      UI.toast("Status atualizado com sucesso!", "success"); Admin.syncData();
+    } catch(e) { UI.toast("Falha ao atualizar cliente.", "error"); }
   },
 
   filterUsers: () => {
@@ -265,7 +286,7 @@ const Admin = {
     btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Disparando...`;
     try {
       await API.call("send_message", { target: $("msg-target").value, messageData: { title: $("msg-title").value, body: $("msg-body").value }});
-      UI.toast("Campanha enviada com sucesso!", "success");
+      UI.toast("Campanha de e-mail enviada!", "success");
       $("msg-title").value = ""; $("msg-body").value = "";
     } catch(e) { UI.toast("Erro ao disparar campanha.", "error"); }
     finally { btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Disparar`; if(window.lucide) lucide.createIcons(); }
@@ -287,15 +308,15 @@ const App = {
     const client = google.accounts.oauth2.initTokenClient({
       client_id: CONFIG.CLIENT_ID, scope: "email profile",
       callback: async (t) => {
-        if (t.error) return UI.toast("Falha no login.", "error");
+        if (t.error) return UI.toast("Falha no login Google.", "error");
         try {
           const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
           const p = await res.json();
-          if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === p.email.toLowerCase())) return UI.toast("Acesso Negado.", "error");
+          if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === p.email.toLowerCase())) return UI.toast("Acesso Negado à Área de Administração.", "error");
           State.user = { name: p.name, email: p.email, picture: p.picture };
           localStorage.setItem("planilhaviva_admin_auth", JSON.stringify(State.user));
           App.startSession();
-        } catch(err) { UI.toast("Erro na validação.", "error"); }
+        } catch(err) { UI.toast("Erro na validação do utilizador.", "error"); }
       }
     });
     $("btnLogin").addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
@@ -307,7 +328,18 @@ const App = {
     splash.classList.remove("hidden"); splash.classList.add("flex");
     if(State.user.picture && $("avatar")) $("avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
     $("admin-name").textContent = State.user.name ? State.user.name.split(" ")[0] : "Líder";
-    setTimeout(() => { splash.classList.add("opacity-0"); setTimeout(() => { splash.classList.replace("flex", "hidden"); $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex"); $("bottom-nav").classList.remove("hidden"); App.nav("dashboard"); Admin.syncData(); }, 500); }, 1000);
+    
+    setTimeout(() => { 
+      splash.classList.add("opacity-0"); 
+      setTimeout(() => { 
+        splash.classList.replace("flex", "hidden"); 
+        $("view-app").classList.remove("hidden"); 
+        $("view-app").classList.add("flex"); 
+        $("bottom-nav").classList.remove("hidden"); 
+        App.nav("dashboard"); 
+        Admin.syncData(); 
+      }, 500); 
+    }, 1000);
   },
 
   logout: () => { localStorage.removeItem("planilhaviva_admin_auth"); location.reload(); },
