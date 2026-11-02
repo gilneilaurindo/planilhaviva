@@ -7,7 +7,7 @@
 <title>PlanilhaViva Pro</title>
 
 <meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
-<meta name="description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets.">
+<meta name="description" content="Controle financeiro e gestão de investimentos integrados ao Google Sheets.">
 
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
@@ -16,9 +16,9 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/pt.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
@@ -28,66 +28,123 @@
     background-image:
       radial-gradient(1000px 600px at 10% -10%, rgba(6,182,212,.18), transparent 60%),
       radial-gradient(800px 600px at 110% 110%, rgba(139,92,246,.15), transparent 60%);
-    margin: 0; overflow-x: hidden;
+    margin: 0;
+    overflow-x: hidden;
   }
-  
-  #bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+
+  #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 
   .glass {
-    background: rgba(15,23,42,.65); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+    background: rgba(15,23,42,.65);
+    backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
     border: 1px solid rgba(148,163,184,.15);
     box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05);
   }
-  .glass-neon { border: 1px solid rgba(34, 211, 238, 0.4); box-shadow: 0 0 20px rgba(34, 211, 238, 0.15), inset 0 0 15px rgba(34, 211, 238, 0.05); }
-  .glow { position:absolute; width:180px; height:180px; border-radius:9999px; background:rgba(6,182,212,.25); filter:blur(70px); top:-60px; right:-40px; pointer-events:none; }
-  .glow-purple { background:rgba(139,92,246,.25); top:auto; bottom:-40px; left:-40px; right:auto; }
+  .glass-neon {
+    border: 1px solid rgba(34,211,238,.4);
+    box-shadow: 0 0 20px rgba(34,211,238,.15), inset 0 0 15px rgba(34,211,238,.05);
+  }
+  .glow {
+    position: absolute; width: 180px; height: 180px; border-radius: 9999px;
+    background: rgba(6,182,212,.25); filter: blur(70px);
+    top: -60px; right: -40px; pointer-events: none;
+  }
+  .glow-purple { background: rgba(139,92,246,.25); top: auto; bottom: -40px; left: -40px; right: auto; }
 
   .animate-float { animation: float 4s ease-in-out infinite; }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-  
-  .icon-pop svg { animation: pop 0.5s cubic-bezier(.175, .885, .32, 1.275) both; color: #22d3ee; filter: drop-shadow(0 0 8px rgba(34,211,238,0.6)); }
+
+  .icon-pop svg {
+    animation: pop .5s cubic-bezier(.175,.885,.32,1.275) both;
+    color: #22d3ee; filter: drop-shadow(0 0 8px rgba(34,211,238,.6));
+  }
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
 
-  .view { display: none; opacity: 0; }
-  .view.active { display: block; animation: viewIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-  @keyframes viewIn { 0% { opacity: 0; transform: translateY(20px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+  .view { display: none; }
+  .view.active { display: block; animation: viewIn .5s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes viewIn {
+    0% { opacity: 0; transform: translateY(20px) scale(.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
 
-  #welcome-splash { transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(20px); }
+  #welcome-splash { transition: all .7s cubic-bezier(.4,0,.2,1); backdrop-filter: blur(20px); }
   #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.1); filter: blur(10px); }
 
   .input {
-    width:100%; background:rgba(15,23,42,.92); border:1px solid rgba(51,65,85,.9);
-    border-radius:.75rem; padding:.75rem 1rem; font-size:.85rem; color:#f8fafc;
-    transition: all .3s; outline:none; cursor: pointer;
+    width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9);
+    border-radius: .75rem; padding: .75rem 1rem; font-size: .85rem; color: #f8fafc;
+    transition: all .3s; outline: none;
   }
-  .input:focus { border-color:#22d3ee; box-shadow:0 0 15px rgba(34,211,238,.2); }
-  select.input option { background:#0f172a; }
-  .label { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:700; margin-bottom:.35rem; }
+  .input:focus { border-color: #22d3ee; box-shadow: 0 0 15px rgba(34,211,238,.2); }
+  select.input option { background: #0f172a; }
+  .label {
+    display: block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+    color: #94a3b8; font-weight: 700; margin-bottom: .35rem;
+  }
 
-  .btn-primary { background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1); color:#020617; font-weight:800; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; box-shadow: 0 10px 25px -5px rgba(6,182,212,.5); transition: all .2s; border: none; cursor:pointer; }
-  .btn-primary:active { transform:scale(.96); }
-  
-  .btn--custom { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; max-width: 280px; padding: 0.85rem 1.25rem; background: rgba(15,23,42,0.9); border: 1px solid rgba(34, 211, 238, 0.4); border-radius: 9999px; color: #f8fafc; font-size: 0.85rem; font-weight: 700; box-shadow: 0 8px 25px -8px rgba(34, 211, 238, 0.4); transition: all 0.25s ease; cursor:pointer;}
-  .btn--custom:active { transform: scale(0.96); box-shadow: 0 4px 10px -5px rgba(34, 211, 238, 0.4); }
-  .ghost-btn { border:1px solid rgba(51,65,85,.9); color:#cbd5e1; font-weight:600; font-size:.75rem; transition: background .2s, transform .15s; }
-  
-  .seg { display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; border-radius:.75rem; background:rgba(15,23,42,.9); border:1px solid rgba(51,65,85,.9); }
-  .seg-btn { padding:.55rem; border-radius:.55rem; font-size:.75rem; font-weight:700; color:#94a3b8; transition: all .25s cubic-bezier(.16,1,.3,1); }
-  .seg-btn[aria-pressed="true"] { color:#020617; background:#22d3ee; box-shadow:0 0 15px rgba(34,211,238,.6); }
-  .seg-btn[aria-pressed="true"][data-type="out"] { background:#fb7185; box-shadow:0 0 15px rgba(251,113,133,.6); }
-  .section-title { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#67e8f9; display:flex; align-items:center; gap:.4rem; }
-  
-  .conic-chart { background: conic-gradient(#3b82f6 0% 40%, #10b981 40% 65%, #8b5cf6 65% 85%, #f59e0b 85% 100%); border-radius: 50%; position: relative; box-shadow: 0 0 25px rgba(59, 130, 246, 0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-  .conic-chart::after { content: ""; position: absolute; inset: 12px; background: #0f172a; border-radius: 50%; box-shadow: inset 0 0 15px rgba(0,0,0,0.7); }
-  .compare-bar-container { display: flex; width: 100%; height: 10px; border-radius: 99px; overflow: hidden; background: #1e293b; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
-  .compare-bar-in { height: 100%; background: linear-gradient(90deg, #059669, #10b981); transition: width 1s ease-out; }
-  .compare-bar-out { height: 100%; background: linear-gradient(90deg, #e11d48, #f43f5e); transition: width 1s ease-out; }
+  .btn-primary {
+    background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1); color: #020617;
+    font-weight: 800; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase;
+    box-shadow: 0 10px 25px -5px rgba(6,182,212,.5); transition: all .2s; border: none; cursor: pointer;
+  }
+  .btn-primary:active { transform: scale(.96); }
+  .btn-primary:disabled { opacity: .6; cursor: wait; }
 
-  .toast { opacity: 0; transform: scale(0.8); transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  .btn--custom {
+    display: inline-flex; align-items: center; justify-content: center; gap: .75rem;
+    width: 100%; max-width: 280px; padding: .85rem 1.25rem;
+    background: rgba(15,23,42,.9); border: 1px solid rgba(34,211,238,.4); border-radius: 9999px;
+    color: #f8fafc; font-size: .85rem; font-weight: 700;
+    box-shadow: 0 8px 25px -8px rgba(34,211,238,.4); transition: all .25s ease; cursor: pointer;
+  }
+  .btn--custom:hover { background: rgba(30,41,59,.9); }
+  .btn--custom:active { transform: scale(.96); }
+
+  .ghost-btn { border: 1px solid rgba(51,65,85,.9); color: #cbd5e1; font-weight: 600; font-size: .75rem; transition: background .2s, transform .15s; }
+
+  .seg {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px;
+    border-radius: .75rem; background: rgba(15,23,42,.9); border: 1px solid rgba(51,65,85,.9);
+  }
+  .seg-btn {
+    padding: .55rem; border-radius: .55rem; font-size: .75rem; font-weight: 700; color: #94a3b8;
+    transition: all .25s cubic-bezier(.16,1,.3,1);
+  }
+  .seg-btn[aria-pressed="true"] { color: #020617; background: #22d3ee; box-shadow: 0 0 15px rgba(34,211,238,.6); }
+  .seg-btn[aria-pressed="true"][data-type="out"] { background: #fb7185; box-shadow: 0 0 15px rgba(251,113,133,.6); }
+
+  .section-title {
+    font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+    color: #67e8f9; display: flex; align-items: center; gap: .4rem;
+  }
+
+  .conic-chart {
+    background: conic-gradient(#3b82f6 0% 40%, #10b981 40% 65%, #8b5cf6 65% 85%, #f59e0b 85% 100%);
+    border-radius: 50%; position: relative; box-shadow: 0 0 25px rgba(59,130,246,.3);
+  }
+  .conic-chart::after {
+    content: ""; position: absolute; inset: 12px; background: #0f172a; border-radius: 50%;
+    box-shadow: inset 0 0 15px rgba(0,0,0,.7);
+  }
+  .compare-bar-container {
+    display: flex; width: 100%; height: 10px; border-radius: 99px; overflow: hidden;
+    background: #1e293b; box-shadow: inset 0 2px 4px rgba(0,0,0,.5);
+  }
+  .compare-bar-in { height: 100%; background: linear-gradient(90deg,#059669,#10b981); transition: width 1s ease-out; }
+  .compare-bar-out { height: 100%; background: linear-gradient(90deg,#e11d48,#f43f5e); transition: width 1s ease-out; }
+
+  .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
   .toast.show { opacity: 1; transform: scale(1); }
 
-  .flatpickr-calendar { background: rgba(15, 23, 42, 0.95) !important; border: 1px solid rgba(34, 211, 238, 0.3) !important; box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.2) !important; border-radius: 1rem !important; padding: 10px !important; }
-  .flatpickr-day.selected { background: linear-gradient(135deg, #06b6d4, #3b82f6) !important; color: #020617 !important; font-weight: 900 !important; box-shadow: 0 0 15px rgba(6, 182, 212, 0.8) !important; transform: scale(1.1); }
+  .flatpickr-calendar {
+    background: rgba(15,23,42,.95) !important; border: 1px solid rgba(34,211,238,.3) !important;
+    box-shadow: 0 20px 50px -10px rgba(0,0,0,.8), 0 0 30px rgba(6,182,212,.2) !important;
+    border-radius: 1rem !important; padding: 10px !important;
+  }
+  .flatpickr-day.selected {
+    background: linear-gradient(135deg,#06b6d4,#3b82f6) !important; color: #020617 !important;
+    font-weight: 900 !important; box-shadow: 0 0 15px rgba(6,182,212,.8) !important;
+  }
 </style>
 </head>
 <body class="font-sans antialiased text-slate-100 min-h-screen">
@@ -98,36 +155,38 @@
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/90 hidden flex-col items-center justify-center">
   <div class="relative z-10 animate-float">
     <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full z-0 animate-pulse"></div>
-    <div id="splash-avatar-container" class="relative z-10 w-32 h-32 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_50px_rgba(34,211,238,0.5)]"></div>
+    <div id="splash-avatar" class="relative z-10 w-32 h-32 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_50px_rgba(34,211,238,.5)]"></div>
   </div>
   <h2 class="text-3xl font-black text-white mt-8 tracking-tight z-10">Bem-vindo(a),</h2>
-  <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10 drop-shadow-[0_0_10px_rgba(34,211,238,0.4)]"></h2>
+  <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10"></h2>
   <p id="splash-status" class="text-slate-400 text-xs mt-4 animate-pulse z-10 flex items-center gap-2">
-    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A preparar a sua planilha...
+    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Preparando sua planilha...
   </p>
 </div>
 
 <main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
-  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter relative">
-    <div class="glass rounded-3xl p-8 text-center space-y-6 relative overflow-hidden glass-neon">
+
+  <!-- TELA DE LOGIN -->
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 relative">
+    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow"></div>
       <div class="glow-purple"></div>
-      
-      <div class="inline-flex p-5 rounded-3xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 animate-float mb-2 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]">
+
+      <div class="inline-flex p-5 rounded-3xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 animate-float mb-2 shadow-[0_0_30px_rgba(34,211,238,.3)]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,.8)]" aria-hidden="true">
           <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"></path>
           <path d="m9 12 2 2 4-4"></path>
         </svg>
       </div>
-      
+
       <div>
-        <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">PlanilhaViva</h1>
-        <p class="text-xs text-slate-400 mt-2 font-medium">Segurança e inteligência financeira ligada à cloud.</p>
+        <h1 class="text-3xl font-black tracking-tight text-white">PlanilhaViva</h1>
+        <p class="text-xs text-slate-400 mt-2 font-medium">Segurança e inteligência financeira ligadas à nuvem.</p>
       </div>
-      
+
       <div class="flex flex-col items-center justify-center pt-4 gap-4">
-        <button id="btnCustom" class="btn--custom hover:bg-slate-800">
-          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+        <button id="btnGoogleLogin" type="button" class="btn--custom">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
@@ -139,73 +198,74 @@
     </div>
   </section>
 
-  <section id="view-app" class="hidden flex-1 flex-col pb-32">
-    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.5)] border-b border-cyan-500/20">
+  <!-- APLICAÇÃO -->
+  <section id="view-app" class="hidden flex-col pb-32">
+    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,.5)] border-b border-cyan-500/20">
       <div class="flex items-center gap-3 min-w-0">
-        <div id="avatar" class="w-10 h-10 shrink-0 rounded-full bg-slate-800 border-2 border-cyan-400 overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(34,211,238,0.3)]"></div>
+        <div id="avatar" class="w-10 h-10 shrink-0 rounded-full bg-slate-800 border-2 border-cyan-400 overflow-hidden flex items-center justify-center"></div>
         <div class="min-w-0 flex flex-col">
-          <span class="text-[9px] text-cyan-400 font-black uppercase tracking-widest flex items-center gap-1 drop-shadow-md">
+          <span class="text-[9px] text-cyan-400 font-black uppercase tracking-widest flex items-center gap-1">
             <i data-lucide="zap" class="w-2.5 h-2.5"></i> Ligado
           </span>
           <h2 id="user-name" class="text-sm font-bold text-white truncate leading-tight"></h2>
         </div>
       </div>
       <span id="sync-status" class="text-[9px] px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-bold border border-emerald-500/30 uppercase tracking-wider">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_5px_#10b981]"></span> Nuvem OK
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> <span data-sync-text>Nuvem OK</span>
       </span>
     </header>
 
     <div class="px-5 pt-5 space-y-5">
-      
-      <!-- ABA 1: FLUXO (CAIXA DIÁRIO) -->
+
+      <!-- FLUXO: LANÇAMENTO ÚNICO -->
       <div id="view-fluxo" class="view active space-y-5">
         <div class="glass glass-neon rounded-3xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="plus-circle" class="w-5 h-5 text-cyan-400 drop-shadow-md"></i> Lançamento Único</h3>
-          <form id="txForm" class="space-y-4">
+          <h3 class="section-title"><i data-lucide="plus-circle" class="w-5 h-5 text-cyan-400"></i> Lançamento único</h3>
+          <form id="txForm" class="space-y-4" novalidate>
             <div>
-              <label class="label">Descrição</label>
-              <input id="desc" class="input font-medium" maxlength="60" placeholder="Ex: Mercado, Combustível..." required>
+              <label class="label" for="desc">Descrição</label>
+              <input id="desc" class="input font-medium" maxlength="60" placeholder="Ex.: Mercado, Combustível..." required>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="label">Valor (R$)</label>
+                <label class="label" for="amount">Valor (R$)</label>
                 <input id="amount" type="number" class="input font-bold text-cyan-100" step="0.01" min="0.01" placeholder="0,00" required>
               </div>
               <div>
-                <label class="label">Data exata</label>
+                <label class="label" for="date">Data</label>
                 <input id="date" type="text" class="input font-bold text-center" placeholder="Data" required>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="label">Natureza</label>
-                <div class="seg" role="group" id="seg-normal">
+                <span class="label">Natureza</span>
+                <div class="seg" role="group" aria-label="Natureza do lançamento" id="seg-normal">
                   <button type="button" class="seg-btn" data-type="in" aria-pressed="true">Entrada</button>
                   <button type="button" class="seg-btn" data-type="out" aria-pressed="false">Saída</button>
                 </div>
               </div>
               <div>
-                <label class="label">Categoria</label>
+                <label class="label" for="category">Categoria</label>
                 <select id="category" class="input font-medium text-xs h-[42px]"></select>
               </div>
             </div>
             <input type="hidden" id="type" value="in">
             <button id="btnSave" type="submit" class="btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-2 text-sm">
-              <i data-lucide="send" class="w-4 h-4"></i> Enviar para Nuvem
+              <i data-lucide="send" class="w-4 h-4"></i> Enviar para a nuvem
             </button>
           </form>
         </div>
       </div>
 
-      <!-- ABA 2: RESUMO -->
+      <!-- RESUMO -->
       <div id="view-resumo" class="view space-y-5">
-        <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center border border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,0.15)]">
+        <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center border border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,.15)]">
           <div class="glow"></div>
           <p class="text-[10px] uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2">
-            <i data-lucide="wallet" class="w-3 h-3"></i> <span id="label-saldo">Saldo Consolidado</span>
+            <i data-lucide="wallet" class="w-3 h-3"></i> Saldo consolidado
           </p>
-          <p id="saldo" class="text-4xl font-black mt-1 tabular-nums drop-shadow-md text-white">R$ 0,00</p>
-          <button onclick="carregarResumo()" class="absolute top-4 right-4 text-cyan-400 hover:text-white transition-colors">
+          <p id="saldo" class="text-4xl font-black mt-1 tabular-nums text-white">R$ 0,00</p>
+          <button id="btnRefresh" type="button" class="absolute top-4 right-4 text-cyan-400 hover:text-white transition-colors" aria-label="Atualizar resumo">
             <i data-lucide="refresh-cw" class="w-4 h-4"></i>
           </button>
         </div>
@@ -217,8 +277,8 @@
             <span class="text-rose-400">Despesas</span>
           </div>
           <div class="compare-bar-container mt-1">
-            <div id="bar-in" class="compare-bar-in" style="width: 50%;"></div>
-            <div id="bar-out" class="compare-bar-out" style="width: 50%;"></div>
+            <div id="bar-in" class="compare-bar-in" style="width: 0%"></div>
+            <div id="bar-out" class="compare-bar-out" style="width: 0%"></div>
           </div>
           <div class="flex justify-between text-[10px] text-slate-400 tabular-nums font-mono mt-1">
             <span id="txt-in">R$ 0,00</span>
@@ -227,84 +287,91 @@
         </div>
       </div>
 
-      <!-- ABA 3: INVESTIMENTOS -->
+      <!-- INVESTIR -->
       <div id="view-investir" class="view space-y-5">
         <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col items-center">
           <div class="glow"></div>
           <div class="glow-purple"></div>
-          <h3 class="text-[10px] uppercase tracking-widest text-slate-300 font-bold mb-6">Gráfico de Património</h3>
-          <div id="grafico-patrimonio" class="conic-chart w-40 h-40 flex items-center justify-center mb-6 animate-float">
+          <h3 class="text-[10px] uppercase tracking-widest text-slate-300 font-bold mb-6">Gráfico de patrimônio</h3>
+          <div class="conic-chart w-40 h-40 flex items-center justify-center mb-6 animate-float">
             <div class="absolute z-10 flex flex-col items-center text-center">
-              <span class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">Total Investido</span>
-              <span id="invest-total" class="text-xl font-black text-white drop-shadow-md transition-all">R$ 0,00</span>
+              <span class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">Total investido</span>
+              <span id="invest-total" class="text-xl font-black text-white transition-all">R$ 0,00</span>
             </div>
           </div>
-          <p class="text-xs text-slate-400 text-center">Tudo o que lança como <b>"Investimento"</b> acumula aqui através da planilha.</p>
+          <p class="text-xs text-slate-400 text-center">Tudo que for lançado como <b>"Investimento"</b> acumula aqui pela planilha.</p>
         </div>
       </div>
 
-      <!-- ABA 4: CONFIGURAÇÕES E CUSTOS FIXOS -->
+      <!-- PERFIL: PLANILHA, CONTAS FIXAS E SAÍDA -->
       <div id="view-config" class="view space-y-5">
-        
-        <!-- ABRIR PLANILHA (BOTÃO GIGANTE) -->
-        <div class="glass rounded-3xl p-8 flex flex-col items-center text-center gap-3 border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.2)] relative overflow-hidden">
-          <div class="glow" style="background:rgba(16,185,129,.25);"></div>
+        <div class="glass rounded-3xl p-8 flex flex-col items-center text-center gap-3 border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,.2)] relative overflow-hidden">
+          <div class="glow" style="background:rgba(16,185,129,.25)"></div>
           <div id="cfg-avatar" class="w-20 h-20 shrink-0 rounded-full bg-slate-800 border-4 border-emerald-400 overflow-hidden flex items-center justify-center z-10"></div>
-          <div class="z-10 mt-2">
-            <p class="text-xs text-slate-400 font-mono mb-4">Sua área de inteligência</p>
-          </div>
-          
-          <a id="link-planilha" href="#" target="_blank" class="relative z-10 mt-2 btn-primary !bg-emerald-500 !from-emerald-400 !to-emerald-600 w-full py-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-[0_10px_25px_-5px_rgba(16,185,129,0.5)]">
+          <p class="text-xs text-slate-400 font-mono z-10">Sua área de inteligência</p>
+          <a id="link-planilha" href="#" target="_blank" rel="noopener"
+             class="relative z-10 mt-2 btn-primary !bg-emerald-500 !from-emerald-400 !to-emerald-600 w-full py-4 rounded-xl flex items-center justify-center gap-2 text-sm">
             <i data-lucide="table" class="w-5 h-5 text-white"></i>
-            <span class="text-white font-black">Abrir Planilha Completa</span>
+            <span class="text-white font-black">Abrir planilha completa</span>
           </a>
         </div>
 
-        <!-- FORMULÁRIO CUSTOS FIXOS (PREVISIBILIDADE) -->
         <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title text-purple-400"><i data-lucide="repeat" class="w-4 h-4"></i> Contas Fixas (Previsibilidade)</h3>
-          <p class="text-[10px] text-slate-400 mb-2">Lança uma vez e o sistema projeta até o final do ano. Ex: Netflix, Internet, Salário.</p>
-          
-          <form id="fixedForm" class="space-y-4">
+          <h3 class="section-title text-purple-400"><i data-lucide="repeat" class="w-4 h-4"></i> Contas fixas (previsibilidade)</h3>
+          <p class="text-[10px] text-slate-400">Lance uma vez e o sistema projeta até o fim do ano. Ex.: Netflix, Internet, Salário.</p>
+
+          <form id="fixedForm" class="space-y-4" novalidate>
             <div>
-              <input id="f-desc" class="input font-medium text-sm" placeholder="Nome da conta fixa" required>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <input id="f-amount" type="number" class="input font-bold text-purple-100" step="0.01" placeholder="Valor (R$)" required>
-              <select id="f-startMonth" class="input font-medium text-xs">
-                <option value="10">A partir de Outubro</option>
-                <option value="11">A partir de Novembro</option>
-                <option value="12">A partir de Dezembro</option>
-              </select>
+              <label class="label" for="f-desc">Nome da conta</label>
+              <input id="f-desc" class="input font-medium text-sm" maxlength="60" placeholder="Ex.: Internet" required>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <div class="seg" role="group" id="seg-fixed">
+                <label class="label" for="f-amount">Valor (R$)</label>
+                <input id="f-amount" type="number" class="input font-bold text-purple-100" step="0.01" min="0.01" placeholder="0,00" required>
+              </div>
+              <div>
+                <label class="label" for="f-startMonth">Início</label>
+                <select id="f-startMonth" class="input font-medium text-xs">
+                  <option value="10">A partir de outubro</option>
+                  <option value="11">A partir de novembro</option>
+                  <option value="12">A partir de dezembro</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <span class="label">Tipo</span>
+                <div class="seg" role="group" aria-label="Tipo da conta fixa" id="seg-fixed">
                   <button type="button" class="seg-btn" data-type="in" aria-pressed="false">Receita</button>
                   <button type="button" class="seg-btn" data-type="out" aria-pressed="true">Despesa</button>
                 </div>
               </div>
-              <input id="f-day" type="number" class="input text-center text-xs" min="1" max="31" placeholder="Dia Vencimento" required>
+              <div>
+                <label class="label" for="f-day">Dia de vencimento</label>
+                <input id="f-day" type="number" class="input text-center text-xs" min="1" max="31" placeholder="1 a 31" required>
+              </div>
             </div>
             <input type="hidden" id="f-type" value="out">
             <button id="btnSaveFixed" type="submit" class="btn-primary !from-purple-500 !to-pink-600 w-full py-3 rounded-xl flex items-center justify-center gap-2 mt-2 text-xs">
-              <i data-lucide="calendar-clock" class="w-4 h-4"></i> Projetar para o Ano
+              <i data-lucide="calendar-clock" class="w-4 h-4"></i> Projetar para o ano
             </button>
           </form>
         </div>
 
-        <button id="btnLogout" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
-          <i data-lucide="log-out" class="w-5 h-5"></i> Sair da Conta
+        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
+          <i data-lucide="log-out" class="w-5 h-5"></i> Sair da conta
         </button>
       </div>
     </div>
   </section>
 </main>
 
+<!-- NAVEGAÇÃO INFERIOR -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
-  <div class="glass rounded-2xl relative grid grid-cols-4 p-1 shadow-[0_20px_40px_rgba(0,0,0,0.8)] border border-cyan-500/20">
-    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-cyan-500/20 border border-cyan-400/40 w-[calc((100%-0.5rem)/4)] transition-all duration-300 ease-out shadow-[0_0_15px_rgba(34,211,238,0.2)]"></span>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-cyan-300" data-view="fluxo" aria-current="page"><i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Lançar</span></button>
+  <div class="glass rounded-2xl relative grid grid-cols-4 p-1 shadow-[0_20px_40px_rgba(0,0,0,.8)] border border-cyan-500/20">
+    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-cyan-500/20 border border-cyan-400/40 w-[calc((100%-0.5rem)/4)] transition-all duration-300 ease-out"></span>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-cyan-300" data-view="fluxo"><i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Lançar</span></button>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="resumo"><i data-lucide="bar-chart-2" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Resumo</span></button>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="investir"><i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Investir</span></button>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Perfil</span></button>
@@ -312,236 +379,490 @@
 </nav>
 
 <script>
-// SUAS CHAVES REAIS AQUI
-const _CLIENT_ID = "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2HmvHCWbNS4P4ECNDQrPmIai_QRV5kez7yLgOOvx-Nub4eOTkU5eRqThMnrtDYBIqNg/exec"; 
+// ======================== CONFIGURAÇÃO ========================
 
-const CATEGORIES = ["Receita","Dízimo","Fixos","Pessoal","Saúde","Dívidas","Investimento","Outros"];
-const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
-const $ = id => document.getElementById(id);
-const state = { user: null };
+const CONFIG = Object.freeze({
+  GOOGLE_CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx2HmvHCWbNS4P4ECNDQrPmIai_QRV5kez7yLgOOvx-Nub4eOTkU5eRqThMnrtDYBIqNg/exec",
+  STORAGE_KEY_USER: "planilhaviva_user_v2",
+  CATEGORIES: ["Receita", "Dízimo", "Fixos", "Pessoal", "Saúde", "Dívidas", "Investimento", "Outros"],
+  MONTH_NAMES: Object.freeze({ 10: "Outubro", 11: "Novembro", 12: "Dezembro" }),
+  MAX_DAY: 31,
+  DEFAULT_NAME: "Usuário",
+  TOAST_DURATION_MS: 3500,
+});
 
-function initParticles() {
-  const canvas = $("bg"); if (!canvas) return; const ctx = canvas.getContext("2d"); let particles = [];
-  function resize() { 
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight; 
-    const count = Math.min(50, Math.floor((canvas.width * canvas.height) / 10000)); 
-    particles = Array.from({ length: count }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6, r: Math.random() * 2 + 0.5 })); 
-  }
-  window.addEventListener('resize', resize); resize();
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => { 
-      p.x += p.vx; p.y += p.vy; 
-      if (p.x < 0 || p.x > canvas.width) p.vx *= -1; 
-      if (p.y < 0 || p.y > canvas.height) p.vy *= -1; 
-      ctx.fillStyle = "rgba(34, 211, 238, 0.4)"; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); 
-    });
-    requestAnimationFrame(animate);
-  }
-  animate();
+const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const $ = (id) => document.getElementById(id);
+
+const state = {
+  user: null,
+  sheetUrl: null,
+  datePicker: null,
+};
+
+// ======================== UTILITÁRIOS DE UI ========================
+
+function refreshIcons() {
+  if (window.lucide) lucide.createIcons();
 }
 
-const icons = () => { if (window.lucide) lucide.createIcons(); };
+/** Mostra uma notificação. O texto é sempre inserido como texto puro (sem HTML). */
+function toast(message, type = "success") {
+  const iconName = { success: "check-circle", warning: "alert-triangle", error: "alert-triangle" }[type];
+  const iconColor = type === "error" ? "text-rose-400" : type === "warning" ? "text-amber-400" : "text-cyan-400";
 
-function toast(msg, type = "info") {
-  const t = document.createElement("div"); 
-  t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-[0_20px_50px_rgba(0,0,0,0.9)] border border-cyan-400/50 z-[9999]";
-  t.innerHTML = `<i data-lucide="${type === 'error' ? 'alert-triangle' : 'check-circle'}" class="w-6 h-6 shrink-0 ${type === 'error' ? 'text-rose-400' : 'text-cyan-400'}"></i><span class="text-center">${msg}</span>`;
-  $("toasts").append(t); icons(); requestAnimationFrame(() => t.classList.add("show"));
-  setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3500);
+  const el = document.createElement("div");
+  el.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-[0_20px_50px_rgba(0,0,0,.9)] border border-cyan-400/50";
+
+  const icon = document.createElement("i");
+  icon.dataset.lucide = iconName;
+  icon.className = `w-6 h-6 shrink-0 ${iconColor}`;
+
+  const text = document.createElement("span");
+  text.className = "text-center";
+  text.textContent = message;
+
+  el.append(icon, text);
+  $("toasts").append(el);
+  refreshIcons();
+
+  requestAnimationFrame(() => el.classList.add("show"));
+  setTimeout(() => {
+    el.classList.remove("show");
+    setTimeout(() => el.remove(), 400);
+  }, CONFIG.TOAST_DURATION_MS);
 }
 
-function setAvatar(box, u) {
-  if(!box) return; box.innerHTML = '';
-  if (u && u.picture) { 
-    const img = document.createElement("img"); img.src = u.picture; img.className = "w-full h-full object-cover shrink-0"; img.referrerPolicy = "no-referrer"; box.append(img); 
-  } else { 
-    box.innerHTML = `<i data-lucide="user" class="w-1/2 h-1/2 text-slate-400"></i>`; icons(); 
+/** Desativa o botão e mostra um indicador enquanto a operação roda. */
+async function withButtonLoading(button, loadingLabel, operation) {
+  const originalHtml = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> ${loadingLabel}`;
+  refreshIcons();
+
+  try {
+    return await operation();
+  } finally {
+    button.disabled = false;
+    button.innerHTML = originalHtml;
+    refreshIcons();
   }
 }
 
-async function api(action, payload = {}) {
-  const emailToSend = state.user ? state.user.email : payload.email;
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ action, email: emailToSend, ...payload })
+function setSyncStatus(online) {
+  const box = $("sync-status");
+  const text = box.querySelector("[data-sync-text]");
+  box.classList.toggle("text-emerald-400", online);
+  box.classList.toggle("bg-emerald-500/10", online);
+  box.classList.toggle("border-emerald-500/30", online);
+  box.classList.toggle("text-rose-400", !online);
+  box.classList.toggle("bg-rose-500/10", !online);
+  box.classList.toggle("border-rose-500/30", !online);
+  text.textContent = online ? "Nuvem OK" : "Offline";
+}
+
+function setAvatar(container, user) {
+  container.innerHTML = "";
+  if (user && user.picture) {
+    const img = document.createElement("img");
+    img.src = user.picture;
+    img.alt = "";
+    img.className = "w-full h-full object-cover";
+    img.referrerPolicy = "no-referrer";
+    container.append(img);
+  } else {
+    container.innerHTML = `<i data-lucide="user" class="w-1/2 h-1/2 text-slate-400"></i>`;
+    refreshIcons();
+  }
+}
+
+function firstName(user) {
+  return (user.name || CONFIG.DEFAULT_NAME).trim().split(/\s+/)[0];
+}
+
+/** Liga um grupo de botões segmentados a um input hidden. */
+function setupSegment(groupId, hiddenId) {
+  const buttons = document.querySelectorAll(`#${groupId} .seg-btn`);
+  buttons.forEach((btn) => btn.addEventListener("click", () => setSegment(groupId, hiddenId, btn.dataset.type)));
+}
+
+function setSegment(groupId, hiddenId, type) {
+  $(hiddenId).value = type;
+  document.querySelectorAll(`#${groupId} .seg-btn`).forEach((btn) => {
+    btn.setAttribute("aria-pressed", String(btn.dataset.type === type));
   });
-  return await res.json();
 }
 
-async function carregarResumo() {
+// ======================== COMUNICAÇÃO COM O BACKEND ========================
+
+/**
+ * Chama o Apps Script. Lança erro se a rede falhar ou se o servidor
+ * responder com status diferente de "success".
+ */
+async function api(action, payload = {}) {
+  let response;
   try {
-    const r = await api("get_summary");
-    const saldo = r.entrada - r.saida;
-    $("saldo").textContent = brl.format(saldo);
-    $("txt-in").textContent = brl.format(r.entrada);
-    $("txt-out").textContent = brl.format(r.saida);
-    
-    const total = r.entrada + r.saida || 1;
-    $("bar-in").style.width = `${(r.entrada / total) * 100}%`;
-    $("bar-out").style.width = `${(r.saida / total) * 100}%`;
-    
-    $("invest-total").textContent = brl.format(r.investido || 0);
-  } catch (e) {
-    console.error("Erro ao carregar resumo", e);
+    response = await fetch(CONFIG.SCRIPT_URL, {
+      method: "POST",
+      // text/plain evita a requisição de preflight (CORS) no Apps Script
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action, email: state.user?.email, ...payload }),
+    });
+  } catch {
+    throw new Error("Sem ligação com o servidor.");
+  }
+
+  let json;
+  try {
+    json = await response.json();
+  } catch {
+    throw new Error("Resposta inesperada do servidor.");
+  }
+
+  if (json.status !== "success") {
+    throw new Error(json.message || "Erro desconhecido.");
+  }
+  return json;
+}
+
+// ======================== AUTENTICAÇÃO ========================
+
+function setupGoogleLogin(attempts = 0) {
+  if (!window.google?.accounts?.oauth2) {
+    if (attempts > 50) {
+      toast("Não foi possível carregar o login do Google.", "error");
+      return;
+    }
+    return setTimeout(() => setupGoogleLogin(attempts + 1), 200);
+  }
+
+  const tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CONFIG.GOOGLE_CLIENT_ID,
+    scope: "email profile",
+    callback: onGoogleToken,
+  });
+
+  $("btnGoogleLogin").addEventListener("click", () => {
+    tokenClient.requestAccessToken({ prompt: "select_account" });
+  });
+}
+
+async function onGoogleToken(resp) {
+  if (resp.error) {
+    toast("Erro no login. Tente novamente.", "error");
+    return;
+  }
+
+  try {
+    const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: { Authorization: `Bearer ${resp.access_token}` },
+    });
+    if (!res.ok) throw new Error("userinfo");
+    const profile = await res.json();
+
+    state.user = { name: profile.name, email: profile.email, picture: profile.picture };
+    localStorage.setItem(CONFIG.STORAGE_KEY_USER, JSON.stringify(state.user));
+    startSession(state.user);
+  } catch {
+    toast("Não foi possível obter os dados da conta.", "error");
   }
 }
 
-async function iniciarContaNaNuvem(user) {
-  $("view-auth").classList.add("hidden");
-  setAvatar($("splash-avatar-container"), user);
-  $("splash-name").textContent = user.name.split(" ")[0] + "!";
-  $("welcome-splash").classList.remove("hidden"); 
-  $("welcome-splash").classList.add("flex");
+function logout() {
+  localStorage.removeItem(CONFIG.STORAGE_KEY_USER);
+  location.reload();
+}
 
+// ======================== SESSÃO ========================
+
+/**
+ * Garante a planilha do usuário no backend (idempotente) e abre o app.
+ */
+async function startSession(user) {
+  $("view-auth").classList.add("hidden");
+  setAvatar($("splash-avatar"), user);
+  $("splash-name").textContent = firstName(user) + "!";
+  showSplash();
+
+  let online = true;
   try {
-    const sheetGravada = localStorage.getItem(`pv_sheet_url_${user.email}`);
-    
-    if(!sheetGravada) {
-      $("splash-status").innerHTML = `<i data-lucide="cloud-cog" class="w-4 h-4 animate-bounce"></i> Sincronizando banco de dados seguro...`; icons();
-      const respostaNuvem = await api("init_user", { name: user.name });
-      if (respostaNuvem.sheetUrl) {
-        localStorage.setItem(`pv_sheet_url_${user.email}`, respostaNuvem.sheetUrl);
-      }
-    }
-    $("splash-status").innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Tudo pronto!`; icons();
-  } catch (erro) {
-    $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i> Carregando local...`; icons();
+    const res = await api("init_user", { name: user.name });
+    state.sheetUrl = res.sheetUrl;
+    setSplashStatus("check-circle", "Tudo pronto!", "text-emerald-400");
+  } catch {
+    online = false;
+    setSplashStatus("alert-triangle", "Modo offline: alguns dados podem não carregar.", "text-rose-400");
   }
 
   setTimeout(() => {
-    $("welcome-splash").classList.add("hide-splash");
-    setTimeout(() => { $("welcome-splash").classList.remove("flex"); $("welcome-splash").classList.add("hidden"); enterApp(); }, 700);
-  }, 1000); 
+    const splash = $("welcome-splash");
+    splash.classList.add("hide-splash");
+    setTimeout(() => {
+      splash.classList.add("hidden");
+      splash.classList.remove("flex", "hide-splash");
+      enterApp(online);
+    }, 700);
+  }, 1000);
 }
 
-function setupGooglePopup() {
-  if (!window.google) return setTimeout(setupGooglePopup, 300);
-  const tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: _CLIENT_ID, scope: "email profile",
-    callback: async (resp) => {
-      if (resp.error) return toast("Erro no login. Verifique o Client ID.", "error");
-      const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${resp.access_token}` } });
-      const profile = await userInfoRes.json();
-      state.user = { name: profile.name, email: profile.email, picture: profile.picture };
-      localStorage.setItem("planilhaviva_user_v2", JSON.stringify(state.user)); 
-      iniciarContaNaNuvem(state.user);
-    }
-  });
-  $("btnCustom").addEventListener("click", () => tokenClient.requestAccessToken({ prompt: "select_account" }));
+function showSplash() {
+  const splash = $("welcome-splash");
+  splash.classList.remove("hidden", "hide-splash");
+  splash.classList.add("flex");
+  setSplashStatus("cloud-cog", "Sincronizando banco de dados seguro...", "text-slate-400");
 }
 
-function enterApp() {
-  const u = state.user;
-  $("user-name").textContent = u.name.split(" ")[0]; setAvatar($("avatar"), u);
-  setAvatar($("cfg-avatar"), u);
-  
-  const urlPlanilha = localStorage.getItem(`pv_sheet_url_${u.email}`);
-  if(urlPlanilha) {
-    $("link-planilha").href = urlPlanilha;
-    $("link-planilha").classList.remove("hidden");
+function setSplashStatus(icon, text, colorClass) {
+  $("splash-status").innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 ${colorClass}"></i> <span></span>`;
+  $("splash-status").querySelector("span").textContent = text;
+  refreshIcons();
+}
+
+function enterApp(online) {
+  const user = state.user;
+  $("user-name").textContent = firstName(user);
+  setAvatar($("avatar"), user);
+  setAvatar($("cfg-avatar"), user);
+  setSyncStatus(online);
+
+  const link = $("link-planilha");
+  if (state.sheetUrl) {
+    link.href = state.sheetUrl;
+    link.classList.remove("pointer-events-none", "opacity-50");
+  } else {
+    link.href = "#";
+    link.classList.add("pointer-events-none", "opacity-50");
   }
 
-  $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex", "enter"); $("bottom-nav").classList.remove("hidden");
+  $("view-app").classList.remove("hidden");
+  $("view-app").classList.add("flex");
+  $("bottom-nav").classList.remove("hidden");
+
   go("fluxo");
   carregarResumo();
 }
 
+// ======================== NAVEGAÇÃO ========================
+
+const VIEWS = ["fluxo", "resumo", "investir", "config"];
+
 function go(name) {
-  ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
-    const on = v === name; $("view-" + v).classList.toggle("active", on);
-    const btn = document.querySelector(`.nav-btn[data-view="${v}"]`); btn.setAttribute("aria-current", on ? "page" : "false");
-    btn.classList.toggle("text-cyan-300", on); btn.classList.toggle("text-slate-400", !on);
-    if (on) { 
-      $("nav-pill").style.transform = `translateX(${i * 100}%)`; 
-      btn.classList.remove("icon-pop"); void btn.offsetWidth; btn.classList.add("icon-pop"); 
+  VIEWS.forEach((view, index) => {
+    const isActive = view === name;
+    $("view-" + view).classList.toggle("active", isActive);
+
+    const btn = document.querySelector(`.nav-btn[data-view="${view}"]`);
+    btn.setAttribute("aria-current", isActive ? "page" : "false");
+    btn.classList.toggle("text-cyan-300", isActive);
+    btn.classList.toggle("text-slate-400", !isActive);
+
+    if (isActive) {
+      $("nav-pill").style.transform = `translateX(${index * 100}%)`;
+      btn.classList.remove("icon-pop");
+      void btn.offsetWidth; // reinicia a animação
+      btn.classList.add("icon-pop");
     }
   });
-  window.scrollTo(0, 0); icons();
+  window.scrollTo(0, 0);
+  refreshIcons();
+}
+
+// ======================== RESUMO ========================
+
+async function carregarResumo() {
+  try {
+    const r = await api("get_summary");
+    const entrada = Number(r.entrada) || 0;
+    const saida = Number(r.saida) || 0;
+    const investido = Number(r.investido) || 0;
+    const total = entrada + saida;
+
+    $("saldo").textContent = brl.format(entrada - saida);
+    $("txt-in").textContent = brl.format(entrada);
+    $("txt-out").textContent = brl.format(saida);
+    $("bar-in").style.width = total ? `${(entrada / total) * 100}%` : "0%";
+    $("bar-out").style.width = total ? `${(saida / total) * 100}%` : "0%";
+    $("invest-total").textContent = brl.format(investido);
+
+    setSyncStatus(true);
+  } catch (err) {
+    console.error("Erro ao carregar resumo:", err);
+    setSyncStatus(false);
+  }
+}
+
+// ======================== FORMULÁRIOS ========================
+
+function resetTransactionForm() {
+  $("txForm").reset();
+  setSegment("seg-normal", "type", "in");
+  if (state.datePicker) state.datePicker.setDate(new Date(), true);
+}
+
+function resetFixedForm() {
+  $("fixedForm").reset();
+  setSegment("seg-fixed", "f-type", "out");
+}
+
+async function onSubmitTransaction(event) {
+  event.preventDefault();
+
+  const desc = $("desc").value.trim();
+  const amount = parseFloat($("amount").value);
+  const date = $("date").value;
+
+  if (!desc) return toast("Informe uma descrição.", "error");
+  if (!Number.isFinite(amount) || amount <= 0) return toast("Informe um valor maior que zero.", "error");
+  if (!date) return toast("Informe a data.", "error");
+
+  const payload = {
+    desc,
+    amount,
+    type: $("type").value,
+    category: $("category").value,
+    date,
+  };
+
+  try {
+    await withButtonLoading($("btnSave"), "Salvando...", () => api("add_transaction", payload));
+    toast("Lançado com sucesso!");
+    resetTransactionForm();
+    carregarResumo();
+  } catch (err) {
+    toast(err.message, "error");
+  }
+}
+
+async function onSubmitFixed(event) {
+  event.preventDefault();
+
+  const desc = $("f-desc").value.trim();
+  const amount = parseFloat($("f-amount").value);
+  const fixedDay = parseInt($("f-day").value, 10);
+
+  if (!desc) return toast("Informe o nome da conta.", "error");
+  if (!Number.isFinite(amount) || amount <= 0) return toast("Informe um valor maior que zero.", "error");
+  if (!Number.isInteger(fixedDay) || fixedDay < 1 || fixedDay > CONFIG.MAX_DAY) {
+    return toast("Dia de vencimento inválido (1 a 31).", "error");
+  }
+
+  const payload = {
+    desc,
+    amount,
+    type: $("f-type").value,
+    startMonth: Number($("f-startMonth").value),
+    fixedDay,
+  };
+
+  try {
+    const res = await withButtonLoading($("btnSaveFixed"), "Projetando...", () => api("add_fixed_transaction", payload));
+
+    if (res.skippedMonths?.length) {
+      const names = res.skippedMonths.map((m) => CONFIG.MONTH_NAMES[m] || m).join(", ");
+      toast(`Projetado, mas sem espaço em: ${names}.`, "warning");
+    } else {
+      toast(res.message || "Conta fixa projetada até o fim do ano!");
+    }
+
+    resetFixedForm();
+    carregarResumo();
+  } catch (err) {
+    toast(err.message, "error");
+  }
+}
+
+// ======================== INICIALIZAÇÃO ========================
+
+function populateCategories() {
+  const select = $("category");
+  CONFIG.CATEGORIES.forEach((name) => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    select.append(option);
+  });
+}
+
+function initParticles() {
+  const canvas = $("bg");
+  const ctx = canvas.getContext("2d");
+  let particles = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const count = Math.min(50, Math.floor((canvas.width * canvas.height) / 10000));
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: (Math.random() - 0.5) * 0.6,
+      r: Math.random() * 2 + 0.5,
+    }));
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+      ctx.fillStyle = "rgba(34,211,238,.4)";
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener("resize", resize);
+  resize();
+  animate();
+}
+
+function restoreSavedUser() {
+  try {
+    return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_USER));
+  } catch {
+    localStorage.removeItem(CONFIG.STORAGE_KEY_USER);
+    return null;
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initParticles(); 
-  CATEGORIES.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; $("category").append(o); });
-  
-  flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
-  icons();
+  initParticles();
+  populateCategories();
 
-  const savedUser = localStorage.getItem("planilhaviva_user_v2");
-  if (savedUser) { 
-    state.user = JSON.parse(savedUser); 
-    iniciarContaNaNuvem(state.user); 
-  } else { 
-    setupGooglePopup(); 
+  state.datePicker = flatpickr("#date", {
+    locale: "pt",
+    dateFormat: "Y-m-d",
+    defaultDate: new Date(),
+    disableMobile: true,
+  });
+
+  setupSegment("seg-normal", "type");
+  setupSegment("seg-fixed", "f-type");
+
+  document.querySelectorAll(".nav-btn").forEach((btn) => {
+    btn.addEventListener("click", () => go(btn.dataset.view));
+  });
+
+  $("btnRefresh").addEventListener("click", carregarResumo);
+  $("btnLogout").addEventListener("click", logout);
+  $("txForm").addEventListener("submit", onSubmitTransaction);
+  $("fixedForm").addEventListener("submit", onSubmitFixed);
+
+  refreshIcons();
+
+  const savedUser = restoreSavedUser();
+  if (savedUser?.email) {
+    state.user = savedUser;
+    startSession(savedUser);
+  } else {
+    setupGoogleLogin();
   }
-
-  document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
-  
-  document.querySelectorAll("#seg-normal .seg-btn").forEach(b => b.addEventListener("click", () => {
-    $("type").value = b.dataset.type; 
-    document.querySelectorAll("#seg-normal .seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
-  }));
-
-  document.querySelectorAll("#seg-fixed .seg-btn").forEach(b => b.addEventListener("click", () => {
-    $("f-type").value = b.dataset.type; 
-    document.querySelectorAll("#seg-fixed .seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
-  }));
-
-  $("btnLogout").addEventListener("click", () => { 
-    localStorage.removeItem("planilhaviva_user_v2"); 
-    location.reload(); 
-  });
-  
-  // SUBMIT LANÇAMENTO DIÁRIO
-  $("txForm").addEventListener("submit", async e => { 
-    e.preventDefault(); 
-    const payload = {
-      desc: $("desc").value.trim(), amount: parseFloat($("amount").value), 
-      type: $("type").value, category: $("category").value, date: $("date").value
-    };
-    
-    const btn = $("btnSave");
-    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`; icons();
-    
-    try {
-      await api("add_transaction", payload); 
-      toast("Lançado com sucesso!", "success"); 
-      $("txForm").reset(); 
-      if ($("date")._flatpickr) $("date")._flatpickr.setDate("today");
-      carregarResumo();
-    } catch(err) {
-      toast("Erro de ligação.", "error");
-    } finally {
-      btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Enviar para Nuvem`; icons();
-    }
-  });
-
-  // SUBMIT CONTAS FIXAS
-  $("fixedForm").addEventListener("submit", async e => { 
-    e.preventDefault(); 
-    const payload = {
-      desc: $("f-desc").value.trim(), 
-      amount: parseFloat($("f-amount").value), 
-      type: $("f-type").value, 
-      startMonth: $("f-startMonth").value, 
-      fixedDay: $("f-day").value 
-    };
-    
-    const btn = $("btnSaveFixed");
-    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Projetando...`; icons();
-    
-    try {
-      await api("add_fixed_transaction", payload); 
-      toast("Conta fixa projetada até ao fim do ano!", "success"); 
-      $("fixedForm").reset(); 
-      carregarResumo();
-    } catch(err) {
-      toast("Erro ao projetar conta fixa.", "error");
-    } finally {
-      btn.innerHTML = `<i data-lucide="calendar-clock" class="w-4 h-4"></i> Projetar para o Ano`; icons();
-    }
-  });
 });
 </script>
 </body>
