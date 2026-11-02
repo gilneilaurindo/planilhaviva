@@ -1,7 +1,7 @@
 {
   "name": "PlanilhaViva Pro",
   "short_name": "PlanilhaViva",
-  "description": "Controlo financeiro e inteligência conectada ao seu Google Sheets.",
+  "description": "A sua central financeira blindada e inteligente.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#020617",
@@ -11,12 +11,14 @@
     {
       "src": "https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
