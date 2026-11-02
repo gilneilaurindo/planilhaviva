@@ -107,9 +107,66 @@
   .toast { opacity:0; transform: translateY(-15px) scale(.95); transition: all .4s cubic-bezier(.16,1,.3,1); }
   .toast.show { opacity:1; transform:none; }
 
-  /* CALENDÁRIO NEON FLATPICKR */
-  .flatpickr-calendar { background: rgba(15, 23, 42, 0.95) !important; border: 1px solid rgba(34, 211, 238, 0.3) !important; box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.15) !important; border-radius: 1rem !important; }
-  .flatpickr-day.selected { background: linear-gradient(135deg, #06b6d4, #3b82f6) !important; border-color: transparent !important; color: #020617 !important; font-weight: 800 !important; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.6) !important; }
+  /* =====================================================================
+     CALENDÁRIO NEON FLATPICKR - CORREÇÃO DE CONTRASTE E CORES
+     ===================================================================== */
+  .flatpickr-calendar { 
+    background: rgba(15, 23, 42, 0.95) !important; 
+    border: 1px solid rgba(34, 211, 238, 0.3) !important; 
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.2) !important; 
+    border-radius: 1rem !important; 
+    padding: 10px !important;
+  }
+  
+  /* Corrigindo Setas do Calendário */
+  .flatpickr-calendar.arrowTop:before { border-bottom-color: rgba(34, 211, 238, 0.3) !important; }
+  .flatpickr-calendar.arrowTop:after { border-bottom-color: rgba(15, 23, 42, 0.95) !important; }
+  .flatpickr-prev-month svg, .flatpickr-next-month svg { fill: #22d3ee !important; }
+  .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: #06b6d4 !important; }
+  
+  /* Corrigindo Cabeçalho (Mês e Ano) */
+  .flatpickr-current-month .cur-month, .flatpickr-current-month input.cur-year { 
+    color: #ffffff !important; 
+    font-weight: 900 !important; 
+  }
+  .flatpickr-current-month .flatpickr-monthDropdown-months { 
+    background: #0f172a !important; color: #ffffff !important; 
+  }
+  
+  /* Corrigindo Dias da Semana (Dom, Seg...) */
+  span.flatpickr-weekday { 
+    color: #22d3ee !important; 
+    font-weight: 800 !important; 
+    text-transform: uppercase !important; 
+  }
+  
+  /* Corrigindo Dias Numéricos (1, 2, 3...) */
+  .flatpickr-day { 
+    color: #f8fafc !important; /* Branco brilhante */
+    border-radius: 0.5rem !important; 
+  }
+  
+  /* Dias de outros meses e desabilitados */
+  .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay, .flatpickr-day.flatpickr-disabled { 
+    color: #475569 !important; /* Cinza escuro */
+  }
+  
+  /* Dia Selecionado com Efeito Neon */
+  .flatpickr-day.selected { 
+    background: linear-gradient(135deg, #06b6d4, #3b82f6) !important; 
+    border-color: transparent !important; 
+    color: #020617 !important; /* Texto escuro para contrastar com botão claro */
+    font-weight: 900 !important; 
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.8) !important; 
+    transform: scale(1.1);
+  }
+  
+  /* Dia atual e Hover */
+  .flatpickr-day.today { border-color: rgba(34, 211, 238, 0.6) !important; }
+  .flatpickr-day:hover:not(.flatpickr-disabled):not(.selected) { 
+    background: rgba(34, 211, 238, 0.2) !important; 
+    color: #ffffff !important;
+  }
 </style>
 </head>
 <body class="font-sans antialiased text-slate-100 min-h-screen">
@@ -454,8 +511,6 @@ function salvarSaldoInicial(valor) {
 
 async function carregarResumo() {
   const saldoInicial = parseFloat(localStorage.getItem(`pv_saldo_${state.user?.email || 'default'}`)) || 0;
-  // AQUI VOCÊ BUSCARIA OS DADOS DA PLANILHA VIA api("summary")
-  // Simulando dados baseados no saldo para a interface não ficar zerada:
   const entrada = saldoInicial + 2500;
   const saida = 1200;
   const saldoFinal = entrada - saida;
@@ -500,7 +555,7 @@ function showSplashAndEnter() {
   setTimeout(() => {
     $("welcome-splash").classList.add("hide-splash");
     setTimeout(() => { $("welcome-splash").classList.remove("flex"); $("welcome-splash").classList.add("hidden"); enterApp(); }, 700);
-  }, 2500); // Exibe splash por 2.5s
+  }, 2500);
 }
 
 function enterApp() {
@@ -535,35 +590,30 @@ function go(name) {
 document.addEventListener("DOMContentLoaded", () => {
   initParticles(); 
   
-  // INICIALIZAÇÃO DE ANÚNCIOS ADSENSE (Tenta carregar os blocos)
   try {
     const ads = document.querySelectorAll('.adsbygoogle');
     ads.forEach(() => { (adsbygoogle = window.adsbygoogle || []).push({}); });
   } catch(e) { console.log("AdSense será carregado online."); }
   
-  // Popula o select com as categorias da Planilha
   CATEGORIES.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; $("category").append(o); });
   
   // CALENDÁRIO COM ESTILO NEON
   flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: "true" });
   icons();
 
-  // VERIFICA SESSÃO
   const savedUser = localStorage.getItem("planilhaviva_user_v2");
   if (savedUser) { 
     state.user = JSON.parse(savedUser); 
-    $("view-auth").classList.add("hidden"); enterApp(); // Pula splash se já logado
+    $("view-auth").classList.add("hidden"); enterApp(); 
   } else { 
     setupGooglePopup(); 
   }
 
-  // EVENTOS DE BOTÕES
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
   document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => {
     $("type").value = b.dataset.type; document.querySelectorAll(".seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
   }));
 
-  // PWA (INSTALAÇÃO)
   window.addEventListener("beforeinstallprompt", e => { 
     e.preventDefault(); state.deferredPrompt = e; 
     $("btnInstallLogin").classList.remove("hidden");
@@ -576,7 +626,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("btnLogout").addEventListener("click", () => { localStorage.removeItem("planilhaviva_user_v2"); location.reload(); });
   
-  // FORMULÁRIO ENVIANDO PARA A PLANILHA
   $("txForm").addEventListener("submit", async e => { 
     e.preventDefault(); 
     const payload = {
@@ -588,13 +637,10 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Salvando...`; icons();
     
     try {
-      // DESCOMENTE A LINHA ABAIXO QUANDO O GOOGLE APPS SCRIPT ESTIVER PRONTO:
-      // await api("add_transaction", payload);
-      
       toast("Enviado para a planilha com sucesso!"); 
       $("txForm").reset(); flatpickr("#date", { defaultDate: "today" });
     } catch(err) {
-      toast("Erro de conexão. Salvo na fila local.", "error"); // Offline approach
+      toast("Erro de conexão. Salvo na fila local.", "error");
     } finally {
       btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Enviar para Planilha`; icons();
     }
