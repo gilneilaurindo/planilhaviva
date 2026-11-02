@@ -171,13 +171,13 @@
               <div class="flex justify-between items-start">
                 <div>
                   <p class="text-xs font-bold text-white">Gilnei C.</p>
-                  <p class="text-[10px] text-slate-400 font-mono">gilneicreative@gmail.com</p>
+                  <p class="text-[10px] text-slate-400 font-mono">gilneycriative@gmail.com</p>
                 </div>
                 <span class="bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Ativo</span>
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Uso: <span class="text-white font-bold">Intenso</span></div>
-                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'gilneicreative@gmail.com')">Forçar Bloqueio</button>
+                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'gilneycriative@gmail.com')">Forçar Bloqueio</button>
               </div>
             </div>
 
@@ -185,13 +185,13 @@
               <div class="flex justify-between items-start">
                 <div>
                   <p class="text-xs font-bold text-white">Samuel Danilo</p>
-                  <p class="text-[10px] text-slate-400 font-mono">samueldanilo@gmail.com</p>
+                  <p class="text-[10px] text-slate-400 font-mono">samueldanilo11@gmail.com</p>
                 </div>
                 <span class="bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Ativo</span>
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Uso: <span class="text-white font-bold">Intenso</span></div>
-                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'samueldanilo@gmail.com')">Forçar Bloqueio</button>
+                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'samueldanilo11@gmail.com')">Forçar Bloqueio</button>
               </div>
             </div>
             
@@ -267,11 +267,11 @@
 <script>
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  // MATRIZ DE E-MAILS LÍDERES PERMITIDOS
+  // MATRIZ DE E-MAILS LÍDERES PERMITIDOS ATUALIZADA
   ADMIN_EMAILS: [
-    "gilneicreative@gmail.com", 
-    "gilneilaurindo@gmail.com", 
-    "samueldanilo@gmail.com"
+    "gilneycriative@gmail.com", 
+    "samueldanilo11@gmail.com",
+    "gilneilaurindo@gmail.com"
   ]
 };
 
@@ -309,7 +309,7 @@ const UI = {
     t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 shrink-0 ${color}"></i><span>${msg}</span>`;
     $("toasts").append(t); UI.refreshIcons();
     requestAnimationFrame(() => t.classList.add("show"));
-    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3500);
+    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 4000);
   }
 };
 
@@ -344,7 +344,7 @@ const Admin = {
       span.className = "bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase";
       span.textContent = "Ativo";
     } else {
-      UI.toast(`Acesso bloqueado e notificação de inatividade enviada para ${email}.`, "success");
+      UI.toast(`Acesso bloqueado e notificação enviada para ${email}.`, "success");
       btnElement.textContent = "Liberar Acesso";
       btnElement.className = "bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition";
       btnElement.onclick = () => Admin.toggleUserStatus(btnElement, email, true);
@@ -380,7 +380,6 @@ const App = {
         
         // VERIFICAÇÃO DE SEGURANÇA MÁXIMA
         if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === authenticatedEmail)) {
-            // Em caso de falha, mostra exatamente qual e-mail foi barrado para ajudar o desenvolvedor a depurar
             return UI.toast(`Email negado: ${authenticatedEmail}. Contate o Suporte.`, "error");
         }
         
