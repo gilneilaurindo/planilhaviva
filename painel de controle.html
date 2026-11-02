@@ -41,7 +41,7 @@
   select.input option { background: #0f172a; }
   .label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #fbbf24; font-weight: 800; margin-bottom: .4rem; }
 
-  .btn-admin { background: linear-gradient(135deg,#fbbf24,#d97706); color: #020617; font-weight: 900; font-size: .8rem; text-transform: uppercase; border-radius: .75rem; padding: 1rem; width: 100%; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: transform .2s; }
+  .btn-admin { background: linear-gradient(135deg,#fbbf24,#d97706); color: #020617; font-weight: 900; font-size: .8rem; text-transform: uppercase; border-radius: .75rem; padding: 1rem; width: 100%; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: transform .2s; cursor: pointer; }
   .btn-admin:active { transform: scale(.96); }
 
   .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
@@ -64,7 +64,7 @@
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center transition-all duration-500">
   <div class="relative z-10">
     <div class="w-32 h-32 rounded-full border-4 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(251,191,36,.5)]" id="splash-avatar">
-      <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-16 h-16 object-contain">
+      <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-16 h-16 object-contain" alt="Logo">
     </div>
   </div>
   <h2 class="text-3xl font-black text-white mt-6">QG <span class="text-amber-400">Admin</span></h2>
@@ -78,13 +78,13 @@
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow-amber"></div>
       <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-amber-400/50 shadow-[0_0_20px_rgba(251,191,36,0.5)]">
-        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-10 h-10 object-contain">
+        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-10 h-10 object-contain" alt="Logo">
       </div>
       <div>
         <h1 class="text-3xl font-black text-white">Controle <span class="text-amber-400">Pro</span></h1>
         <p class="text-xs text-amber-100/70 mt-2 font-medium">Inteligência de Mercado e Gestão.</p>
       </div>
-      <button id="btnGoogleLogin" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-amber-400/50 rounded-full font-bold hover:bg-slate-700 transition relative z-20">
+      <button id="btnGoogleLogin" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-amber-400/50 rounded-full font-bold hover:bg-slate-700 transition relative z-20 cursor-pointer">
         <i data-lucide="key" class="w-5 h-5 text-amber-400"></i> Acesso Restrito
       </button>
     </div>
@@ -94,13 +94,15 @@
   <section id="view-app" class="hidden flex-1 flex-col w-full">
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between shadow-lg border-b border-amber-500/20">
       <div class="flex items-center gap-3">
-        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-amber-400 overflow-hidden"></div>
+        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800">
+          <i data-lucide="user" class="w-5 h-5 text-amber-400"></i>
+        </div>
         <div>
           <span class="text-[9px] text-amber-400 font-black uppercase tracking-widest block mb-0.5">Visão Estratégica</span>
           <h2 class="text-xs font-bold text-white" id="admin-name">Líder</h2>
         </div>
       </div>
-      <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition" onclick="Admin.syncData()">
+      <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition cursor-pointer" onclick="Admin.syncData()">
         <i data-lucide="refresh-cw" class="w-4 h-4"></i>
       </button>
     </header>
@@ -201,7 +203,7 @@
               <label class="label">Mensagem Interativa</label>
               <textarea id="msg-body" class="input h-24 resize-none text-xs" placeholder="Conteúdo que irá aparecer no modal do usuário..." required></textarea>
             </div>
-            <button type="submit" class="btn-admin bg-purple-600 shadow-[0_10px_30px_rgba(168,85,247,0.4)] border-none" style="background: linear-gradient(135deg,#a855f7,#7e22ce); color: #fff;" id="btn-disparar">
+            <button type="submit" class="btn-admin border-none" style="background: linear-gradient(135deg,#a855f7,#7e22ce); color: #fff;" id="btn-disparar">
               <i data-lucide="send" class="w-4 h-4"></i> Lançar ao Servidor
             </button>
           </form>
@@ -217,13 +219,13 @@
   <div class="glass rounded-2xl relative grid grid-cols-3 p-1 shadow-2xl border border-slate-700">
     <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-amber-500/50 w-[calc((100%-0.5rem)/3)] transition-transform duration-300 ease-out shadow-[0_0_15px_rgba(251,191,36,.2)]"></span>
 
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="dashboard">
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white cursor-pointer" data-view="dashboard">
       <i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Métricas</span>
     </button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="crm">
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 cursor-pointer" data-view="crm">
       <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Clientes</span>
     </button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="comunicacao">
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400 cursor-pointer" data-view="comunicacao">
       <i data-lucide="radio" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase">Disparos</span>
     </button>
   </div>
@@ -246,6 +248,7 @@ const CONFIG = {
 const State = { user: null };
 const $ = id => document.getElementById(id);
 let chartInstance = null;
+let googleTokenClient = null;
 
 // ============================================================================
 // UI & EFEITOS
@@ -323,33 +326,32 @@ const Admin = {
 
       const mrrEl = $("kpi-mrr");
       mrrEl.classList.remove("skeleton");
-      mrrEl.innerHTML = `${brl.format(kpis.mrr)}`;
+      mrrEl.innerHTML = `${brl.format(kpis.mrr || 0)}`;
 
       const ativosEl = $("kpi-ativos");
       ativosEl.classList.remove("skeleton");
-      ativosEl.innerHTML = `${kpis.ativos} <span class="text-[10px] text-slate-400 font-medium">clientes</span>`;
+      ativosEl.innerHTML = `${kpis.ativos || 0} <span class="text-[10px] text-slate-400 font-medium">clientes</span>`;
 
       const inativosEl = $("kpi-inativos");
       inativosEl.classList.remove("skeleton");
-      inativosEl.innerHTML = `${kpis.inativos} <span class="text-[10px] text-slate-400 font-medium">clientes</span>`;
+      inativosEl.innerHTML = `${kpis.inativos || 0} <span class="text-[10px] text-slate-400 font-medium">clientes</span>`;
 
       const totalEl = $("kpi-total");
       totalEl.classList.remove("skeleton");
-      totalEl.innerHTML = `${kpis.totalBase}`;
+      totalEl.innerHTML = `${kpis.totalBase || 0}`;
 
       // 2. Renderizar Gráficos Reais
       $("chart-loader").classList.add("hidden");
       Admin.renderCharts(kpis);
 
       // 3. Renderizar Lista Real de Usuários
-      //    Ordena por quem MAIS usou a plataforma (maior nº de acessos primeiro)
       usuarios.sort((a, b) => (b.acessos || 0) - (a.acessos || 0));
 
       const userList = $("real-user-list");
       userList.innerHTML = "";
 
-      if (usuarios.length === 0) {
-        userList.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum cliente cadastrado ainda. Ative o registro de acesso na plataforma (veja instruções).</p>`;
+      if (!usuarios || usuarios.length === 0) {
+        userList.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum cliente cadastrado na planilha mestre.</p>`;
       } else {
         usuarios.forEach(u => {
           const isAtivo = u.status === "Ativo";
@@ -360,7 +362,7 @@ const Admin = {
           const planoTag = (u.plano && u.plano > 0) ? ` <span class="text-amber-400/80">· R$${u.plano}/mês</span>` : "";
 
           userList.innerHTML += `
-            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10 user-card" data-search="${(u.nome + " " + u.email).toLowerCase()}">
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10 user-card" data-search="${((u.nome || '') + " " + (u.email || '')).toLowerCase()}">
               <div class="flex justify-between items-start gap-2">
                 <div class="flex items-center gap-3 min-w-0">
                   <div class="w-8 h-8 shrink-0 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 font-bold text-[10px] border border-slate-600">${iniciais}</div>
@@ -372,10 +374,10 @@ const Admin = {
                 <span class="border px-2 py-0.5 rounded text-[9px] font-bold uppercase status-badge shrink-0 ${corBadge}">${textBadge}</span>
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center truncate" title="Total de acessos à plataforma">Acessos: <b class="text-amber-300">${u.acessos || 0}</b></div>
+                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center truncate">Acessos: <b class="text-amber-300">${u.acessos || 0}</b></div>
                 <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center truncate">Visto: ${dataAcesso}</div>
               </div>
-              <button class="border py-1.5 rounded text-[10px] font-bold transition ${isAtivo ? 'bg-rose-900/30 text-rose-400 border-rose-500/50 hover:bg-rose-900/50' : 'bg-emerald-900/30 text-emerald-400 border-emerald-500/50 hover:bg-emerald-900/50'}" onclick="Admin.toggleUserStatus(this, '${u.email}', ${!isAtivo})">
+              <button class="border py-1.5 rounded text-[10px] font-bold transition cursor-pointer ${isAtivo ? 'bg-rose-900/30 text-rose-400 border-rose-500/50 hover:bg-rose-900/50' : 'bg-emerald-900/30 text-emerald-400 border-emerald-500/50 hover:bg-emerald-900/50'}" onclick="Admin.toggleUserStatus(this, '${u.email}', ${!isAtivo})">
                 ${isAtivo ? 'Forçar Bloqueio' : 'Liberar Acesso'}
               </button>
             </div>
@@ -397,7 +399,7 @@ const Admin = {
       type: 'doughnut',
       data: {
         labels: ['Adimplentes', 'Inadimplentes (Churn)'],
-        datasets: [{ data: [kpis.ativos, kpis.inativos], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }]
+        datasets: [{ data: [kpis.ativos || 0, kpis.inativos || 0], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }]
       },
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
@@ -413,25 +415,22 @@ const Admin = {
 
   toggleUserStatus: async (btnElement, userEmail, isReactivating) => {
     try {
-      const originalText = btnElement.textContent;
       btnElement.textContent = "...";
 
-      // Chamada para a API salvar a mudança no Google Sheets
       await API.call("toggle_user_status", { targetEmail: userEmail, status: isReactivating ? "Ativo" : "Inativo" });
 
       UI.toast(isReactivating ? `Acesso restaurado para ${userEmail}.` : `Acesso bloqueado para ${userEmail}.`, "success");
 
-      // Atualiza estética localmente sem precisar recarregar toda a lista
       if(isReactivating) {
         btnElement.textContent = "Forçar Bloqueio";
-        btnElement.className = "bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition";
+        btnElement.className = "bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition cursor-pointer";
         btnElement.onclick = () => Admin.toggleUserStatus(btnElement, userEmail, false);
         const span = btnElement.closest('.user-card').querySelector('.status-badge');
         span.className = "border px-2 py-0.5 rounded text-[9px] font-bold uppercase status-badge bg-emerald-900/40 text-emerald-400 border-emerald-500/50";
         span.textContent = "Ativo";
       } else {
         btnElement.textContent = "Liberar Acesso";
-        btnElement.className = "bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition";
+        btnElement.className = "bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition cursor-pointer";
         btnElement.onclick = () => Admin.toggleUserStatus(btnElement, userEmail, true);
         const span = btnElement.closest('.user-card').querySelector('.status-badge');
         span.className = "border px-2 py-0.5 rounded text-[9px] font-bold uppercase status-badge bg-rose-900/40 text-rose-400 border-rose-500/50";
@@ -459,7 +458,7 @@ const Admin = {
         messageData: { title: title, body: body, type: target === 'promo' ? 'promo' : 'alert', btnText: "Ok, Entendi" }
       });
 
-      UI.toast(`Notificação registrada para ${res.data.disparosRealizados} usuários.`, "success");
+      UI.toast(`Notificação registrada para ${res.data ? res.data.disparosRealizados : 0} usuários.`, "success");
       $("msg-title").value = ""; $("msg-body").value = "";
       btn.innerHTML = originalText;
       UI.refreshIcons();
@@ -476,63 +475,98 @@ const Admin = {
 // ============================================================================
 const App = {
   init: () => {
-    initParticles(); UI.refreshIcons();
+    initParticles(); 
+    UI.refreshIcons();
     document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
 
-    if(!window.google) setTimeout(App.setupAuth, 300); else App.setupAuth();
-    $("view-auth").classList.remove("hidden"); $("view-auth").classList.add("flex");
+    App.checkGoogleSDK();
+    $("view-auth").classList.remove("hidden"); 
+    $("view-auth").classList.add("flex");
+  },
+
+  checkGoogleSDK: () => {
+    if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+      App.setupAuth();
+    } else {
+      setTimeout(App.checkGoogleSDK, 200);
+    }
   },
 
   setupAuth: () => {
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: CONFIG.CLIENT_ID, scope: "email profile",
+    googleTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CONFIG.CLIENT_ID, 
+      scope: "email profile",
       callback: async (t) => {
-        const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
-        const p = await res.json();
-
-        const authenticatedEmail = p.email.toLowerCase();
-
-        if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === authenticatedEmail)) {
-            return UI.toast(`Acesso Negado: ${authenticatedEmail} não possui credenciais de líder.`, "error");
+        if (t.error) {
+          return UI.toast("Falha no login com Google.", "error");
         }
+        try {
+          const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
+          const p = await res.json();
 
-        $("admin-name").textContent = p.given_name || (p.name ? p.name.split(" ")[0] : "Líder");
-        if(p.picture) $("avatar").innerHTML = `<img src="${p.picture}" class="w-full h-full object-cover">`;
+          const authenticatedEmail = p.email.toLowerCase();
 
-        State.user = { name: p.name, email: p.email, picture: p.picture };
+          if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === authenticatedEmail)) {
+            return UI.toast(`Acesso Negado: ${authenticatedEmail} não possui credenciais de líder.`, "error");
+          }
 
-        $("view-auth").classList.replace("flex", "hidden");
-        const splash = $("welcome-splash");
-        splash.classList.remove("hidden"); splash.classList.add("flex");
+          $("admin-name").textContent = p.given_name || (p.name ? p.name.split(" ")[0] : "Líder");
+          if(p.picture) $("avatar").innerHTML = `<img src="${p.picture}" class="w-full h-full object-cover">`;
 
-        setTimeout(() => {
-          splash.classList.add("opacity-0");
-          setTimeout(() => { splash.classList.replace("flex", "hidden"); App.enter(); }, 500);
-        }, 1500);
+          State.user = { name: p.name, email: p.email, picture: p.picture };
+
+          $("view-auth").classList.replace("flex", "hidden");
+          const splash = $("welcome-splash");
+          splash.classList.remove("hidden"); 
+          splash.classList.add("flex");
+
+          setTimeout(() => {
+            splash.classList.add("opacity-0");
+            setTimeout(() => { 
+              splash.classList.replace("flex", "hidden"); 
+              App.enter(); 
+            }, 500);
+          }, 1500);
+        } catch(err) {
+          UI.toast("Erro ao obter perfil do usuário.", "error");
+        }
       }
     });
-    $("btnGoogleLogin").addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
+
+    $("btnGoogleLogin").addEventListener("click", () => {
+      if (googleTokenClient) {
+        googleTokenClient.requestAccessToken({ prompt: "select_account" });
+      } else {
+        UI.toast("Carregando SDK do Google, tente novamente em alguns segundos.", "error");
+      }
+    });
   },
 
   enter: () => {
-    $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex");
+    $("view-app").classList.remove("hidden"); 
+    $("view-app").classList.add("flex");
     $("bottom-nav").classList.remove("hidden");
     App.nav("dashboard");
-    Admin.syncData(); // Gatilho automático para buscar dados da planilha
+    Admin.syncData();
   },
 
   nav: (view) => {
     ["dashboard", "crm", "comunicacao"].forEach((v, i) => {
       const act = v === view;
-      $("view-" + v).classList.toggle("active", act);
-      $("view-" + v).classList.toggle("hidden", !act);
+      const el = $("view-" + v);
+      if (el) {
+        el.classList.toggle("active", act);
+        el.classList.toggle("hidden", !act);
+      }
       const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
       if(b) {
-          b.classList.toggle("text-white", act); b.classList.toggle("text-slate-400", !act);
-          if (act) { $("nav-pill").style.transform = `translateX(${i * 100}%)`; }
+        b.classList.toggle("text-white", act); 
+        b.classList.toggle("text-slate-400", !act);
+        if (act) { $("nav-pill").style.transform = `translateX(${i * 100}%)`; }
       }
     });
-    window.scrollTo(0, 0); UI.refreshIcons();
+    window.scrollTo(0, 0); 
+    UI.refreshIcons();
   }
 };
 
