@@ -102,9 +102,14 @@
           <h2 class="text-xs font-bold text-white" id="admin-name">Líder</h2>
         </div>
       </div>
-      <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition cursor-pointer" onclick="Admin.syncData()">
-        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-      </button>
+      <div class="flex items-center gap-2">
+        <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition cursor-pointer" title="Sincronizar Dados" onclick="Admin.syncData()">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+        </button>
+        <button class="text-rose-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition cursor-pointer" title="Sair do Sistema" onclick="App.logout()">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+        </button>
+      </div>
     </header>
 
     <div class="px-5 pt-6 space-y-6">
@@ -132,6 +137,17 @@
           </div>
         </div>
 
+        <!-- KPI Destaque: Planos a Vencer -->
+        <div class="glass p-4 rounded-2xl border border-purple-500/40 bg-purple-950/20 flex items-center justify-between">
+          <div>
+            <p class="text-[9px] uppercase tracking-widest text-purple-400 font-bold mb-1">A Vencer (Próximos 5 Dias)</p>
+            <p class="text-xl font-black text-white skeleton w-12 h-7 inline-block" id="kpi-vencendo">0</p>
+          </div>
+          <div class="p-3 bg-purple-900/40 border border-purple-500/50 rounded-xl text-purple-400">
+            <i data-lucide="clock" class="w-6 h-6"></i>
+          </div>
+        </div>
+
         <div class="glass rounded-2xl p-5 border border-blue-500/20">
           <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4"><i data-lucide="activity" class="w-4 h-4"></i> Saúde da Base</h3>
           <div class="w-full h-[180px] relative">
@@ -147,9 +163,14 @@
           <div class="glow-blue absolute right-0 bottom-0"></div>
           <div class="flex items-center justify-between mb-4 relative z-10">
             <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Gestão de Clientes</h3>
-            <a id="open-sheet-link" href="#" target="_blank" rel="noopener" class="hidden text-[9px] font-bold uppercase text-amber-400 border border-amber-500/40 rounded-full px-3 py-1.5 hover:bg-amber-500/10 transition flex items-center gap-1">
-              <i data-lucide="external-link" class="w-3 h-3"></i> Abrir Planilha
-            </a>
+            <div class="flex items-center gap-2">
+              <button onclick="Admin.exportCSV()" class="text-[9px] font-bold uppercase text-emerald-400 border border-emerald-500/40 rounded-full px-3 py-1.5 hover:bg-emerald-500/10 transition flex items-center gap-1 cursor-pointer">
+                <i data-lucide="download" class="w-3 h-3"></i> Exportar CSV
+              </button>
+              <a id="open-sheet-link" href="#" target="_blank" rel="noopener" class="hidden text-[9px] font-bold uppercase text-amber-400 border border-amber-500/40 rounded-full px-3 py-1.5 hover:bg-amber-500/10 transition flex items-center gap-1">
+                <i data-lucide="external-link" class="w-3 h-3"></i> Planilha
+              </a>
+            </div>
           </div>
 
           <div class="relative z-10 mb-4">
@@ -158,15 +179,6 @@
 
           <div class="space-y-3 relative z-10" id="real-user-list">
             <!-- Esqueleto de Carregamento -->
-            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full skeleton"></div>
-                <div class="flex-1 space-y-2">
-                  <div class="h-3 w-1/2 skeleton"></div>
-                  <div class="h-2 w-3/4 skeleton"></div>
-                </div>
-              </div>
-            </div>
             <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3">
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full skeleton"></div>
@@ -196,12 +208,12 @@
               </select>
             </div>
             <div>
-              <label class="label">Título do Push</label>
+              <label class="label">Título do Push / E-mail</label>
               <input id="msg-title" type="text" class="input text-xs" placeholder="Ex: Evite o bloqueio da sua conta..." required>
             </div>
             <div>
               <label class="label">Mensagem Interativa</label>
-              <textarea id="msg-body" class="input h-24 resize-none text-xs" placeholder="Conteúdo que irá aparecer no modal do usuário..." required></textarea>
+              <textarea id="msg-body" class="input h-24 resize-none text-xs" placeholder="Conteúdo que irá aparecer no e-mail ou modal do usuário..." required></textarea>
             </div>
             <button type="submit" class="btn-admin border-none" style="background: linear-gradient(135deg,#a855f7,#7e22ce); color: #fff;" id="btn-disparar">
               <i data-lucide="send" class="w-4 h-4"></i> Lançar ao Servidor
@@ -236,7 +248,7 @@
 // CONFIGURAÇÕES GLOBAIS
 // ============================================================================
 const CONFIG = {
-  CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.usercontent.com",
+  CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbypMKmEP7AyRLeEtJWWW3gb6qsA-NnJ5bsbbKltUPB7ekDctbm9tREEmB5jIklGOUFW/exec",
   ADMIN_EMAILS: [
     "gilneycriative@gmail.com",
@@ -245,7 +257,7 @@ const CONFIG = {
   ]
 };
 
-const State = { user: null };
+const State = { user: null, usuariosCache: [] };
 const $ = id => document.getElementById(id);
 let chartInstance = null;
 let googleTokenClient = null;
@@ -312,12 +324,13 @@ const API = {
 const Admin = {
   syncData: async () => {
     try {
-      UI.toast("Buscando dados reais da Planilha...", "success");
+      UI.toast("Sincronizando banco de dados...", "success");
 
       const response = await API.call("get_admin_data");
       const { kpis, usuarios, planilhaUrl } = response.data;
+      State.usuariosCache = usuarios || [];
 
-      // Link direto para a planilha de usuários (auto-criada pelo backend)
+      // Link direto para a planilha de usuários
       const sheetLink = $("open-sheet-link");
       if (planilhaUrl && sheetLink) { sheetLink.href = planilhaUrl; sheetLink.classList.remove("hidden"); }
 
@@ -339,6 +352,10 @@ const Admin = {
       const totalEl = $("kpi-total");
       totalEl.classList.remove("skeleton");
       totalEl.innerHTML = `${kpis.totalBase || 0}`;
+
+      const vencendoEl = $("kpi-vencendo");
+      vencendoEl.classList.remove("skeleton");
+      vencendoEl.innerHTML = `${kpis.vencendoEmBreve || 0}`;
 
       // 2. Renderizar Gráficos Reais
       $("chart-loader").classList.add("hidden");
@@ -467,17 +484,54 @@ const Admin = {
       $("btn-disparar").innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Lançar ao Servidor`;
       UI.refreshIcons();
     }
+  },
+
+  exportCSV: () => {
+    if (!State.usuariosCache || State.usuariosCache.length === 0) {
+      return UI.toast("Nenhum dado disponível para exportação.", "error");
+    }
+    
+    let csvContent = "data:text/csv;charset=utf-8,Nome,Email,Status,Plano Mensal,Ultimo Acesso,Total Acessos\n";
+    State.usuariosCache.forEach(u => {
+      const line = `"${u.nome || ''}","${u.email || ''}","${u.status || ''}","${u.plano || 0}","${u.ultimoAcesso || ''}","${u.acessos || 0}"`;
+      csvContent += line + "\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `planilhaviva_clientes_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    UI.toast("Relatório CSV baixado com sucesso!", "success");
   }
 };
 
 // ============================================================================
-// NAVEGAÇÃO E LOGIN OAUTH2
+// NAVEGAÇÃO E LOGIN OAUTH2 (COM SESSÃO PERSISTENTE)
 // ============================================================================
 const App = {
   init: () => {
     initParticles(); 
     UI.refreshIcons();
     document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
+
+    // Verifica se já existe usuário salvo no navegador (Sessão Persistente)
+    const savedUser = localStorage.getItem("planilhaviva_admin_user");
+    if (savedUser) {
+      try {
+        State.user = JSON.parse(savedUser);
+        $("admin-name").textContent = State.user.name ? State.user.name.split(" ")[0] : "Líder";
+        if (State.user.picture) $("avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
+        
+        $("view-auth").classList.replace("flex", "hidden");
+        App.enter();
+        return;
+      } catch(e) {
+        localStorage.removeItem("planilhaviva_admin_user");
+      }
+    }
 
     App.checkGoogleSDK();
     $("view-auth").classList.remove("hidden"); 
@@ -514,6 +568,9 @@ const App = {
           if(p.picture) $("avatar").innerHTML = `<img src="${p.picture}" class="w-full h-full object-cover">`;
 
           State.user = { name: p.name, email: p.email, picture: p.picture };
+          
+          // Salva sessão localmente para não precisar logar a cada recarregamento
+          localStorage.setItem("planilhaviva_admin_user", JSON.stringify(State.user));
 
           $("view-auth").classList.replace("flex", "hidden");
           const splash = $("welcome-splash");
@@ -533,13 +590,26 @@ const App = {
       }
     });
 
-    $("btnGoogleLogin").addEventListener("click", () => {
-      if (googleTokenClient) {
-        googleTokenClient.requestAccessToken({ prompt: "select_account" });
-      } else {
-        UI.toast("Carregando SDK do Google, tente novamente em alguns segundos.", "error");
-      }
-    });
+    const loginBtn = $("btnLogin");
+    if (loginBtn) {
+      loginBtn.addEventListener("click", () => {
+        if (googleTokenClient) {
+          googleTokenClient.requestAccessToken({ prompt: "select_account" });
+        } else {
+          UI.toast("Carregando SDK do Google, tente novamente em alguns segundos.", "error");
+        }
+      });
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem("planilhaviva_admin_user");
+    State.user = null;
+    $("view-app").classList.replace("flex", "hidden");
+    $("bottom-nav").classList.add("hidden");
+    $("view-auth").classList.remove("hidden");
+    $("view-auth").classList.add("flex");
+    UI.toast("Sessão encerrada com sucesso.", "success");
   },
 
   enter: () => {
