@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://planilhaviva-31ys.vercel.app/">
 <meta property="og:title" content="PlanilhaViva Pro | Inteligência Financeira">
 <meta property="og:description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets. Transforme a sua planilha num aplicativo premium e seguro no seu telemóvel.">
-<meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/561/561113.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
@@ -23,13 +23,13 @@
 <meta property="twitter:url" content="https://planilhaviva-31ys.vercel.app/">
 <meta name="twitter:title" content="PlanilhaViva Pro | Inteligência Financeira">
 <meta name="twitter:description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets. Transforme a sua planilha num aplicativo premium e seguro no seu telemóvel.">
-<meta name="twitter:image" content="https://cdn-icons-png.flaticon.com/512/561/561113.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 <!-- ==================================================================================== -->
 
 <!-- MANIFESTO E ÍCONES (FAVICON) SEGUROS -->
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/561/561113.png">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/561/561113.png">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
 <!-- TAILWIND & ÍCONES LUCIDE -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -163,12 +163,9 @@
       <div class="glow"></div>
       <div class="glow-purple"></div>
       
-      <!-- LOGÓTIPO EM CÓDIGO SVG (NUNCA QUEBRA) -->
-      <div class="inline-flex p-5 rounded-3xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 animate-float mb-2 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]">
-          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"></path>
-          <path d="m9 12 2 2 4-4"></path>
-        </svg>
+      <!-- LOGÓTIPO ATUALIZADA -->
+      <div class="inline-flex p-3 rounded-3xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 animate-float mb-2 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
+        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="PlanilhaViva Logo" class="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]">
       </div>
       
       <div>
@@ -230,7 +227,6 @@
         <!-- ADSENSE REAL: BLOCO 1 -->
         <div class="glass rounded-xl overflow-hidden min-h-[100px] flex items-center justify-center relative p-1 border-dashed border-cyan-500/30">
           <span class="absolute top-1 left-2 text-[8px] uppercase tracking-widest text-slate-500">Publicidade</span>
-          <!-- Substitua os dados abaixo pelo seu AdSense -->
           <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
         </div>
 
@@ -287,10 +283,16 @@
       <!-- ================= ABA 2: RESUMO ================= -->
       <div id="view-resumo" class="view space-y-5">
         
+        <!-- ALTERNADOR MENSAL / ANUAL -->
+        <div class="seg mb-2" role="group">
+          <button type="button" class="seg-btn" aria-pressed="true" id="btnResumoMensal">Visão Mensal</button>
+          <button type="button" class="seg-btn" aria-pressed="false" id="btnResumoAnual">Visão Anual</button>
+        </div>
+
         <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center border border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,0.15)]">
           <div class="glow"></div>
           <p class="text-[10px] uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2">
-            <i data-lucide="wallet" class="w-3 h-3"></i> Saldo Atualizado
+            <i data-lucide="wallet" class="w-3 h-3"></i> <span id="label-saldo">Saldo Projetado do Mês</span>
           </p>
           <p id="saldo" class="text-4xl font-black mt-1 tabular-nums drop-shadow-md text-white">R$ 0,00</p>
         </div>
@@ -351,6 +353,21 @@
               <i data-lucide="crown" class="w-4 h-4 text-yellow-300 filter drop-shadow-[0_0_5px_#fde047]"></i> Planilha Viva Pro
             </span>
           </div>
+          
+          <!-- BOTÃO PARA ABRIR PLANILHA -->
+          <a href="URL_DA_SUA_PLANILHA_AQUI" target="_blank" class="relative z-10 mt-4 btn--custom !border-emerald-500/50 !shadow-[0_8px_25px_-8px_rgba(16,185,129,0.4)] hover:bg-emerald-500/10">
+            <i data-lucide="table" class="w-5 h-5 text-emerald-400"></i>
+            <span class="text-emerald-100">Abrir Planilha Completa</span>
+          </a>
+        </div>
+
+        <!-- GESTÃO DE CUSTOS FIXOS -->
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title"><i data-lucide="repeat" class="w-4 h-4"></i> Lançamentos Fixos</h3>
+          <p class="text-[11px] text-slate-400 leading-relaxed">Adicione assinaturas, rendas e salários. Eles serão projetados para todo o ano, garantindo a sua previsibilidade financeira.</p>
+          <button id="btnGerenciarFixos" class="btn-primary w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm">
+            <i data-lucide="settings" class="w-4 h-4"></i> Configurar Receitas e Despesas Fixas
+          </button>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
@@ -389,7 +406,8 @@
 // VARIÁVEIS GLOBAIS E ESTADOS
 // =========================================================================
 const _CLIENT_ID = "599756107964-ob0m7i1asuc0t7ng7rn6qc1106elf2ou.apps.googleusercontent.com";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyA71iGP67ggCDJ29QBh8cXpdorC5V73TPE4g0S3TQIkrwitArdoHWfCuDHSz7NOTbL/exec";
+// IMPORTANTE: Insira aqui o link que gerou no Google Apps Script
+const SCRIPT_URL = "SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI"; 
 const CATEGORIES = ["Receita","Dízimo","Fixos","Pessoal","Saúde","Dívidas","Investimento","Outros"];
 const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
 const $ = id => document.getElementById(id);
@@ -438,7 +456,6 @@ function initParticles() {
 // =========================================================================
 const icons = () => { if (window.lucide) lucide.createIcons(); };
 
-// TOASTS ANIMADOS NO CENTRO
 function toast(msg, type = "info") {
   const t = document.createElement("div"); 
   t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-[0_20px_50px_rgba(0,0,0,0.9)] border border-cyan-400/50 z-[9999]";
@@ -553,7 +570,7 @@ function go(name) {
 }
 
 // =========================================================================
-// INIT E SUBMIT (GRÁFICO ANIMADO)
+// INIT E EVENTOS DE INTERFACE
 // =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
   initParticles(); 
@@ -572,9 +589,27 @@ document.addEventListener("DOMContentLoaded", () => {
   if (savedUser) { state.user = JSON.parse(savedUser); $("view-auth").classList.add("hidden"); enterApp(); } else { setupGooglePopup(); }
 
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
-  document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => {
-    $("type").value = b.dataset.type; document.querySelectorAll(".seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
+  
+  // Segmentador Natureza (Entrada/Saída)
+  document.querySelectorAll("#txForm .seg-btn").forEach(b => b.addEventListener("click", () => {
+    $("type").value = b.dataset.type; 
+    document.querySelectorAll("#txForm .seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
   }));
+
+  // Segmentador Mensal/Anual
+  $("btnResumoMensal").addEventListener("click", function() {
+    this.setAttribute("aria-pressed", "true");
+    $("btnResumoAnual").setAttribute("aria-pressed", "false");
+    $("label-saldo").textContent = "Saldo Projetado do Mês";
+    carregarResumo(); // Atualize os cálculos se necessário
+  });
+
+  $("btnResumoAnual").addEventListener("click", function() {
+    this.setAttribute("aria-pressed", "true");
+    $("btnResumoMensal").setAttribute("aria-pressed", "false");
+    $("label-saldo").textContent = "Saldo Projetado do Ano";
+    carregarResumo(); // Atualize os cálculos se necessário
+  });
 
   // PWA (INSTALAÇÃO)
   window.addEventListener("beforeinstallprompt", e => { 
@@ -589,7 +624,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("btnLogout").addEventListener("click", () => { localStorage.removeItem("planilhaviva_user_v2"); location.reload(); });
   
-  // SUBMIT (LÓGICA DINÂMICA)
+  // SUBMIT (ENVIO DE DADOS PARA PLANILHA)
   $("txForm").addEventListener("submit", async e => { 
     e.preventDefault(); 
     const payload = {
@@ -601,7 +636,8 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`; icons();
     
     try {
-      // await api("add_transaction", payload); // <- Descomente após configurar o Google Apps Script
+      // DESCOMENTE ESTA LINHA QUANDO TIVER O SEU SCRIPT_URL DEFINIDO
+      // await api("add_transaction", payload); 
       
       // LÓGICA DO GRÁFICO DINÂMICO DE INVESTIMENTO
       if(payload.category === "Investimento" && payload.type === "out") {
