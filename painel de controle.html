@@ -5,13 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#020617">
 <title>QG Estratégico | PlanilhaViva</title>
-<meta name="description" content="Painel de controle e gestão estratégica.">
+
+<!-- SEO & Favicon -->
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
+<!-- Bibliotecas -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
@@ -19,140 +21,132 @@
   body { background-color: #020617; margin: 0; overflow-x: hidden; font-family: ui-sans-serif, system-ui, sans-serif; }
   #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 
-  .glass {
-    background: rgba(15,23,42,.7); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
-    border: 1px solid rgba(251,191,36,.2);
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.05);
-  }
-  .glass-neon {
-    border: 1px solid rgba(251,191,36,.5);
-    box-shadow: 0 0 35px rgba(251,191,36,.2), inset 0 0 20px rgba(251,191,36,.1);
-  }
-  .glow { position: absolute; width: 220px; height: 220px; border-radius: 9999px; filter: blur(80px); pointer-events: none; }
-  .glow-amber { background: rgba(251,191,36,.15); top: -60px; right: -60px; }
-  .glow-blue { background: rgba(59,130,246,.15); bottom: -60px; right: -60px; }
-  .glow-purple { background: rgba(168,85,247,.15); bottom: -60px; left: -60px; }
+  /* EFEITOS GLASSMORPHISM E NEON */
+  .glass { background: rgba(15,23,42,.7); backdrop-filter: blur(28px); border: 1px solid rgba(251,191,36,.2); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
+  .glass-neon { border: 1px solid rgba(251,191,36,.5); box-shadow: 0 0 35px rgba(251,191,36,.2), inset 0 0 20px rgba(251,191,36,.1); }
 
-  .input {
-    width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9);
-    border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc;
-    transition: all .3s; outline: none;
-  }
+  .glow-amber { position: absolute; width: 250px; height: 250px; border-radius: 9999px; background: rgba(251,191,36,.15); filter: blur(80px); top: -50px; right: -50px; pointer-events: none; }
+
+  /* ANIMAÇÕES DE NAVEGAÇÃO */
+  .view { display: none; opacity: 0; }
+  .view.active { display: block; animation: viewIn .5s ease-out forwards; }
+  @keyframes viewIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+
+  /* INPUTS */
+  .input { width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9); border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc; transition: all .3s; outline: none; }
   .input:focus { border-color: #fbbf24; box-shadow: 0 0 20px rgba(251,191,36,.3); }
-  select.input option { background: #0f172a; }
-  .label {
-    display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
-    color: #fbbf24; font-weight: 800; margin-bottom: .4rem;
-  }
 
-  .btn-admin {
-    background: linear-gradient(135deg,#fbbf24,#d97706); color: #020617; font-weight: 900;
-    font-size: .8rem; text-transform: uppercase; border-radius: .75rem; padding: 1rem; width: 100%;
-    display: flex; justify-content: center; align-items: center; gap: .5rem; transition: transform .2s; cursor: pointer;
-  }
-  .btn-admin:active { transform: scale(.96); }
-  .btn-admin:disabled { opacity: .6; cursor: wait; }
-
-  .btn-purple {
-    background: linear-gradient(135deg,#a855f7,#7e22ce); color: #fff; font-weight: 900;
-    font-size: .8rem; text-transform: uppercase; border-radius: .75rem; padding: 1rem; width: 100%;
-    display: flex; justify-content: center; align-items: center; gap: .5rem; transition: transform .2s; cursor: pointer;
-  }
-  .btn-purple:active { transform: scale(.96); }
-  .btn-purple:disabled { opacity: .6; cursor: wait; }
-
-  .skeleton {
-    background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.1) 37%, rgba(255,255,255,.05) 63%);
-    background-size: 400% 100%; animation: skeleton-loading 1.4s ease infinite; border-radius: 4px; color: transparent !important;
-  }
-  @keyframes skeleton-loading { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
-
+  /* TOASTS (NOTIFICAÇÕES) */
   .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
   .toast.show { opacity: 1; transform: scale(1); }
   .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { scrollbar-width: none; }
+  
+  /* ESQUELETO DE CARREGAMENTO */
+  .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 37%, rgba(255,255,255,0.05) 63%); background-size: 400% 100%; animation: skeleton-loading 1.4s ease infinite; border-radius: 4px; color: transparent !important; }
+  @keyframes skeleton-loading { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+  /* BOTÃO GOOGLE */
+  .btn-google {
+    display: inline-flex; align-items: center; justify-content: center; gap: .75rem;
+    width: 100%; padding: 1rem 1.25rem;
+    background: rgba(15,23,42,.9); border: 1px solid rgba(251,191,36,.5); border-radius: 9999px;
+    color: #f8fafc; font-size: .85rem; font-weight: 700;
+    box-shadow: 0 8px 30px -8px rgba(251,191,36,.4); transition: all .2s; cursor: pointer;
+  }
+  .btn-google:hover { background: rgba(30,41,59,.9); transform: translateY(-2px); }
+  .btn-google:active { transform: scale(.96); }
 </style>
 </head>
-<body class="text-slate-100 min-h-screen pb-28">
+<body class="text-slate-100 min-h-screen pb-28 relative">
 
 <canvas id="bg" aria-hidden="true"></canvas>
-<div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none" aria-live="polite"></div>
+<div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none"></div>
 
-<!-- SPLASH -->
-<div id="splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center transition-opacity duration-500">
-  <div class="w-28 h-28 rounded-full border-4 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(251,191,36,.5)]">
-    <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="" class="w-16 h-16 object-contain">
+<!-- SPLASH SCREEN -->
+<div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center transition-all duration-500">
+  <div class="w-32 h-32 rounded-full border-4 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(251,191,36,.5)]">
+    <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-16 h-16 object-contain" alt="Logo PlanilhaViva">
   </div>
   <h2 class="text-3xl font-black text-white mt-6">QG <span class="text-amber-400">Admin</span></h2>
-  <p id="splash-name" class="text-amber-200/70 text-xs mt-2 font-mono"></p>
+  <p class="text-amber-200/70 text-xs mt-2 font-mono">Autenticando credenciais...</p>
 </div>
 
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
-
-  <!-- LOGIN -->
+  
+  <!-- ECRÃ DE LOGIN -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6">
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
-      <div class="glow glow-amber"></div>
-      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-amber-400/50 shadow-[0_0_20px_rgba(251,191,36,.5)]">
-        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="" class="w-10 h-10 object-contain">
+      <div class="glow-amber"></div>
+      
+      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-amber-400/50 shadow-[0_0_40px_rgba(251,191,36,.4)]">
+        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="Logo" class="w-20 h-20 object-contain">
       </div>
+
       <div>
-        <h1 class="text-3xl font-black text-white">Controle <span class="text-amber-400">Pro</span></h1>
-        <p class="text-xs text-amber-100/70 mt-2 font-medium">Acesso restrito à equipa de liderança.</p>
+        <h1 class="text-3xl font-black tracking-tight text-white">Controle <span class="text-amber-400">Pro</span></h1>
+        <p class="text-xs text-amber-100/70 mt-2 font-medium leading-relaxed">Painel de Gestão e Inteligência de Mercado.</p>
       </div>
-      <button id="btnLogin" type="button" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-amber-400/50 rounded-full font-bold hover:bg-slate-700 transition cursor-pointer">
-        <i data-lucide="key" class="w-5 h-5 text-amber-400"></i> Entrar com o Google
+
+      <button id="btnLogin" type="button" class="btn-google mt-4 relative z-20">
+        <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>Acessar com o Google</span>
       </button>
     </div>
   </section>
 
-  <!-- APP -->
-  <section id="view-app" class="hidden flex-col w-full">
+  <!-- PAINEL PRINCIPAL -->
+  <section id="view-app" class="hidden flex-1 flex-col w-full">
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between shadow-lg border-b border-amber-500/20">
-      <div class="flex items-center gap-3 min-w-0">
-        <div id="avatar" class="w-10 h-10 shrink-0 rounded-full border-2 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800"></div>
-        <div class="min-w-0">
-          <span class="text-[9px] text-amber-400 font-black uppercase tracking-widest block mb-0.5">Visão estratégica</span>
-          <h2 id="admin-name" class="text-xs font-bold text-white truncate">Líder</h2>
+      <div class="flex items-center gap-3">
+        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800">
+          <i data-lucide="user" class="w-5 h-5 text-amber-400"></i>
+        </div>
+        <div>
+          <span class="text-[9px] text-amber-400 font-black uppercase tracking-widest block mb-0.5">Visão Estratégica</span>
+          <h2 class="text-xs font-bold text-white truncate w-32" id="admin-name">Líder</h2>
         </div>
       </div>
-      <div class="flex items-center gap-2">
-        <button id="btnSync" type="button" class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition cursor-pointer" title="Atualizar dados" aria-label="Atualizar dados">
+      <div class="flex gap-2">
+        <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition" onclick="Admin.syncData()">
           <i data-lucide="refresh-cw" class="w-4 h-4"></i>
         </button>
-        <button id="btnLogout" type="button" class="text-rose-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition cursor-pointer" title="Sair" aria-label="Sair do sistema">
+        <button class="text-rose-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition" onclick="App.logout()">
           <i data-lucide="log-out" class="w-4 h-4"></i>
         </button>
       </div>
     </header>
 
     <div class="px-5 pt-6 space-y-6">
-
-      <!-- MÉTRICAS -->
-      <div id="view-dashboard" class="space-y-5">
+      <!-- DASHBOARD (MÉTRICAS) -->
+      <div id="view-dashboard" class="view active space-y-5">
         <div class="grid grid-cols-2 gap-3">
           <div class="glass p-4 rounded-2xl border border-emerald-500/30">
-            <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-bold mb-1">Receita mensal (MRR)</p>
-            <p id="kpi-mrr" class="text-xl font-black text-white skeleton inline-block w-24 h-7">—</p>
+            <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-bold mb-1">Receita MRR</p>
+            <p class="text-xl font-black text-white skeleton w-24 h-7 inline-block" id="kpi-mrr">R$ 0,00</p>
           </div>
           <div class="glass p-4 rounded-2xl border border-blue-500/30">
-            <p class="text-[9px] uppercase tracking-widest text-blue-400 font-bold mb-1">Base ativa</p>
-            <p id="kpi-ativos" class="text-xl font-black text-white skeleton inline-block w-16 h-7">—</p>
+            <p class="text-[9px] uppercase tracking-widest text-blue-400 font-bold mb-1">Base Ativa</p>
+            <p class="text-xl font-black text-white skeleton w-16 h-7 inline-block" id="kpi-ativos">0</p>
           </div>
           <div class="glass p-4 rounded-2xl border border-rose-500/30">
-            <p class="text-[9px] uppercase tracking-widest text-rose-400 font-bold mb-1">Base inativa</p>
-            <p id="kpi-inativos" class="text-xl font-black text-white skeleton inline-block w-16 h-7">—</p>
+            <p class="text-[9px] uppercase tracking-widest text-rose-400 font-bold mb-1">Base Inativa</p>
+            <p class="text-xl font-black text-white skeleton w-16 h-7 inline-block" id="kpi-inativos">0</p>
           </div>
           <div class="glass p-4 rounded-2xl border border-amber-500/30">
-            <p class="text-[9px] uppercase tracking-widest text-amber-400 font-bold mb-1">Total de clientes</p>
-            <p id="kpi-total" class="text-xl font-black text-white skeleton inline-block w-16 h-7">—</p>
+            <p class="text-[9px] uppercase tracking-widest text-amber-400 font-bold mb-1">Total Utilizadores</p>
+            <p class="text-xl font-black text-white skeleton w-16 h-7 inline-block" id="kpi-total">0</p>
           </div>
         </div>
 
-        <div class="glass p-4 rounded-2xl border border-purple-500/40 flex items-center justify-between">
+        <div class="glass p-4 rounded-2xl border border-purple-500/40 bg-purple-950/20 flex items-center justify-between">
           <div>
-            <p class="text-[9px] uppercase tracking-widest text-purple-400 font-bold mb-1">Vencem nos próximos 5 dias</p>
-            <p id="kpi-vencendo" class="text-xl font-black text-white skeleton inline-block w-12 h-7">—</p>
+            <p class="text-[9px] uppercase tracking-widest text-purple-400 font-bold mb-1">A Vencer (5 Dias)</p>
+            <p class="text-xl font-black text-white skeleton w-12 h-7 inline-block" id="kpi-vencendo">0</p>
           </div>
           <div class="p-3 bg-purple-900/40 border border-purple-500/50 rounded-xl text-purple-400">
             <i data-lucide="clock" class="w-6 h-6"></i>
@@ -160,630 +154,320 @@
         </div>
 
         <div class="glass rounded-2xl p-5 border border-blue-500/20">
-          <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4">
-            <i data-lucide="activity" class="w-4 h-4"></i> Saúde da base
-          </h3>
-          <div class="relative w-full h-[180px]">
-            <p id="chart-msg" class="absolute inset-0 flex items-center justify-center text-amber-500 text-xs font-bold animate-pulse">A carregar dados do servidor...</p>
+          <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4"><i data-lucide="activity" class="w-4 h-4"></i> Saúde da Base</h3>
+          <div class="w-full h-[180px] relative">
+            <div id="chart-loader" class="absolute inset-0 flex items-center justify-center text-amber-500 text-xs font-bold animate-pulse">A carregar dados do servidor...</div>
             <canvas id="chartUsage"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- CLIENTES -->
-      <div id="view-crm" class="hidden space-y-5">
-        <div class="glass rounded-2xl p-5 border border-blue-500/30 relative overflow-hidden">
-          <div class="glow glow-blue"></div>
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4 relative z-10">
-            <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2">
-              <i data-lucide="users" class="w-4 h-4"></i> Gestão de clientes
-            </h3>
-            <div class="flex items-center gap-2">
-              <button id="btnExport" type="button" class="text-[9px] font-bold uppercase text-emerald-400 border border-emerald-500/40 rounded-full px-3 py-1.5 hover:bg-emerald-500/10 transition flex items-center gap-1 cursor-pointer">
-                <i data-lucide="download" class="w-3 h-3"></i> CSV
-              </button>
-              <a id="open-sheet-link" href="#" target="_blank" rel="noopener" class="hidden text-[9px] font-bold uppercase text-amber-400 border border-amber-500/40 rounded-full px-3 py-1.5 hover:bg-amber-500/10 transition items-center gap-1">
-                <i data-lucide="external-link" class="w-3 h-3"></i> Planilha
-              </a>
-            </div>
+      <!-- CRM (CLIENTES) -->
+      <div id="view-crm" class="view space-y-5">
+        <div class="glass rounded-2xl p-5 border border-blue-500/30 relative">
+          <div class="flex justify-between mb-4">
+            <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Clientes</h3>
+            <a id="open-sheet-link" href="#" target="_blank" class="hidden text-[9px] font-bold text-amber-400 border border-amber-500/40 rounded-full px-3 py-1 flex items-center gap-1 hover:bg-amber-500/10 transition"><i data-lucide="external-link" class="w-3 h-3"></i> Planilha</a>
           </div>
-
-          <input id="search-user" type="search" class="input text-xs h-10 mb-4 relative z-10" placeholder="Buscar por nome ou e-mail...">
-
-          <div id="user-list" class="space-y-3 relative z-10">
-            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full skeleton"></div>
-              <div class="flex-1 space-y-2">
-                <div class="h-3 w-1/2 skeleton"></div>
-                <div class="h-2 w-3/4 skeleton"></div>
+          <input type="text" class="input text-xs h-10 mb-4" id="search-user" placeholder="Procurar utilizador..." onkeyup="Admin.filterUsers()">
+          <div class="space-y-3 max-h-[400px] overflow-y-auto pr-2 no-scrollbar" id="real-user-list">
+             <!-- Esqueleto inicial -->
+             <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full skeleton"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-3 w-1/2 skeleton"></div>
+                  <div class="h-2 w-3/4 skeleton"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- DISPAROS -->
-      <div id="view-comunicacao" class="hidden space-y-5">
+      <!-- COMUNICAÇÃO -->
+      <div id="view-comunicacao" class="view space-y-5">
         <div class="glass rounded-2xl p-5 border border-purple-500/30 relative overflow-hidden">
-          <div class="glow glow-purple"></div>
-          <h3 class="text-xs font-black uppercase text-purple-400 flex items-center gap-2 mb-4 relative z-10">
-            <i data-lucide="radio" class="w-4 h-4"></i> Central de campanhas
-          </h3>
-
-          <form id="form-campaign" class="space-y-4 relative z-10" novalidate>
+          <h3 class="text-xs font-black uppercase text-purple-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="radio" class="w-4 h-4"></i> Campanhas</h3>
+          <form class="space-y-4 relative z-10" onsubmit="event.preventDefault(); Admin.sendMessage();">
             <div>
-              <label class="label text-purple-400" for="msg-target">Público</label>
+              <label class="block text-[10px] uppercase text-purple-400 font-bold mb-1">Público-Alvo</label>
               <select id="msg-target" class="input text-xs border-purple-500/30">
-                <option value="all">Todos os clientes</option>
-                <option value="ativos">Apenas ativos</option>
-                <option value="inativos">Apenas inativos</option>
+                <option value="all">Base Completa (Massivo)</option>
+                <option value="ativos">Apenas Adimplentes (Upsell)</option>
+                <option value="inativos">Apenas Inativos (Recuperar Churn)</option>
               </select>
             </div>
             <div>
-              <label class="label" for="msg-title">Assunto</label>
-              <input id="msg-title" type="text" maxlength="120" class="input text-xs" placeholder="Ex.: Novidades do PlanilhaViva">
+              <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Assunto do Email</label>
+              <input id="msg-title" type="text" class="input text-xs" placeholder="Ex: Evite o bloqueio da sua conta..." required>
             </div>
             <div>
-              <label class="label" for="msg-body">Mensagem</label>
-              <textarea id="msg-body" maxlength="1000" rows="5" class="input resize-none text-xs" placeholder="Conteúdo da mensagem"></textarea>
+              <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Mensagem</label>
+              <textarea id="msg-body" class="input h-24 text-xs resize-none" placeholder="Conteúdo do e-mail..." required></textarea>
             </div>
-            <button id="btn-send" type="submit" class="btn-purple">
-              <i data-lucide="send" class="w-4 h-4"></i> Registar campanha
+            <button type="submit" class="w-full font-bold py-3 rounded-xl flex justify-center items-center gap-2 transition" style="background: linear-gradient(135deg,#a855f7,#7e22ce); color: white;" id="btn-disparar">
+              <i data-lucide="send" class="w-4 h-4"></i> Disparar Email
             </button>
-            <p class="text-[10px] text-slate-500">A campanha fica registada na aba "Disparos" da planilha mestre. O envio de e-mails ainda não está ativado.</p>
           </form>
         </div>
       </div>
-
     </div>
   </section>
 </main>
 
-<!-- NAVEGAÇÃO -->
+<!-- NAVEGAÇÃO INFERIOR -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
   <div class="glass rounded-2xl relative grid grid-cols-3 p-1 shadow-2xl border border-slate-700">
-    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-amber-500/50 w-[calc((100%-0.5rem)/3)] transition-transform duration-300 ease-out shadow-[0_0_15px_rgba(251,191,36,.2)]"></span>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="dashboard">
-      <i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Métricas</span>
-    </button>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="crm">
-      <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Clientes</span>
-    </button>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="comunicacao">
-      <i data-lucide="radio" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Disparos</span>
-    </button>
+    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-amber-500/50 w-[calc((100%-0.5rem)/3)] transition-transform duration-300 shadow-[0_0_15px_rgba(251,191,36,.2)]"></span>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="dashboard"><i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Métricas</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="crm"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Clientes</span></button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="comunicacao"><i data-lucide="radio" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase">Disparos</span></button>
   </div>
 </nav>
 
 <script>
 // ============================================================================
-// CONFIGURAÇÃO
+// CONFIGURAÇÕES
 // ============================================================================
-const CONFIG = Object.freeze({
-  CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  // URL da implantação do Apps Script (a mesma que o backend admin usa)
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzscKYjmhXnX9KQoEABSDptTamzFUPKq9yPoTwmjzn21tTPXLAxjxRRjVWWGg-lSxjW/exec",
-  // Só para mostrar o botão; a validação real é feita no servidor
-  ADMIN_EMAILS: Object.freeze([
-    "gilneycriative@gmail.com",
-    "samueldanilo11@gmail.com",
-    "gilneilaurindo@gmail.com",
-  ]),
-  VIEWS: Object.freeze(["dashboard", "crm", "comunicacao"]),
-  TOAST_MS: 4000,
-  SPLASH_MS: 1200,
-  SDK_MAX_ATTEMPTS: 50,
-});
-
-const $ = (id) => document.getElementById(id);
-const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-
-// Estado em memória: o token não é guardado no navegador
-const State = { token: null, user: null, users: [], search: "", chart: null, tokenClient: null };
-
-// ============================================================================
-// UTILITÁRIOS
-// ============================================================================
-const icons = () => { if (window.lucide) lucide.createIcons(); };
-
-const show = (node, on, display = "flex") => {
-  node.classList.toggle("hidden", !on);
-  node.classList.toggle(display, on);
+const CONFIG = {
+  // Credencial Google correta
+  GOOGLE_CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
+  
+  // ⚠️ ATENÇÃO: COLOQUE AQUI A SUA URL DA NOVA IMPLEMENTAÇÃO DO SCRIPT ADMIN
+  SCRIPT_URL: "COLE_AQUI_O_LINK_DO_APPS_SCRIPT",
+  
+  ADMIN_EMAILS: ["gilneycriative@gmail.com", "samueldanilo11@gmail.com", "gilneilaurindo@gmail.com"]
 };
 
-/** Cria um elemento com texto seguro (textContent, nunca innerHTML). */
-function el(tag, className = "", text = "") {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== "") node.textContent = text;
-  return node;
-}
+const State = { user: null };
+const $ = id => document.getElementById(id);
+const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+let chartInstance = null;
 
-function setAvatar(container, picture) {
-  container.textContent = "";
-  if (picture) {
-    const img = el("img", "w-full h-full object-cover");
-    img.src = picture;
-    img.alt = "";
-    img.referrerPolicy = "no-referrer";
-    container.append(img);
-  } else {
-    container.innerHTML = '<i data-lucide="user" class="w-5 h-5 text-amber-400"></i>';
-    icons();
-  }
-}
-
-function formatDate(iso) {
-  if (!iso) return "Sem registo";
-  const date = new Date(iso);
-  return Number.isNaN(date.getTime()) ? "Sem registo" : date.toLocaleDateString("pt-BR");
+// ============================================================================
+// ANIMAÇÃO DE FUNDO (PARTÍCULAS)
+// ============================================================================
+function initParticles() {
+  const canvas = $("bg"); if(!canvas) return;
+  const ctx = canvas.getContext("2d"); let p = [];
+  const rz = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; p = Array.from({length: 40}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.5, vy: (Math.random()-.5)*.5, r: Math.random()*2+.5})); };
+  const an = () => { ctx.clearRect(0,0,canvas.width,canvas.height); p.forEach(i=>{ i.x+=i.vx; i.y+=i.vy; if(i.x<0||i.x>canvas.width)i.vx*=-1; if(i.y<0||i.y>canvas.height)i.vy*=-1; ctx.fillStyle="rgba(251,191,36,0.3)"; ctx.beginPath(); ctx.arc(i.x,i.y,i.r,0,Math.PI*2); ctx.fill(); }); requestAnimationFrame(an); };
+  window.addEventListener("resize", rz); rz(); an();
 }
 
 // ============================================================================
-// UI
+// UI & NOTIFICAÇÕES
 // ============================================================================
 const UI = {
-  toast(message, type = "success") {
-    const node = el("div", "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-slate-700");
-    const icon = el("i", `w-6 h-6 shrink-0 ${type === "error" ? "text-rose-400" : "text-emerald-400"}`);
-    icon.dataset.lucide = type === "error" ? "alert-triangle" : "check-circle";
-    node.append(icon, el("span", "", message));
-    $("toasts").append(node);
-    icons();
-    requestAnimationFrame(() => node.classList.add("show"));
-    setTimeout(() => {
-      node.classList.remove("show");
-      setTimeout(() => node.remove(), 400);
-    }, CONFIG.TOAST_MS);
-  },
-
-  setKpi(id, text) {
-    const node = $(id);
-    node.classList.remove("skeleton");
-    node.textContent = text;
-  },
+  toast: (msg, type = "success") => {
+    const icon = type === "error" ? "alert-triangle" : "check-circle";
+    const color = type === "error" ? "text-rose-400" : "text-emerald-400";
+    const t = document.createElement("div"); t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white z-[9999]";
+    t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 ${color}"></i><span>${msg}</span>`;
+    $("toasts").append(t); if(window.lucide) lucide.createIcons();
+    requestAnimationFrame(() => t.classList.add("show"));
+    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 4000);
+  }
 };
 
 // ============================================================================
-// API
+// COMUNICAÇÃO COM O SERVIDOR
 // ============================================================================
 const API = {
-  async call(action, payload = {}) {
-    if (!State.token) throw new Error("Sessão expirada. Recarregue a página e entre novamente.");
-
-    let res;
+  call: async (action, payload = {}) => {
+    if (!State.user) throw new Error("Acesso não validado.");
+    let res, json;
+    
     try {
       res = await fetch(CONFIG.SCRIPT_URL, {
-        method: "POST",
-        // text/plain evita o preflight de CORS no Apps Script
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action,
-          email: State.user.email,
-          accessToken: State.token,
-          ...payload,
-        }),
+        method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
       });
-    } catch {
-      throw new Error("Sem ligação com o servidor.");
+    } catch(networkError) {
+      throw new Error("Erro de ligação. Verifique se o SCRIPT_URL está correto.");
     }
-
-    let json;
+    
     try {
       json = await res.json();
-    } catch {
-      throw new Error("Resposta inesperada do servidor.");
+    } catch(parseError) {
+      throw new Error("Resposta inválida do servidor.");
     }
 
-    if (json.status !== "success") throw new Error(json.message || "Erro no servidor.");
+    if (json.status !== "success") throw new Error(json.message || "Erro desconhecido do Servidor.");
     return json;
-  },
+  }
 };
 
 // ============================================================================
-// AUTENTICAÇÃO
+// LÓGICA DO PAINEL (ADMIN)
 // ============================================================================
-const Auth = {
-  isAdmin(email) {
-    return CONFIG.ADMIN_EMAILS.some((admin) => admin.toLowerCase() === email);
-  },
-
-  waitForGoogle(attempts = 0) {
-    if (window.google?.accounts?.oauth2) {
-      State.tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CONFIG.CLIENT_ID,
-        scope: "email profile",
-        callback: Auth.onToken,
-      });
-      return;
-    }
-    if (attempts >= CONFIG.SDK_MAX_ATTEMPTS) {
-      UI.toast("Não foi possível carregar o login do Google.", "error");
-      return;
-    }
-    setTimeout(() => Auth.waitForGoogle(attempts + 1), 200);
-  },
-
-  login() {
-    if (!State.tokenClient) return UI.toast("A carregar o login do Google, tente de novo.", "error");
-    State.tokenClient.requestAccessToken({ prompt: "select_account" });
-  },
-
-  async onToken(resp) {
-    if (resp.error) return UI.toast("Falha no login com o Google.", "error");
-
+const Admin = {
+  syncData: async () => {
     try {
-      const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-        headers: { Authorization: `Bearer ${resp.access_token}` },
+      UI.toast("A procurar dados...", "success");
+      $("chart-loader").classList.remove("hidden");
+      $("chart-loader").textContent = "A ler a Base de Dados...";
+      
+      const res = await API.call("get_admin_data");
+      const { kpis, usuarios, planilhaUrl } = res.data;
+      
+      if(planilhaUrl && $("open-sheet-link")) {
+        $("open-sheet-link").href = planilhaUrl;
+        $("open-sheet-link").classList.remove("hidden");
+      }
+
+      // Preenche os KPIs
+      $("kpi-mrr").classList.remove("skeleton"); $("kpi-mrr").textContent = brl.format(kpis.mrr || 0);
+      $("kpi-ativos").classList.remove("skeleton"); $("kpi-ativos").textContent = kpis.ativos || 0;
+      $("kpi-inativos").classList.remove("skeleton"); $("kpi-inativos").textContent = kpis.inativos || 0;
+      $("kpi-total").classList.remove("skeleton"); $("kpi-total").textContent = kpis.totalBase || 0;
+      $("kpi-vencendo").classList.remove("skeleton"); $("kpi-vencendo").textContent = kpis.vencendoEmBreve || 0;
+
+      // Renderiza Gráfico
+      $("chart-loader").classList.add("hidden");
+      if(chartInstance) chartInstance.destroy();
+      Chart.defaults.color = '#94a3b8';
+      chartInstance = new Chart($("chartUsage"), {
+        type: 'doughnut',
+        data: { labels: ['Ativos', 'Inativos'], datasets: [{ data: [kpis.ativos, kpis.inativos], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
       });
-      if (!res.ok) throw new Error("userinfo");
-      const profile = await res.json();
 
-      const email = String(profile.email || "").toLowerCase();
-      if (!Auth.isAdmin(email)) return UI.toast("Esta conta não tem acesso à área de administração.", "error");
-
-      State.token = resp.access_token;
-      State.user = { name: profile.name || email, email, picture: profile.picture || "" };
-      App.start();
-    } catch {
-      UI.toast("Não foi possível validar a conta.", "error");
+      // Renderiza Lista de Clientes
+      const list = $("real-user-list");
+      list.innerHTML = "";
+      if(!usuarios || usuarios.length === 0) {
+        list.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum cliente registado no banco de dados ainda.</p>`;
+      } else {
+        usuarios.forEach(u => {
+          const isAtivo = u.status === "Ativo";
+          const corBadge = isAtivo ? "bg-emerald-900/40 text-emerald-400 border-emerald-500/50" : "bg-rose-900/40 text-rose-400 border-rose-500/50";
+          list.innerHTML += `
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 user-card" data-search="${u.email.toLowerCase()}">
+              <div class="flex justify-between items-start">
+                <div class="min-w-0">
+                  <p class="text-xs font-bold text-white truncate">${u.nome}</p>
+                  <p class="text-[10px] text-slate-400 font-mono truncate">${u.email}</p>
+                </div>
+                <span class="border px-2 py-0.5 rounded text-[9px] font-bold uppercase shrink-0 ${corBadge}">${u.status}</span>
+              </div>
+              <button class="border py-1.5 rounded text-[10px] font-bold transition ${isAtivo ? 'bg-rose-900/30 text-rose-400 border-rose-500/50 hover:bg-rose-900/50' : 'bg-emerald-900/30 text-emerald-400 border-emerald-500/50 hover:bg-emerald-900/50'}" onclick="Admin.toggleStatus('${u.email}', '${isAtivo ? 'Inativo' : 'Ativo'}')">
+                ${isAtivo ? 'Suspender Acesso' : 'Ligar Acesso'}
+              </button>
+            </div>
+          `;
+        });
+      }
+    } catch(e) { 
+      UI.toast(e.message, "error"); 
+      $("chart-loader").textContent = "Falha ao carregar dados.";
+      ["kpi-mrr", "kpi-ativos", "kpi-inativos", "kpi-total", "kpi-vencendo"].forEach(id => {
+         $(id).classList.remove("skeleton");
+         $(id).textContent = "-";
+      });
     }
   },
 
-  logout() {
-    State.token = null;
-    State.user = null;
-    location.reload();
+  toggleStatus: async (email, newStatus) => {
+    try {
+      await API.call("toggle_user_status", { targetEmail: email, status: newStatus });
+      UI.toast("Status atualizado com sucesso!", "success"); Admin.syncData();
+    } catch(e) { UI.toast("Falha ao atualizar cliente.", "error"); }
   },
+
+  filterUsers: () => {
+    const term = $("search-user").value.toLowerCase();
+    document.querySelectorAll(".user-card").forEach(c => c.style.display = c.dataset.search.includes(term) ? "flex" : "none");
+  },
+
+  sendMessage: async () => {
+    const btn = $("btn-disparar");
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Disparando...`;
+    try {
+      await API.call("send_message", { target: $("msg-target").value, messageData: { title: $("msg-title").value, body: $("msg-body").value }});
+      UI.toast("Campanha de e-mail enviada!", "success");
+      $("msg-title").value = ""; $("msg-body").value = "";
+    } catch(e) { UI.toast("Erro ao disparar campanha.", "error"); }
+    finally { btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Disparar Email`; if(window.lucide) lucide.createIcons(); }
+  }
 };
 
 // ============================================================================
-// APLICAÇÃO
+// NAVEGAÇÃO E AUTENTICAÇÃO
 // ============================================================================
 const App = {
-  start() {
-    const name = State.user.name.split(/\s+/)[0];
-    $("splash-name").textContent = `Bem-vindo, ${name}`;
-    show($("view-auth"), false);
+  init: () => {
+    initParticles(); if(window.lucide) lucide.createIcons();
+    document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
 
-    const splash = $("splash");
-    show(splash, true, "flex");
-    splash.classList.remove("opacity-0");
-
-    setTimeout(() => {
-      splash.classList.add("opacity-0");
-      setTimeout(() => {
-        show(splash, false);
-        App.showApp();
-      }, 500);
-    }, CONFIG.SPLASH_MS);
+    const savedUser = localStorage.getItem("planilhaviva_admin_auth");
+    if (savedUser) { State.user = JSON.parse(savedUser); App.startSession(); }
+    else App.setupGoogleLogin();
   },
 
-  showApp() {
-    $("admin-name").textContent = State.user.name.split(/\s+/)[0];
-    setAvatar($("avatar"), State.user.picture);
-    show($("view-app"), true);
-    show($("bottom-nav"), true, "block");
-    App.nav("dashboard");
-    Dashboard.sync();
-  },
-
-  nav(view) {
-    CONFIG.VIEWS.forEach((name, index) => {
-      const active = name === view;
-      $("view-" + name).classList.toggle("hidden", !active);
-
-      const btn = document.querySelector(`.nav-btn[data-view="${name}"]`);
-      btn.classList.toggle("text-white", active);
-      btn.classList.toggle("text-slate-400", !active);
-      btn.setAttribute("aria-current", active ? "page" : "false");
-
-      if (active) $("nav-pill").style.transform = `translateX(${index * 100}%)`;
-    });
-    window.scrollTo(0, 0);
-    icons();
-  },
-
-  initParticles() {
-    const canvas = $("bg");
-    const ctx = canvas.getContext("2d");
-    let points = [];
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      points = Array.from({ length: 40 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        r: Math.random() * 2 + 0.5,
-      }));
-    };
-
-    const frame = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < points.length; i++) {
-        const p = points[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-        ctx.fillStyle = "rgba(251,191,36,.3)";
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-
-        for (let j = i + 1; j < points.length; j++) {
-          const q = points[j];
-          const dist = Math.hypot(p.x - q.x, p.y - q.y);
-          if (dist < 120) {
-            ctx.strokeStyle = `rgba(251,191,36,${0.2 * (1 - dist / 120)})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(q.x, q.y);
-            ctx.stroke();
-          }
-        }
+  setupGoogleLogin: () => {
+    if (!window.google) return setTimeout(App.setupGoogleLogin, 300);
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: CONFIG.GOOGLE_CLIENT_ID, scope: "email profile",
+      callback: async (t) => {
+        if (t.error) return UI.toast("Falha no login Google.", "error");
+        try {
+          const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
+          const p = await res.json();
+          if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === p.email.toLowerCase())) return UI.toast("Acesso Negado à Área de Administração.", "error");
+          
+          State.user = { name: p.name, email: p.email, picture: p.picture };
+          localStorage.setItem("planilhaviva_admin_auth", JSON.stringify(State.user));
+          App.startSession();
+        } catch(err) { UI.toast("Erro na validação do utilizador.", "error"); }
       }
-      requestAnimationFrame(frame);
-    };
-
-    window.addEventListener("resize", resize);
-    resize();
-    frame();
-  },
-};
-
-// ============================================================================
-// PAINEL (KPIs E GRÁFICO)
-// ============================================================================
-const Dashboard = {
-  async sync() {
-    const btn = $("btnSync");
-    btn.disabled = true;
-    btn.classList.add("animate-spin");
-
-    try {
-      const { data } = await API.call("get_admin_data");
-      Dashboard.render(data);
-    } catch (err) {
-      Dashboard.fail();
-      UI.toast(err.message, "error");
-    } finally {
-      btn.disabled = false;
-      btn.classList.remove("animate-spin");
-    }
-  },
-
-  render({ kpis = {}, usuarios = [], planilhaUrl = "" }) {
-    UI.setKpi("kpi-mrr", brl.format(Number(kpis.mrr) || 0));
-    UI.setKpi("kpi-ativos", String(kpis.ativos ?? 0));
-    UI.setKpi("kpi-inativos", String(kpis.inativos ?? 0));
-    UI.setKpi("kpi-total", String(kpis.totalBase ?? 0));
-    UI.setKpi("kpi-vencendo", String(kpis.vencendoEmBreve ?? 0));
-
-    show($("chart-msg"), false);
-    Dashboard.renderChart(kpis);
-
-    if (planilhaUrl) {
-      const link = $("open-sheet-link");
-      link.href = planilhaUrl;
-      show(link, true, "inline-flex");
-    }
-
-    State.users = Array.isArray(usuarios) ? usuarios : [];
-    Users.render();
-  },
-
-  renderChart(kpis) {
-    const values = [Number(kpis.ativos) || 0, Number(kpis.inativos) || 0];
-
-    if (!State.chart) {
-      State.chart = new Chart($("chartUsage"), {
-        type: "doughnut",
-        data: {
-          labels: ["Ativos", "Inativos"],
-          datasets: [{ data: values, backgroundColor: ["#10b981", "#f43f5e"], borderWidth: 0 }],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: "70%",
-          plugins: { legend: { position: "bottom", labels: { color: "#94a3b8" } } },
-        },
-      });
-      return;
-    }
-    State.chart.data.datasets[0].data = values;
-    State.chart.update();
-  },
-
-  fail() {
-    ["kpi-mrr", "kpi-ativos", "kpi-inativos", "kpi-total", "kpi-vencendo"].forEach((id) => UI.setKpi(id, "—"));
-    const msg = $("chart-msg");
-    msg.classList.remove("animate-pulse");
-    msg.textContent = "Não foi possível carregar os dados.";
-    show(msg, true, "flex");
-  },
-};
-
-// ============================================================================
-// CLIENTES
-// ============================================================================
-const Users = {
-  render() {
-    const list = $("user-list");
-    list.textContent = "";
-
-    if (State.users.length === 0) {
-      list.append(el("p", "text-xs text-slate-500 text-center py-4", "Nenhum cliente registado na planilha mestre."));
-      return;
-    }
-
-    const filtered = State.users
-      .filter((u) => `${u.nome || ""} ${u.email || ""}`.toLowerCase().includes(State.search))
-      .sort((a, b) => (Number(b.acessos) || 0) - (Number(a.acessos) || 0));
-
-    if (filtered.length === 0) {
-      list.append(el("p", "text-xs text-slate-500 text-center py-4", "Nenhum resultado para a busca."));
-      return;
-    }
-
-    filtered.forEach((u) => list.append(Users.card(u)));
-    icons();
-  },
-
-  card(u) {
-    const active = u.status === "Ativo";
-    const card = el("div", "bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3");
-
-    const head = el("div", "flex justify-between items-start gap-2");
-    const info = el("div", "min-w-0");
-    info.append(
-      el("p", "text-xs font-bold text-white truncate", u.nome || "Sem nome"),
-      el("p", "text-[10px] text-slate-400 font-mono break-all", u.email || "")
-    );
-    const badge = el(
-      "span",
-      `border px-2 py-0.5 rounded text-[9px] font-bold uppercase shrink-0 ${
-        active ? "bg-emerald-900/40 text-emerald-400 border-emerald-500/50" : "bg-rose-900/40 text-rose-400 border-rose-500/50"
-      }`,
-      u.status || "—"
-    );
-    head.append(info, badge);
-
-    const stats = el("div", "grid grid-cols-3 gap-2");
-    const stat = (label, value) => {
-      const box = el("div", "bg-slate-800 p-1.5 rounded text-center min-w-0");
-      box.append(el("p", "text-[8px] uppercase text-slate-500", label), el("p", "text-[10px] font-bold text-slate-200 truncate", value));
-      return box;
-    };
-    stats.append(
-      stat("Plano", Number(u.plano) > 0 ? brl.format(u.plano) : "—"),
-      stat("Acessos", String(u.acessos || 0)),
-      stat("Último acesso", formatDate(u.ultimoAcesso))
-    );
-
-    const button = el(
-      "button",
-      `border py-1.5 rounded text-[10px] font-bold transition cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
-        active
-          ? "bg-rose-900/30 text-rose-400 border-rose-500/50 hover:bg-rose-900/50"
-          : "bg-emerald-900/30 text-emerald-400 border-emerald-500/50 hover:bg-emerald-900/50"
-      }`,
-      active ? "Suspender acesso" : "Ligar acesso"
-    );
-    button.type = "button";
-    button.dataset.email = u.email || "";
-    button.dataset.activate = String(!active);
-
-    card.append(head, stats, button);
-    return card;
-  },
-
-  async toggle(button) {
-    const email = button.dataset.email;
-    const activate = button.dataset.activate === "true";
-    button.disabled = true;
-
-    try {
-      await API.call("toggle_user_status", { targetEmail: email, status: activate ? "Ativo" : "Inativo" });
-      UI.toast(`Acesso ${activate ? "ligado" : "suspenso"} para ${email}.`);
-      await Dashboard.sync();
-    } catch (err) {
-      UI.toast(err.message, "error");
-      button.disabled = false;
-    }
-  },
-};
-
-function exportCsv() {
-  if (State.users.length === 0) return UI.toast("Nenhum cliente para exportar.", "error");
-
-  // Escapa aspas e protege contra injeção de fórmulas no Excel
-  const cell = (value) => {
-    let text = String(value ?? "");
-    if (/^[=+\-@]/.test(text)) text = `'${text}`;
-    return `"${text.replace(/"/g, '""')}"`;
-  };
-
-  const header = ["Nome", "E-mail", "Status", "Plano mensal", "Último acesso", "Acessos"];
-  const rows = State.users.map((u) =>
-    [u.nome, u.email, u.status, u.plano || 0, u.ultimoAcesso || "", u.acessos || 0].map(cell).join(";")
-  );
-  const csv = "\uFEFF" + [header.map(cell).join(";"), ...rows].join("\r\n");
-
-  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-  const link = el("a");
-  link.href = url;
-  link.download = `clientes_${new Date().toISOString().slice(0, 10)}.csv`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-// ============================================================================
-// CAMPANHAS
-// ============================================================================
-async function sendCampaign(event) {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const btn = $("btn-send");
-
-  const title = $("msg-title").value.trim();
-  const body = $("msg-body").value.trim();
-  if (!title || !body) return UI.toast("Preencha o assunto e a mensagem.", "error");
-
-  btn.disabled = true;
-  try {
-    const res = await API.call("send_message", {
-      target: $("msg-target").value,
-      messageData: { title, body },
     });
-    UI.toast(`Campanha registada para ${res.data.disparosRealizados} cliente(s).`);
-    form.reset();
-  } catch (err) {
-    UI.toast(err.message, "error");
-  } finally {
-    btn.disabled = false;
+    $("btnLogin").addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
+  },
+
+  startSession: () => {
+    $("view-auth").classList.replace("flex", "hidden");
+    const splash = $("welcome-splash");
+    splash.classList.remove("hidden"); splash.classList.add("flex");
+    
+    if(State.user.picture && $("avatar")) {
+      $("avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
+    }
+    $("admin-name").textContent = State.user.name ? State.user.name.split(" ")[0] : "Líder";
+    
+    setTimeout(() => { 
+      splash.classList.add("opacity-0"); 
+      setTimeout(() => { 
+        splash.classList.replace("flex", "hidden"); 
+        $("view-app").classList.remove("hidden"); 
+        $("view-app").classList.add("flex"); 
+        $("bottom-nav").classList.remove("hidden"); 
+        App.nav("dashboard"); 
+        Admin.syncData(); 
+      }, 500); 
+    }, 1000);
+  },
+
+  logout: () => { localStorage.removeItem("planilhaviva_admin_auth"); location.reload(); },
+
+  nav: (view) => {
+    ["dashboard", "crm", "comunicacao"].forEach((v, i) => {
+      const act = v === view;
+      $("view-" + v).classList.toggle("active", act);
+      $("view-" + v).classList.toggle("hidden", !act);
+      const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
+      if(b) { 
+        b.classList.toggle("text-white", act); 
+        b.classList.toggle("text-slate-400", !act); 
+        if (act) $("nav-pill").style.transform = `translateX(${i * 100}%)`; 
+      }
+    });
+    window.scrollTo(0, 0); if(window.lucide) lucide.createIcons();
   }
-}
+};
 
-// ============================================================================
-// INICIALIZAÇÃO
-// ============================================================================
-document.addEventListener("DOMContentLoaded", () => {
-  App.initParticles();
-  show($("view-auth"), true);
-  icons();
-
-  document.querySelectorAll(".nav-btn").forEach((btn) =>
-    btn.addEventListener("click", () => App.nav(btn.dataset.view))
-  );
-
-  $("btnLogin").addEventListener("click", Auth.login);
-  $("btnSync").addEventListener("click", () => Dashboard.sync());
-  $("btnLogout").addEventListener("click", Auth.logout);
-  $("btnExport").addEventListener("click", exportCsv);
-  $("form-campaign").addEventListener("submit", sendCampaign);
-
-  $("search-user").addEventListener("input", (e) => {
-    State.search = e.target.value.trim().toLowerCase();
-    Users.render();
-  });
-
-  // Delegação: um único listener para todos os botões de suspender/ligar
-  $("user-list").addEventListener("click", (e) => {
-    const button = e.target.closest("button[data-email]");
-    if (button) Users.toggle(button);
-  });
-
-  Auth.waitForGoogle();
-});
+document.addEventListener("DOMContentLoaded", App.init);
 </script>
 </body>
 </html>
