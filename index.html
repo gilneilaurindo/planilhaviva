@@ -6,9 +6,19 @@
 <meta name="theme-color" content="#020617">
 <title>PlanilhaViva Pro</title>
 <link rel="manifest" href="manifest.json">
+
+<!-- TAILWIND & ÍCONES -->
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+<!-- FLATPICKR (CALENDÁRIO CUSTOMIZADO) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+
+<!-- GOOGLE LOGIN -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+
 <style>
   :root { color-scheme: dark; }
   body {
@@ -22,45 +32,64 @@
   #bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 
   .glass {
-    background: rgba(15,23,42,.75);
-    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(148,163,184,.12);
-    box-shadow: 0 20px 40px -20px rgba(0,0,0,.8);
+    background: rgba(15,23,42,.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(148,163,184,.12); box-shadow: 0 20px 40px -20px rgba(0,0,0,.8);
   }
   .glow { position:absolute; width:160px; height:160px; border-radius:9999px; background:rgba(6,182,212,.15); filter:blur(60px); top:-60px; right:-40px; pointer-events:none; }
 
-  /* ANIMAÇÕES GERAIS */
+  /* ANIMAÇÕES */
   .animate-float { animation: float 4s ease-in-out infinite; }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-  
   .icon-pop svg { animation: pop 0.4s cubic-bezier(.175, .885, .32, 1.275) both; }
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
 
-  /* GRÁFICO DE ROSCA (DOUGHNUT) CSS PURE */
-  .conic-chart {
-    background: conic-gradient(#3b82f6 0% 40%, #10b981 40% 65%, #8b5cf6 65% 85%, #f59e0b 85% 100%);
-    border-radius: 50%;
-    position: relative;
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+  /* ========================================================
+     CUSTOMIZAÇÃO DO CALENDÁRIO (FLATPICKR) - ESTILO PLATAFORMA
+     ======================================================== */
+  .flatpickr-calendar {
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(34, 211, 238, 0.3) !important;
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.15) !important;
+    border-radius: 1rem !important;
+    font-family: inherit !important;
+    padding: 10px !important;
   }
-  .conic-chart::after {
-    content: ""; position: absolute; inset: 12px;
-    background: #0f172a; border-radius: 50%;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  .flatpickr-calendar.arrowTop:before { border-bottom-color: rgba(34, 211, 238, 0.3) !important; }
+  .flatpickr-calendar.arrowTop:after { border-bottom-color: rgba(15, 23, 42, 0.95) !important; }
+  
+  .flatpickr-months .flatpickr-month { color: #f8fafc !important; fill: #f8fafc !important; }
+  .flatpickr-current-month .flatpickr-monthDropdown-months { background: #0f172a !important; color: #f8fafc !important; border-radius: 0.5rem; padding: 2px;}
+  .flatpickr-current-month .flatpickr-monthDropdown-months:hover { background: rgba(34, 211, 238, 0.1) !important; }
+  .flatpickr-current-month input.cur-year { color: #f8fafc !important; font-weight: 800 !important; }
+  
+  span.flatpickr-weekday { color: #22d3ee !important; font-weight: 800 !important; text-transform: uppercase; font-size: 0.65rem !important; letter-spacing: 0.1em; }
+  
+  .flatpickr-day { color: #cbd5e1 !important; border-radius: 0.5rem !important; transition: all 0.2s !important; }
+  .flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover { color: #475569 !important; }
+  .flatpickr-day:hover:not(.flatpickr-disabled):not(.selected) { background: rgba(34, 211, 238, 0.15) !important; border-color: transparent !important; color: #fff !important; }
+  
+  .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+    background: linear-gradient(135deg, #06b6d4, #3b82f6) !important;
+    border-color: transparent !important;
+    color: #020617 !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.5) !important;
+    transform: scale(1.05);
   }
+  .flatpickr-day.today { border-color: rgba(34, 211, 238, 0.5) !important; }
 
-  /* BARRA DE PROGRESSO COMPARATIVA */
+  /* OUTROS ESTILOS */
+  .conic-chart { background: conic-gradient(#3b82f6 0% 40%, #10b981 40% 65%, #8b5cf6 65% 85%, #f59e0b 85% 100%); border-radius: 50%; position: relative; box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+  .conic-chart::after { content: ""; position: absolute; inset: 12px; background: #0f172a; border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
   .compare-bar-container { display: flex; width: 100%; height: 8px; border-radius: 99px; overflow: hidden; background: #1e293b; }
   .compare-bar-in { height: 100%; background: #10b981; transition: width 1s ease-out; }
   .compare-bar-out { height: 100%; background: #f43f5e; transition: width 1s ease-out; }
-
-  /* CARROSSEL DE ANÚNCIOS (BANNERS ANIMADOS) */
   .ad-carousel { position: relative; width: 100%; height: 75px; border-radius: 0.75rem; overflow: hidden; border: 1px solid rgba(34,211,238,0.2); background: rgba(15,23,42,0.8); }
   .ad-slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.8s ease-in-out; padding: 1rem; text-align: center; }
   .ad-slide.active { opacity: 1; z-index: 10; }
   .ad-badge { position: absolute; top: 4px; left: 6px; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; color: #94a3b8; z-index: 20; }
-
-  /* COMPONENTES DA INTERFACE */
   .view { display:none; }
   .view.active { display:block; animation: viewIn .45s cubic-bezier(.16,1,.3,1); }
   @keyframes viewIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
@@ -68,21 +97,15 @@
   .input {
     width:100%; background:rgba(15,23,42,.92); border:1px solid rgba(51,65,85,.9);
     border-radius:.75rem; padding:.7rem .95rem; font-size:.82rem; color:#f8fafc;
-    transition: all .2s; outline:none;
+    transition: all .2s; outline:none; cursor: pointer;
   }
   .input:focus { border-color:#22d3ee; box-shadow:0 0 0 4px rgba(34,211,238,.14); }
   select.input option { background:#0f172a; }
   .label { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:600; margin-bottom:.3rem; }
 
-  .btn-primary {
-    background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1); color:#020617; font-weight:800; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;
-    box-shadow: 0 12px 30px -12px rgba(6,182,212,.6); transition: all .2s;
-  }
+  .btn-primary { background: linear-gradient(135deg,#06b6d4,#3b82f6 55%,#6366f1); color:#020617; font-weight:800; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; box-shadow: 0 12px 30px -12px rgba(6,182,212,.6); transition: all .2s; }
   .btn-primary:active { transform:scale(.98); }
-  .btn--custom {
-    display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; max-width: 280px; padding: 0.8rem 1.25rem; background: #0f172a;
-    border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 9999px; color: #f8fafc; font-size: 0.82rem; font-weight: 600; box-shadow: 0 10px 25px -10px rgba(6, 182, 212, 0.35); transition: all 0.25s ease;
-  }
+  .btn--custom { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; max-width: 280px; padding: 0.8rem 1.25rem; background: #0f172a; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 9999px; color: #f8fafc; font-size: 0.82rem; font-weight: 600; box-shadow: 0 10px 25px -10px rgba(6, 182, 212, 0.35); transition: all 0.25s ease; }
   .btn--custom:active { transform: scale(0.98); }
   .ghost-btn { border:1px solid rgba(51,65,85,.9); color:#cbd5e1; font-weight:600; font-size:.75rem; transition: background .2s, transform .15s; }
   
@@ -105,7 +128,7 @@
 
 <main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
 
-  <!-- ============ VIEW: LOGIN ============ -->
+  <!-- ============ LOGIN ============ -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter relative">
     <div class="glass rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow"></div>
@@ -138,7 +161,7 @@
   <!-- ============ APP DASHBOARD ============ -->
   <section id="view-app" class="hidden flex-1 flex-col pb-32">
 
-    <!-- HEADER OTIMIZADO -->
+    <!-- HEADER -->
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between shadow-lg">
       <div class="flex items-center gap-3 min-w-0">
         <div id="avatar" class="w-9 h-9 shrink-0 rounded-full bg-slate-800 border border-cyan-400/50 overflow-hidden flex items-center justify-center"></div>
@@ -154,40 +177,33 @@
 
     <div class="px-5 pt-4 space-y-4">
 
-      <!-- ---- ABA 1: FLUXO (LANÇAMENTOS) ---- -->
+      <!-- ---- ABA 1: FLUXO ---- -->
       <div id="view-fluxo" class="view active space-y-4">
         
-        <!-- BANNER ANIMADO SIMULADO 1 -->
         <div class="ad-carousel shadow-lg">
           <span class="ad-badge">Patrocinado</span>
           <div class="ad-slide active bg-gradient-to-r from-blue-900/60 to-purple-900/60">
             <div class="flex items-center gap-3 text-left">
               <i data-lucide="trending-up" class="w-8 h-8 text-cyan-300"></i>
-              <div>
-                <p class="text-xs font-bold text-white">Multiplique seu capital</p>
-                <p class="text-[10px] text-cyan-200">Abra sua conta na corretora parceira.</p>
-              </div>
+              <div><p class="text-xs font-bold text-white">Multiplique seu capital</p><p class="text-[10px] text-cyan-200">Abra sua conta na corretora parceira.</p></div>
             </div>
           </div>
           <div class="ad-slide bg-gradient-to-r from-emerald-900/60 to-teal-900/60">
             <div class="flex items-center gap-3 text-left">
               <i data-lucide="credit-card" class="w-8 h-8 text-emerald-300"></i>
-              <div>
-                <p class="text-xs font-bold text-white">Cartão Black Sem Anuidade</p>
-                <p class="text-[10px] text-emerald-200">Oferta exclusiva para usuários Pro.</p>
-              </div>
+              <div><p class="text-xs font-bold text-white">Cartão Black Sem Anuidade</p><p class="text-[10px] text-emerald-200">Oferta exclusiva para usuários Pro.</p></div>
             </div>
           </div>
         </div>
 
-        <!-- FORMULÁRIO MAIS COMPACTO -->
         <div class="glass rounded-2xl p-4 space-y-3">
           <h3 class="section-title"><i data-lucide="zap" class="w-4 h-4"></i> Registro Rápido</h3>
           <form id="txForm" class="space-y-3">
             <input id="desc" class="input" maxlength="60" placeholder="O que foi? (Ex: Almoço, Salário)">
             <div class="grid grid-cols-2 gap-2">
               <input id="amount" type="number" class="input" step="0.01" placeholder="R$ 0,00">
-              <input id="date" type="date" class="input text-xs">
+              <!-- O TYPE AQUI É "TEXT" PARA O FLATPICKR SUBSTITUIR PELO CALENDÁRIO CUSTOMIZADO -->
+              <input id="date" type="text" class="input text-xs" placeholder="Selecionar Data">
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div class="seg" role="group">
@@ -209,15 +225,13 @@
             <span class="text-[10px] text-slate-400">Últimos registros</span>
           </div>
           <div class="text-center py-6 text-slate-500 text-xs">
-            <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
-            Nenhum lançamento hoje.
+            <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i> Nenhum lançamento hoje.
           </div>
         </div>
       </div>
 
-      <!-- ---- ABA 2: RESUMO E GRÁFICOS ---- -->
+      <!-- ---- ABA 2: RESUMO ---- -->
       <div id="view-resumo" class="view space-y-4">
-        
         <div class="glass rounded-3xl p-5 relative overflow-hidden flex justify-between items-end">
           <div class="glow"></div>
           <div>
@@ -231,60 +245,30 @@
           </div>
         </div>
 
-        <!-- GRÁFICO COMPARATIVO (BARRA) -->
         <div class="glass rounded-2xl p-5 space-y-3">
           <h3 class="section-title"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Análise Mensal</h3>
-          
-          <div class="flex justify-between text-xs font-bold mt-2">
-            <span class="text-emerald-400">Entradas</span>
-            <span class="text-rose-400">Saídas</span>
-          </div>
-          <div class="compare-bar-container">
-            <div class="compare-bar-in" style="width: 65%;"></div>
-            <div class="compare-bar-out" style="width: 35%;"></div>
-          </div>
-          <div class="flex justify-between text-[10px] text-slate-400 tabular-nums">
-            <span>R$ 4.500,00 (65%)</span>
-            <span>R$ 2.420,00 (35%)</span>
-          </div>
+          <div class="flex justify-between text-xs font-bold mt-2"><span class="text-emerald-400">Entradas</span><span class="text-rose-400">Saídas</span></div>
+          <div class="compare-bar-container"><div class="compare-bar-in" style="width: 65%;"></div><div class="compare-bar-out" style="width: 35%;"></div></div>
+          <div class="flex justify-between text-[10px] text-slate-400 tabular-nums"><span>R$ 4.500,00 (65%)</span><span>R$ 2.420,00 (35%)</span></div>
         </div>
 
         <div class="glass rounded-2xl p-5">
           <h3 class="section-title mb-4"><i data-lucide="pie-chart" class="w-4 h-4"></i> Gastos por Categoria</h3>
-          <!-- Gráficos de barras horizontais simulados -->
           <div class="space-y-3">
-            <div>
-              <div class="flex justify-between text-[10px] mb-1"><span class="text-slate-200">Moradia (Fixos)</span><span class="text-slate-400">45%</span></div>
-              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[45%]"></div></div>
-            </div>
-            <div>
-              <div class="flex justify-between text-[10px] mb-1"><span class="text-slate-200">Alimentação (Pessoal)</span><span class="text-slate-400">30%</span></div>
-              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-500 w-[30%]"></div></div>
-            </div>
-            <div>
-              <div class="flex justify-between text-[10px] mb-1"><span class="text-slate-200">Transporte</span><span class="text-slate-400">15%</span></div>
-              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-500 w-[15%]"></div></div>
-            </div>
+            <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-200">Moradia</span><span class="text-slate-400">45%</span></div><div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[45%]"></div></div></div>
+            <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-200">Alimentação</span><span class="text-slate-400">30%</span></div><div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-500 w-[30%]"></div></div></div>
           </div>
         </div>
       </div>
 
-      <!-- ---- ABA 3: INVESTIR (CARTEIRA VIP) ---- -->
+      <!-- ---- ABA 3: INVESTIR ---- -->
       <div id="view-investir" class="view space-y-4">
-        
         <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col items-center">
           <div class="glow"></div>
           <h3 class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-4">Sua Carteira de Ativos</h3>
-          
-          <!-- GRÁFICO DOUGHNUT CSS -->
           <div class="conic-chart w-32 h-32 flex items-center justify-center mb-4 animate-float">
-            <div class="absolute z-10 flex flex-col items-center">
-              <span class="text-xs text-slate-400">Patrimônio</span>
-              <span class="text-lg font-black text-white">R$ 12k</span>
-            </div>
+            <div class="absolute z-10 flex flex-col items-center"><span class="text-xs text-slate-400">Patrimônio</span><span class="text-lg font-black text-white">R$ 12k</span></div>
           </div>
-
-          <!-- LEGENDA DA CARTEIRA -->
           <div class="w-full grid grid-cols-2 gap-2 text-[10px] mt-2">
             <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span class="text-slate-300">Renda Fixa (40%)</span></div>
             <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-slate-300">Ações (25%)</span></div>
@@ -293,23 +277,15 @@
           </div>
         </div>
 
-        <!-- BANNER ANIMADO SIMULADO 2 -->
         <div class="ad-carousel shadow-lg h-20">
           <span class="ad-badge">Anúncio</span>
-          <div class="ad-slide active bg-gradient-to-br from-amber-900/60 to-orange-900/60">
-            <p class="text-xs font-bold text-white mb-1">Compre Bitcoin com taxa zero!</p>
-            <p class="text-[9px] text-amber-200">Exchange Oficial Parceira</p>
-          </div>
-          <div class="ad-slide bg-gradient-to-br from-indigo-900/60 to-purple-900/60">
-            <p class="text-xs font-bold text-white mb-1">Tesouro Direto rendendo IPCA+ 6%</p>
-            <p class="text-[9px] text-indigo-200">Aproveite as taxas de hoje.</p>
-          </div>
+          <div class="ad-slide active bg-gradient-to-br from-amber-900/60 to-orange-900/60"><p class="text-xs font-bold text-white mb-1">Compre Bitcoin com taxa zero!</p><p class="text-[9px] text-amber-200">Exchange Oficial Parceira</p></div>
+          <div class="ad-slide bg-gradient-to-br from-indigo-900/60 to-purple-900/60"><p class="text-xs font-bold text-white mb-1">Tesouro Direto rendendo IPCA+ 6%</p><p class="text-[9px] text-indigo-200">Aproveite as taxas de hoje.</p></div>
         </div>
       </div>
 
       <!-- ---- ABA 4: CONFIGURAÇÕES ---- -->
       <div id="view-config" class="view space-y-4">
-        
         <div class="glass rounded-2xl p-5 flex items-center gap-4">
           <div id="cfg-avatar" class="w-14 h-14 shrink-0 rounded-full bg-slate-800 border-2 border-cyan-400/40 overflow-hidden flex items-center justify-center"></div>
           <div class="flex-1 min-w-0">
@@ -324,26 +300,23 @@
         <div class="glass rounded-2xl p-5 space-y-4">
           <h3 class="section-title"><i data-lucide="sliders" class="w-4 h-4"></i> Dados Base da Planilha</h3>
           <div>
-            <label class="label">Definir Saldo Inicial (Marco Zero)</label>
+            <label class="label">Definir Saldo Inicial</label>
             <input id="saldo-inicial" type="number" class="input text-sm" placeholder="R$ 0,00" onchange="salvarSaldoInicial(this.value)">
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <button class="glass rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-slate-800/50 transition-colors" onclick="toast('Relatório PDF será gerado em breve!', 'success')">
-            <i data-lucide="file-text" class="w-6 h-6 text-emerald-400"></i>
-            <span class="text-[10px] font-bold uppercase text-slate-300">Exportar PDF</span>
+            <i data-lucide="file-text" class="w-6 h-6 text-emerald-400"></i><span class="text-[10px] font-bold uppercase text-slate-300">Exportar PDF</span>
           </button>
           <button class="glass rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-slate-800/50 transition-colors" id="btnInstall">
-            <i data-lucide="smartphone" class="w-6 h-6 text-cyan-400"></i>
-            <span class="text-[10px] font-bold uppercase text-slate-300">Instalar App</span>
+            <i data-lucide="smartphone" class="w-6 h-6 text-cyan-400"></i><span class="text-[10px] font-bold uppercase text-slate-300">Instalar App</span>
           </button>
         </div>
 
-        <button id="btnLogout" class="ghost-btn w-full py-3 rounded-xl flex items-center justify-center gap-2 border-rose-500/30 text-rose-400 mt-2">
+        <button id="btnLogout" class="ghost-btn w-full py-3 rounded-xl flex items-center justify-center gap-2 border-rose-500/30 text-rose-400 mt-2 hover:bg-rose-500/10">
           <i data-lucide="log-out" class="w-4 h-4"></i> Sair da Conta
         </button>
-
       </div>
     </div>
   </section>
@@ -367,77 +340,43 @@ const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" })
 const $ = id => document.getElementById(id);
 const state = { user: null, deferredPrompt: null };
 
-// ============ EFEITO DE PARTÍCULAS NO FUNDO ============
 function initParticles() {
-  const canvas = $("bg"); if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  let particles = [];
-  function resize() {
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const count = Math.min(30, Math.floor((canvas.width * canvas.height) / 18000));
-    particles = Array.from({ length: count }, () => ({
-      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 1.5 + 0.5
-    }));
-  }
+  const canvas = $("bg"); if (!canvas) return; const ctx = canvas.getContext("2d"); let particles = [];
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; const count = Math.min(30, Math.floor((canvas.width * canvas.height) / 18000)); particles = Array.from({ length: count }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 1.5 + 0.5 })); }
   window.addEventListener('resize', resize); resize();
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-      ctx.fillStyle = "rgba(34, 211, 238, 0.3)";
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
-    });
+    particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > canvas.width) p.vx *= -1; if (p.y < 0 || p.y > canvas.height) p.vy *= -1; ctx.fillStyle = "rgba(34, 211, 238, 0.3)"; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); });
     requestAnimationFrame(animate);
   }
   animate();
 }
 
-// ============ CARROSSEL DE ANÚNCIOS ANIMADO ============
 function startAdCarousels() {
   const carousels = document.querySelectorAll('.ad-carousel');
   carousels.forEach(carousel => {
     const slides = carousel.querySelectorAll('.ad-slide');
     if (slides.length < 2) return;
     let current = 0;
-    setInterval(() => {
-      slides[current].classList.remove('active');
-      current = (current + 1) % slides.length;
-      slides[current].classList.add('active');
-    }, 4500); // Troca a cada 4.5 segundos
+    setInterval(() => { slides[current].classList.remove('active'); current = (current + 1) % slides.length; slides[current].classList.add('active'); }, 4500);
   });
 }
 
-// ============ UTILITÁRIOS ============
 const icons = () => { if (window.lucide) lucide.createIcons(); };
 function toast(msg, type = "info") {
-  const t = document.createElement("div");
-  t.className = "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 shadow-2xl z-[100]";
+  const t = document.createElement("div"); t.className = "toast glass rounded-xl px-4 py-3 flex items-start gap-3 text-xs text-slate-100 shadow-2xl z-[100]";
   t.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 mt-0.5 shrink-0 text-emerald-400"></i><span class="leading-relaxed">${msg}</span>`;
-  $("toasts").append(t); icons();
-  requestAnimationFrame(() => t.classList.add("show"));
+  $("toasts").append(t); icons(); requestAnimationFrame(() => t.classList.add("show"));
   setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 300); }, 3000);
 }
 
 function setAvatar(box, u) {
   if(!box) return; box.innerHTML = '';
-  if (u && u.picture) {
-    const img = document.createElement("img");
-    img.src = u.picture; img.className = "w-full h-full object-cover"; img.referrerPolicy = "no-referrer";
-    box.append(img);
-  } else {
-    box.innerHTML = `<i data-lucide="user" class="w-6 h-6 text-slate-400"></i>`; icons();
-  }
+  if (u && u.picture) { const img = document.createElement("img"); img.src = u.picture; img.className = "w-full h-full object-cover"; img.referrerPolicy = "no-referrer"; box.append(img); } 
+  else { box.innerHTML = `<i data-lucide="user" class="w-6 h-6 text-slate-400"></i>`; icons(); }
 }
+function salvarSaldoInicial(valor) { localStorage.setItem("pv_saldo_inicial", valor); toast("Saldo inicial salvo!"); }
 
-function salvarSaldoInicial(valor) {
-  localStorage.setItem("pv_saldo_inicial", valor);
-  toast("Saldo inicial salvo!");
-}
-
-// ============ LOGIN DO GOOGLE ============
 function setupGooglePopup() {
   if (!window.google) return setTimeout(setupGooglePopup, 300);
   const tokenClient = google.accounts.oauth2.initTokenClient({
@@ -447,8 +386,7 @@ function setupGooglePopup() {
       const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${resp.access_token}` } });
       const profile = await userInfoRes.json();
       state.user = { name: profile.name, email: profile.email, picture: profile.picture };
-      localStorage.setItem("planilhaviva_user_v2", JSON.stringify(state.user));
-      enterApp();
+      localStorage.setItem("planilhaviva_user_v2", JSON.stringify(state.user)); enterApp();
     }
   });
   $("btnCustomGoogle").addEventListener("click", () => tokenClient.requestAccessToken({ prompt: "select_account" }));
@@ -456,42 +394,36 @@ function setupGooglePopup() {
 
 function enterApp() {
   $("view-auth").classList.add("hidden");
-  
   const u = state.user;
-  $("user-name").textContent = u.name.split(" ")[0]; // Primeiro nome
-  setAvatar($("avatar"), u);
-  $("cfg-name").textContent = u.name;
-  $("cfg-email").textContent = u.email;
-  setAvatar($("cfg-avatar"), u);
-  
+  $("user-name").textContent = u.name.split(" ")[0]; setAvatar($("avatar"), u);
+  $("cfg-name").textContent = u.name; $("cfg-email").textContent = u.email; setAvatar($("cfg-avatar"), u);
   if(localStorage.getItem("pv_saldo_inicial")) $("saldo-inicial").value = localStorage.getItem("pv_saldo_inicial");
-  
-  $("view-app").classList.remove("hidden");
-  $("view-app").classList.add("flex", "enter");
-  $("bottom-nav").classList.remove("hidden");
+  $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex", "enter"); $("bottom-nav").classList.remove("hidden");
   go("fluxo");
 }
 
 function go(name) {
   ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
-    const on = v === name;
-    $("view-" + v).classList.toggle("active", on);
-    const btn = document.querySelector(`.nav-btn[data-view="${v}"]`);
-    btn.setAttribute("aria-current", on ? "page" : "false");
+    const on = v === name; $("view-" + v).classList.toggle("active", on);
+    const btn = document.querySelector(`.nav-btn[data-view="${v}"]`); btn.setAttribute("aria-current", on ? "page" : "false");
     btn.classList.toggle("text-cyan-300", on); btn.classList.toggle("text-slate-400", !on);
-    if (on) {
-      $("nav-pill").style.transform = `translateX(${i * 100}%)`;
-      btn.classList.remove("icon-pop"); void btn.offsetWidth; btn.classList.add("icon-pop");
-    }
+    if (on) { $("nav-pill").style.transform = `translateX(${i * 100}%)`; btn.classList.remove("icon-pop"); void btn.offsetWidth; btn.classList.add("icon-pop"); }
   });
   window.scrollTo(0, 0); icons();
 }
 
-// ============ INIT ============
 document.addEventListener("DOMContentLoaded", () => {
   initParticles(); startAdCarousels();
   CATEGORIES.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; $("category").append(o); });
-  $("date").value = new Date().toLocaleDateString("en-CA");
+  
+  // INICIALIZAÇÃO DO FLATPICKR (Calendário Premium com o tema da plataforma)
+  flatpickr("#date", {
+    locale: "pt", // Idioma Português
+    dateFormat: "Y-m-d", // Formato para a planilha
+    defaultDate: "today", // Preenche a data atual
+    disableMobile: "true" // Força o nosso calendário personalizado até no celular
+  });
+  
   icons();
 
   const savedUser = localStorage.getItem("planilhaviva_user_v2");
@@ -499,23 +431,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
   document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => {
-    $("type").value = b.dataset.type;
-    document.querySelectorAll(".seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
+    $("type").value = b.dataset.type; document.querySelectorAll(".seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
   }));
 
   window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); state.deferredPrompt = e; });
-  $("btnInstall").addEventListener("click", () => {
-    if (state.deferredPrompt) { state.deferredPrompt.prompt(); state.deferredPrompt = null; }
-    else { toast("Use 'Adicionar à Tela Inicial' no menu do navegador."); }
-  });
-
+  $("btnInstall").addEventListener("click", () => { if (state.deferredPrompt) { state.deferredPrompt.prompt(); state.deferredPrompt = null; } else { toast("Use 'Adicionar à Tela Inicial' no menu do navegador."); }});
   $("btnLogout").addEventListener("click", () => { localStorage.removeItem("planilhaviva_user_v2"); location.reload(); });
-  
-  $("txForm").addEventListener("submit", e => {
-    e.preventDefault();
-    toast("Registro salvo e enfileirado!");
-    $("desc").value = ""; $("amount").value = "";
-  });
+  $("txForm").addEventListener("submit", e => { e.preventDefault(); toast("Registro salvo e enfileirado!"); $("desc").value = ""; $("amount").value = ""; });
 });
 </script>
 </body>
