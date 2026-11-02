@@ -246,7 +246,7 @@
 
             <div>
               <label class="label" for="amount">Valor (R$)</label>
-              <input id="amount" type="number" step="0.01" min="0.01" class="input font-bold text-lg" placeholder="0,00" required>
+              <input id="amount" type="number" step="0.01" min="0.01" inputmode="decimal" class="input font-bold text-lg" placeholder="0,00" required>
               <div class="flex gap-2 mt-2 overflow-x-auto no-scrollbar py-1">
                 <button type="button" class="quick-chip" data-amount="10">R$ 10</button>
                 <button type="button" class="quick-chip" data-amount="50">R$ 50</button>
@@ -421,13 +421,11 @@
 const CONFIG = Object.freeze({
   GOOGLE_CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxEsf4BU7ocWwCobI81_esZSsJafWpi80bnknRME5s2zze5vlyhGH00Q4XLvxfRJdlFyw/exec",
-  // Deixe vazio para ocultar os anúncios. Preencha com o ID real do AdSense quando estiver aprovado.
   ADSENSE_CLIENT: "",
   ADSENSE_SLOT: "",
   STORAGE_USER: "planilhaviva_user_v7",
   STORAGE_NAME_PREFIX: "pv_pref_name_",
-  CATEGORIES: Object.freeze(["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"]),
-  INCOME_CATEGORY: "Receita",
+  CATEGORIES: Object.freeze(["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Salário", "Vendas", "Outros"]),
   INVEST_CATEGORY: "Investimento",
   VIEWS: Object.freeze(["fluxo", "resumo", "investir", "config"]),
   HISTORY_LIMIT: 20,
@@ -436,9 +434,8 @@ const CONFIG = Object.freeze({
   SDK_MAX_ATTEMPTS: 50,
 });
 
-// Configuração visual de cada tipo de lançamento
 const TYPE_UI = Object.freeze({
-  in:     { title: "Lançar receita",   icon: "arrow-down-circle", text: "text-emerald-400", btn: "btn-green",  rgb: "16, 185, 129",  showCategory: false },
+  in:     { title: "Lançar receita",   icon: "arrow-down-circle", text: "text-emerald-400", btn: "btn-green",  rgb: "16, 185, 129",  showCategory: true },
   out:    { title: "Lançar despesa",    icon: "arrow-up-circle",   text: "text-rose-400",    btn: "btn-red",    rgb: "244, 63, 94",   showCategory: true  },
   invest: { title: "Realizar aporte",   icon: "trending-up",       text: "text-purple-400",  btn: "btn-purple", rgb: "168, 85, 247",  showCategory: false },
 });
@@ -510,7 +507,6 @@ function toast(message, type = "success") {
   }, CONFIG.TOAST_MS);
 }
 
-/** Desativa o botão e mostra um texto de carregamento enquanto a operação roda. */
 async function withBusy(button, label, operation) {
   const text = button.querySelector("[data-label]");
   const original = text.textContent;
@@ -535,7 +531,6 @@ const Api = {
     try {
       res = await fetch(CONFIG.SCRIPT_URL, {
         method: "POST",
-        // text/plain evita o preflight de CORS no Apps Script
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload }),
       });
@@ -656,7 +651,6 @@ const Session = {
 
     let online = true;
     try {
-      // init_user é idempotente: cria a planilha na primeira vez e devolve o link nas seguintes
       const res = await Api.call("init_user");
       State.sheetUrl = res.sheetUrl;
       Splash.status("Tudo pronto!");
@@ -709,7 +703,7 @@ const Nav = {
       if (active) {
         $("nav-pill").style.transform = `translateX(${index * 100}%)`;
         btn.classList.remove("icon-pop");
-        void btn.offsetWidth; // reinicia a animação
+        void btn.offsetWidth;
         btn.classList.add("icon-pop");
       }
     });
@@ -721,7 +715,7 @@ const Nav = {
 };
 
 // ============================================================================
-// PAINEL (KPIs e gráficos reais)
+// PAINEL (KPIs e gráficos)
 // ============================================================================
 const Dashboard = {
   async sync({ notify = false } = {}) {
@@ -909,15 +903,12 @@ const Form = {
     if (!Number.isFinite(amount) || amount <= 0) return toast("Informe um valor maior que zero.", "error");
     if (!date) return toast("Escolha a data.", "error");
 
-    const category =
-      type === "in" ? CONFIG.INCOME_CATEGORY :
-      type === "invest" ? CONFIG.INVEST_CATEGORY :
-      $("category").value;
+    const category = type === "invest" ? CONFIG.INVEST_CATEGORY : $("category").value;
 
     const payload = {
       desc,
       amount,
-      type: type === "in" ? "in" : "out", // "invest" é gravado como saída na categoria Investimento
+      type: type === "in" ? "in" : "out", 
       category,
       date,
     };
@@ -929,7 +920,6 @@ const Form = {
       Form.reset();
       Dashboard.sync();
     } catch (err) {
-      // Os dados do formulário permanecem preenchidos para o utilizador tentar de novo
       toast(err.message, "error");
     }
   },
@@ -948,7 +938,7 @@ function savePrefName(event) {
 }
 
 // ============================================================================
-// ANÚNCIOS (só carregam se ADSENSE_CLIENT e ADSENSE_SLOT estiverem preenchidos)
+// ANÚNCIOS
 // ============================================================================
 const Ads = {
   init() {
@@ -1043,7 +1033,6 @@ function startClock() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Duplica os cards do carrossel para o loop contínuo
   const track = $("carousel-track");
   track.innerHTML += track.innerHTML;
 
