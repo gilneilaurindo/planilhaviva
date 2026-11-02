@@ -6,7 +6,27 @@
 <meta name="theme-color" content="#020617">
 <title>PlanilhaViva Pro</title>
 
-<!-- MANIFESTO E ÍCONES 100% SEGUROS (NÃO QUEBRAM) -->
+<!-- ============ METADADOS DE PARTILHA (WHATSAPP, TELEGRAM, REDES SOCIAIS) ============ -->
+<meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
+<meta name="description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets. Transforme a sua planilha num aplicativo premium e seguro no seu telemóvel.">
+
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://planilhaviva-31ys.vercel.app/">
+<meta property="og:title" content="PlanilhaViva Pro | Inteligência Financeira">
+<meta property="og:description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets. Transforme a sua planilha num aplicativo premium e seguro no seu telemóvel.">
+<meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/561/561113.png">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="planilhaviva-31ys.vercel.app">
+<meta property="twitter:url" content="https://planilhaviva-31ys.vercel.app/">
+<meta name="twitter:title" content="PlanilhaViva Pro | Inteligência Financeira">
+<meta name="twitter:description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets. Transforme a sua planilha num aplicativo premium e seguro no seu telemóvel.">
+<meta name="twitter:image" content="https://cdn-icons-png.flaticon.com/512/561/561113.png">
+<!-- ==================================================================================== -->
+
+<!-- MANIFESTO E ÍCONES (FAVICON) SEGUROS -->
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/561/561113.png">
 <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/561/561113.png">
@@ -23,7 +43,7 @@
 <!-- GOOGLE LOGIN -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-<!-- GOOGLE ADSENSE (PROPAGANDAS) -->
+<!-- GOOGLE ADSENSE (Substitua 'ca-pub-0000000000000000' pelo seu ID real) -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous"></script>
 
 <style>
@@ -36,6 +56,7 @@
     margin: 0; overflow-x: hidden;
   }
   
+  /* PARTICLES JS - FUNDO */
   #bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 
   /* GLASSMORPHISM & NEON */
@@ -123,7 +144,7 @@
 <!-- TOASTS DE AVISO (NO CENTRO EXATO DA TELA) -->
 <div id="toasts" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none" aria-live="polite"></div>
 
-<!-- ============ TELA DE BOAS VINDAS (SPLASH SCREEN) ============ -->
+<!-- ============ ECRÃ DE BOAS-VINDAS (SPLASH SCREEN) ============ -->
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/90 hidden flex-col items-center justify-center">
   <div class="relative z-10 animate-float">
     <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full z-0 animate-pulse"></div>
@@ -131,18 +152,18 @@
   </div>
   <h2 class="text-3xl font-black text-white mt-8 tracking-tight z-10">Bem-vindo(a),</h2>
   <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10 drop-shadow-[0_0_10px_rgba(34,211,238,0.4)]"></h2>
-  <p class="text-slate-400 text-xs mt-4 animate-pulse z-10 flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Preparando sua planilha...</p>
+  <p class="text-slate-400 text-xs mt-4 animate-pulse z-10 flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A preparar a sua planilha...</p>
 </div>
 
 <main class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
 
-  <!-- ============ TELA DE LOGIN ============ -->
+  <!-- ============ ECRÃ DE LOGIN ============ -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 py-10 enter relative">
     <div class="glass rounded-3xl p-8 text-center space-y-6 relative overflow-hidden glass-neon">
       <div class="glow"></div>
       <div class="glow-purple"></div>
       
-      <!-- LÍNDO ÍCONE SVG (100% CÓDIGO, NUNCA QUEBRA) -->
+      <!-- LOGÓTIPO EM CÓDIGO SVG (NUNCA QUEBRA) -->
       <div class="inline-flex p-5 rounded-3xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 animate-float mb-2 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
         <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]">
           <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"></path>
@@ -152,10 +173,11 @@
       
       <div>
         <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">PlanilhaViva</h1>
-        <p class="text-xs text-slate-400 mt-2 font-medium">Segurança e inteligência financeira conectada à nuvem.</p>
+        <p class="text-xs text-slate-400 mt-2 font-medium">Segurança e inteligência financeira ligada à cloud.</p>
       </div>
       
       <div class="flex flex-col items-center justify-center pt-4 gap-4">
+        <!-- BOTÃO GOOGLE -->
         <button id="btnCustomGoogle" class="btn--custom hover:bg-slate-800">
           <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -176,7 +198,7 @@
     <!-- CRÉDITOS -->
     <footer class="mt-8 text-center text-[10px] text-slate-500 space-y-1.5 z-10 font-medium">
       <p>© Direitos reservados <span class="text-cyan-400 font-bold tracking-wider">PlanilhaViva Pro</span>.</p>
-      <p>Desenvolvedor: <span class="text-slate-300">Gilnei Laurindo</span></p>
+      <p>Programador: <span class="text-slate-300">Gilnei Laurindo</span></p>
       <p>Ideias e dedicatória: <span class="text-slate-400">Samuel Danilo</span></p>
     </footer>
   </section>
@@ -184,12 +206,13 @@
   <!-- ============ APP DASHBOARD PRINCIPAL ============ -->
   <section id="view-app" class="hidden flex-1 flex-col pb-32">
 
+    <!-- HEADER NEON -->
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.5)] border-b border-cyan-500/20">
       <div class="flex items-center gap-3 min-w-0">
         <div id="avatar" class="w-10 h-10 shrink-0 rounded-full bg-slate-800 border-2 border-cyan-400 overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(34,211,238,0.3)]"></div>
         <div class="min-w-0 flex flex-col">
           <span class="text-[9px] text-cyan-400 font-black uppercase tracking-widest flex items-center gap-1 drop-shadow-md">
-            <i data-lucide="zap" class="w-2.5 h-2.5"></i> Conectado
+            <i data-lucide="zap" class="w-2.5 h-2.5"></i> Ligado
           </span>
           <h2 id="user-name" class="text-sm font-bold text-white truncate leading-tight"></h2>
         </div>
@@ -207,6 +230,7 @@
         <!-- ADSENSE REAL: BLOCO 1 -->
         <div class="glass rounded-xl overflow-hidden min-h-[100px] flex items-center justify-center relative p-1 border-dashed border-cyan-500/30">
           <span class="absolute top-1 left-2 text-[8px] uppercase tracking-widest text-slate-500">Publicidade</span>
+          <!-- Substitua os dados abaixo pelo seu AdSense -->
           <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
         </div>
 
@@ -215,7 +239,7 @@
           <form id="txForm" class="space-y-4">
             <div>
               <label class="label">Descrição</label>
-              <input id="desc" class="input font-medium" maxlength="60" placeholder="Ex: Mercado, Uber, Salário..." required>
+              <input id="desc" class="input font-medium" maxlength="60" placeholder="Ex: Mercado, Combustível, Salário..." required>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
@@ -254,7 +278,7 @@
           </div>
           <ul id="list-fluxo" class="space-y-2 max-h-60 overflow-y-auto pr-1 text-sm">
             <div class="text-center py-6 text-slate-500 text-xs">
-              <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-30"></i> Aguardando lançamentos.
+              <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-30"></i> A aguardar lançamentos.
             </div>
           </ul>
         </div>
@@ -299,16 +323,16 @@
         <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col items-center">
           <div class="glow"></div>
           <div class="glow-purple"></div>
-          <h3 class="text-[10px] uppercase tracking-widest text-slate-300 font-bold mb-6">Gráfico de Patrimônio</h3>
+          <h3 class="text-[10px] uppercase tracking-widest text-slate-300 font-bold mb-6">Gráfico de Património</h3>
           
-          <!-- GRÁFICO DINÂMICO QUE RECEBE A ATUALIZAÇÃO -->
+          <!-- GRÁFICO DINÂMICO DE INVESTIMENTOS -->
           <div id="grafico-patrimonio" class="conic-chart w-40 h-40 flex items-center justify-center mb-6 animate-float">
             <div class="absolute z-10 flex flex-col items-center text-center">
               <span class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">Total Investido</span>
               <span id="invest-total" class="text-xl font-black text-white drop-shadow-md transition-all">R$ 0,00</span>
             </div>
           </div>
-          <p class="text-xs text-slate-400 text-center">Os lançamentos categorizados como <b>"Investimento"</b> somam o seu patrimônio aqui.</p>
+          <p class="text-xs text-slate-400 text-center">Os lançamentos categorizados como <b>"Investimento"</b> somam o seu património aqui.</p>
         </div>
       </div>
 
@@ -320,7 +344,7 @@
           <div class="glow"></div>
           <div id="cfg-avatar" class="w-28 h-28 shrink-0 rounded-full bg-slate-800 border-4 border-cyan-400 overflow-hidden flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.6)] z-10"></div>
           <div class="z-10 mt-2">
-            <p id="cfg-name" class="font-black text-white text-3xl tracking-tight drop-shadow-md">Usuário</p>
+            <p id="cfg-name" class="font-black text-white text-3xl tracking-tight drop-shadow-md">Utilizador</p>
             <p id="cfg-email" class="text-xs text-slate-400 font-mono mb-4">email@gmail.com</p>
             
             <span class="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-5 py-2 rounded-full shadow-lg border border-cyan-300/50">
@@ -342,7 +366,7 @@
         </button>
 
         <button id="btnLogout" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
-          <i data-lucide="log-out" class="w-5 h-5"></i> Sair da Conta (Logout)
+          <i data-lucide="log-out" class="w-5 h-5"></i> Sair da Conta Seguramente
         </button>
       </div>
     </div>
@@ -433,10 +457,10 @@ function setAvatar(box, u) {
 }
 
 // =========================================================================
-// LÓGICA DE DADOS (CONEXÃO PLANILHA)
+// LÓGICA DE DADOS (LIGAÇÃO PLANILHA)
 // =========================================================================
 async function api(action, payload = {}) {
-  if (!state.user || !state.user.email) throw new Error("Usuário não autenticado.");
+  if (!state.user || !state.user.email) throw new Error("Utilizador não autenticado.");
   const res = await fetch(SCRIPT_URL, {
     method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify({ action, email: state.user.email, ...payload })
@@ -446,7 +470,7 @@ async function api(action, payload = {}) {
 
 function salvarSaldoInicial(valor) { 
   localStorage.setItem(`pv_saldo_${state.user?.email || 'default'}`, valor); 
-  toast("Saldo inicial salvo localmente."); 
+  toast("Saldo inicial guardado localmente."); 
   carregarResumo();
 }
 
@@ -559,7 +583,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $("btnInstallConfig").classList.remove("hidden");
   });
 
-  const doInstall = () => { if (state.deferredPrompt) { state.deferredPrompt.prompt(); state.deferredPrompt = null; } else { toast("Pelo celular (Safari ou Chrome), use 'Adicionar à Tela Inicial' no menu.", "info"); } };
+  const doInstall = () => { if (state.deferredPrompt) { state.deferredPrompt.prompt(); state.deferredPrompt = null; } else { toast("Pelo telemóvel (Safari ou Chrome), use 'Adicionar ao Ecrã Principal' no menu.", "info"); } };
   $("btnInstallLogin").addEventListener("click", doInstall);
   $("btnInstallConfig").addEventListener("click", doInstall);
 
@@ -574,12 +598,12 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     
     const btn = $("btnSave");
-    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Salvando...`; icons();
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`; icons();
     
     try {
       // await api("add_transaction", payload); // <- Descomente após configurar o Google Apps Script
       
-      // LOGICA DO GRÁFICO DINÂMICO DE INVESTIMENTO
+      // LÓGICA DO GRÁFICO DINÂMICO DE INVESTIMENTO
       if(payload.category === "Investimento" && payload.type === "out") {
         totalInvestidoLocal += payload.amount;
         localStorage.setItem(`pv_invest_${state.user?.email || 'default'}`, totalInvestidoLocal);
@@ -597,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
       toast("Enviado para a planilha com sucesso!", "success"); 
       $("txForm").reset(); flatpickr("#date", { defaultDate: "today" });
     } catch(err) {
-      toast("Erro de conexão. Salvo localmente.", "error");
+      toast("Erro de ligação. Guardado localmente.", "error");
     } finally {
       btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Enviar para Planilha`; icons();
     }
