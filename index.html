@@ -8,19 +8,13 @@
 
 <!-- ============ METADADOS DE PARTILHA ============ -->
 <meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
-<meta name="description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets. Transforme a sua planilha num aplicativo premium e seguro no seu telemóvel.">
+<meta name="description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets.">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://planilhaviva-31ys.vercel.app/">
 <meta property="og:title" content="PlanilhaViva Pro | Inteligência Financeira">
 <meta property="og:description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets.">
 <meta property="og:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="planilhaviva-31ys.vercel.app">
-<meta property="twitter:url" content="https://planilhaviva-31ys.vercel.app/">
-<meta name="twitter:title" content="PlanilhaViva Pro | Inteligência Financeira">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
 <!-- MANIFESTO E ÍCONES -->
 <link rel="manifest" href="manifest.json">
@@ -36,8 +30,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 
-<!--  LOGIN -->
-<script src="https://accounts..com/gsi/client" async defer></script>
+<!-- GOOGLE LOGIN -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
   :root { color-scheme: dark; }
@@ -148,15 +142,15 @@
       </div>
       
       <div class="flex flex-col items-center justify-center pt-4 gap-4">
-        <!-- BOTÃO  -->
-        <button id="btnCustom" class="btn--custom hover:bg-slate-800">
+        <!-- BOTÃO GOOGLE -->
+        <button id="btnCustomGoogle" class="btn--custom hover:bg-slate-800">
           <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
-          <span>Continuar com o </span>
+          <span>Continuar com o Google</span>
         </button>
 
         <!-- PWA INSTALL -->
@@ -166,7 +160,6 @@
       </div>
     </div>
     
-    <!-- CRÉDITOS -->
     <footer class="mt-8 text-center text-[10px] text-slate-500 space-y-1.5 z-10 font-medium">
       <p>© Direitos reservados <span class="text-cyan-400 font-bold tracking-wider">PlanilhaViva Pro</span>.</p>
       <p>Programador: <span class="text-slate-300">Gilnei Laurindo</span></p>
@@ -232,18 +225,6 @@
               <i data-lucide="send" class="w-4 h-4"></i> Enviar para Nuvem
             </button>
           </form>
-        </div>
-
-        <div class="glass rounded-3xl p-5">
-          <div class="flex items-center justify-between mb-3 border-b border-slate-700/50 pb-2">
-            <h3 class="section-title text-slate-300">Histórico</h3>
-            <button id="btnRefresh" class="icon-btn hover:text-cyan-400 hover:border-cyan-400 transition-colors"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
-          </div>
-          <ul id="list-fluxo" class="space-y-2 max-h-60 overflow-y-auto pr-1 text-sm">
-            <div class="text-center py-6 text-slate-500 text-xs">
-              <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-30"></i> A aguardar lançamentos.
-            </div>
-          </ul>
         </div>
       </div>
 
@@ -315,14 +296,6 @@
           </a>
         </div>
 
-        <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="settings-2" class="w-4 h-4"></i> Ajustes da Planilha</h3>
-          <div>
-            <label class="label">Saldo Inicial / Marco Zero (R$)</label>
-            <input id="saldo-inicial" type="number" class="input text-sm font-bold text-cyan-100" placeholder="0,00" onchange="salvarSaldoInicial(this.value)">
-          </div>
-        </div>
-
         <button id="btnInstallConfig" class="btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 text-sm hidden">
           <i data-lucide="download-cloud" class="w-5 h-5 animate-bounce"></i> Instalar Aplicativo
         </button>
@@ -348,10 +321,10 @@
 
 <script>
 // =========================================================================
-// O SEU NOVO SCRIPT DO GOOGLE
+// OBRIGATÓRIO: CLIENT ID E SCRIPT URL INJETADOS
 // =========================================================================
-const _CLIENT_ID = "599756107964-ob0m7i1asuc0t7ng7rn6qc1106elf2ou.apps.googleusercontent.com";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXCjcOsJllQNCnMlOVOyzAm_oyHGio6WtshG25Q12GrDjsoUaNywWWHOwHiEsWuHjjaQ/exec"; 
+const _CLIENT_ID = "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4K85p_OpuCLbi-t_6URDUY8sgQfvxsxs7KW7f0nNLyH3gzYacRs8yck9bxViRu30txg/exec"; 
 
 const CATEGORIES = ["Receita","Dízimo","Fixos","Pessoal","Saúde","Dívidas","Investimento","Outros"];
 const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
@@ -402,9 +375,6 @@ function setAvatar(box, u) {
   }
 }
 
-// =========================================================================
-// LÓGICA DE DADOS (COMUNICAÇÃO COM A NUVEM)
-// =========================================================================
 async function api(action, payload = {}) {
   const emailToSend = state.user ? state.user.email : payload.email;
   const res = await fetch(SCRIPT_URL, {
@@ -412,12 +382,6 @@ async function api(action, payload = {}) {
     body: JSON.stringify({ action, email: emailToSend, ...payload })
   });
   return await res.json();
-}
-
-function salvarSaldoInicial(valor) { 
-  localStorage.setItem(`pv_saldo_${state.user?.email || 'default'}`, valor); 
-  toast("Saldo inicial guardado localmente."); 
-  carregarResumo();
 }
 
 async function carregarResumo() {
@@ -434,9 +398,6 @@ async function carregarResumo() {
   }
 }
 
-// =========================================================================
-// INICIALIZAÇÃO DA CONTA (O SEGREDO DA AUTOMAÇÃO)
-// =========================================================================
 async function iniciarContaNaNuvem(user) {
   $("view-auth").classList.add("hidden");
   setAvatar($("splash-avatar-container"), user);
@@ -444,27 +405,22 @@ async function iniciarContaNaNuvem(user) {
   $("welcome-splash").classList.remove("hidden"); 
   $("welcome-splash").classList.add("flex");
 
-  // 1. Verifica se já existe ou cria a planilha automaticamente no Google
   try {
     const sheetGravada = localStorage.getItem(`pv_sheet_url_${user.email}`);
     
     if(!sheetGravada) {
-      $("splash-status").innerHTML = `<i data-lucide="cloud-cog" class="w-4 h-4 animate-bounce"></i> Criando e sincronizando o seu banco de dados seguro...`; icons();
-      
+      $("splash-status").innerHTML = `<i data-lucide="cloud-cog" class="w-4 h-4 animate-bounce"></i> Sincronizando banco de dados seguro...`; icons();
       const respostaNuvem = await api("init_user", { name: user.name });
-      
       if (respostaNuvem.sheetUrl) {
         localStorage.setItem(`pv_sheet_url_${user.email}`, respostaNuvem.sheetUrl);
       }
     }
-    
     $("splash-status").innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Tudo pronto!`; icons();
   } catch (erro) {
     console.error(erro);
-    $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i> Erro na nuvem. Entrando no modo local...`; icons();
+    $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i> Entrando no modo local...`; icons();
   }
 
-  // 2. Entra na App após verificação
   setTimeout(() => {
     $("welcome-splash").classList.add("hide-splash");
     setTimeout(() => { $("welcome-splash").classList.remove("flex"); $("welcome-splash").classList.add("hidden"); enterApp(); }, 700);
@@ -476,12 +432,11 @@ function setupGooglePopup() {
   const tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: _CLIENT_ID, scope: "email profile",
     callback: async (resp) => {
-      if (resp.error) return toast("Erro no login", "error");
+      if (resp.error) return toast("Erro no login. Verifique o Client ID.", "error");
       const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${resp.access_token}` } });
       const profile = await userInfoRes.json();
       state.user = { name: profile.name, email: profile.email, picture: profile.picture };
       localStorage.setItem("planilhaviva_user_v2", JSON.stringify(state.user)); 
-      
       iniciarContaNaNuvem(state.user);
     }
   });
@@ -493,13 +448,9 @@ function enterApp() {
   $("user-name").textContent = u.name.split(" ")[0]; setAvatar($("avatar"), u);
   $("cfg-name").textContent = u.name; $("cfg-email").textContent = u.email; setAvatar($("cfg-avatar"), u);
   
-  const saldoSalvo = localStorage.getItem(`pv_saldo_${u.email}`);
-  if(saldoSalvo) $("saldo-inicial").value = saldoSalvo;
-  
   totalInvestidoLocal = parseFloat(localStorage.getItem(`pv_invest_${u.email}`)) || 0;
   $("invest-total").textContent = brl.format(totalInvestidoLocal);
   
-  // Ativa o link da planilha se ele existir
   const urlPlanilha = localStorage.getItem(`pv_sheet_url_${u.email}`);
   if(urlPlanilha) {
     $("link-planilha").href = urlPlanilha;
@@ -551,11 +502,12 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); state.deferredPrompt = e; $("btnInstallLogin").classList.remove("hidden"); $("btnInstallConfig").classList.remove("hidden"); });
   const doInstall = () => { if (state.deferredPrompt) { state.deferredPrompt.prompt(); state.deferredPrompt = null; } else { toast("Pelo telemóvel, use 'Adicionar ao Ecrã Principal'.", "info"); } };
   $("btnInstallLogin").addEventListener("click", doInstall); $("btnInstallConfig").addEventListener("click", doInstall);
-  $("btnLogout").addEventListener("click", () => { localStorage.removeItem("planilhaviva_user_v2"); location.reload(); });
   
-  // ===============================================
-  // BOTÃO ENVIAR PARA A PLANILHA DO UTILIZADOR
-  // ===============================================
+  $("btnLogout").addEventListener("click", () => { 
+    localStorage.removeItem("planilhaviva_user_v2"); 
+    location.reload(); 
+  });
+  
   $("txForm").addEventListener("submit", async e => { 
     e.preventDefault(); 
     const payload = {
@@ -567,7 +519,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`; icons();
     
     try {
-      // ESTA LINHA AGORA ESTÁ ATIVA PARA MANDAR PARA O SEU NOVO SCRIPT
       await api("add_transaction", payload); 
       
       if(payload.category === "Investimento" && payload.type === "out") {
@@ -584,7 +535,7 @@ document.addEventListener("DOMContentLoaded", () => {
       toast("Enviado para a planilha com sucesso!", "success"); 
       $("txForm").reset(); flatpickr("#date", { defaultDate: "today" });
     } catch(err) {
-      toast("Erro de ligação. Verifique a internet.", "error");
+      toast("Erro ao ligar ao Google Sheets.", "error");
     } finally {
       btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Enviar para Nuvem`; icons();
     }
