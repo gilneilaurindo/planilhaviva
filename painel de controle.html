@@ -2,294 +2,353 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>PlanilhaViva | Cockpit CEO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=0">
+<meta name="theme-color" content="#020617">
+<title>PlanilhaViva Pro - Admin & App</title>
 
+<!-- SEO & Partilha -->
+<meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
+<meta name="description" content="A sua central financeira pessoal ligada ao Google Sheets.">
+
+<!-- Bibliotecas -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/pt.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
   :root { color-scheme: dark; }
-  body { background-color: #020617; margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; color: #f8fafc; }
+  body { background-color: #020617; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; font-family: ui-sans-serif, system-ui, sans-serif; }
   #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
   
-  .glass { background: rgba(15,23,42,.7); backdrop-filter: blur(28px); border: 1px solid rgba(251,191,36,.2); box-shadow: 0 10px 40px -10px rgba(0,0,0,.8); }
-  .glow-amber { position: absolute; width: 300px; height: 300px; border-radius: 9999px; background: rgba(251,191,36,.15); filter: blur(90px); top: -100px; right: -100px; pointer-events: none; }
+  /* EFEITOS NEON E GLASS */
+  .glass { background: rgba(15,23,42,.65); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(148,163,184,.15); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
+  .glass-neon { border: 1px solid rgba(34,211,238,.4); box-shadow: 0 0 35px rgba(34,211,238,.15), inset 0 0 20px rgba(34,211,238,.08); }
+  .glass-admin { border: 1px solid rgba(251,191,36,.5); box-shadow: 0 0 35px rgba(251,191,36,.2), inset 0 0 20px rgba(251,191,36,.1); }
   
-  .input { width: 100%; background: rgba(15,23,42,.9); border: 1px solid rgba(251,191,36,.4); border-radius: .5rem; padding: .6rem; font-size: .85rem; color: #f8fafc; outline: none; }
-  .input:focus { border-color: #f59e0b; box-shadow: 0 0 15px rgba(251,191,36,.2); }
+  .glow { position: absolute; width: 220px; height: 220px; border-radius: 9999px; background: rgba(6,182,212,.25); filter: blur(80px); top: -60px; right: -60px; pointer-events: none; transition: background 0.8s ease; }
+  .glow-purple { background: rgba(168,85,247,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
+  .glow-green { background: rgba(16,185,129,.25); }
+  .glow-red { background: rgba(244,63,94,.25); }
+  .glow-amber { background: rgba(251,191,36,.25); }
+
+  /* Animações e Views */
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .icon-pop svg { animation: pop .5s cubic-bezier(.175,.885,.32,1.275) both; }
+  @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
   
-  .badge-ativo { background: rgba(16,185,129,.2); color: #34d399; border: 1px solid #059669; }
-  .badge-devendo { background: rgba(244,63,94,.2); color: #fb7185; border: 1px solid #e11d48; }
-  .badge-trial { background: rgba(56,189,248,.2); color: #7dd3fc; border: 1px solid #0284c7; }
+  /* Carrossel Infinito */
+  .carousel-wrapper { overflow: hidden; width: 100%; white-space: nowrap; position: relative; }
+  .carousel-track { display: inline-flex; gap: 1rem; animation: scroll 30s linear infinite; }
+  .carousel-track:hover { animation-play-state: paused; }
+  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 0.5rem)); } }
+
+  .view { display: none; opacity: 0; }
+  .view.active { display: block; animation: viewIn .5s ease-out forwards; }
+  @keyframes viewIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+
+  #welcome-splash { transition: all .6s ease; backdrop-filter: blur(25px); }
+  #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(15px); }
+
+  /* Formulários e Botões */
+  .input { width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9); border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc; transition: all .3s; outline: none; }
+  .input:focus { border-color: #22d3ee; box-shadow: 0 0 20px rgba(34,211,238,.3); }
+  .input-admin:focus { border-color: #fbbf24; box-shadow: 0 0 20px rgba(251,191,36,.3); }
+  select.input option { background: #0f172a; }
+  .label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #94a3b8; font-weight: 800; margin-bottom: .4rem; }
+
+  .btn-primary { background: linear-gradient(135deg,#06b6d4,#3b82f6); color: #020617; font-weight: 800; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 10px 30px -5px rgba(6,182,212,.6); transition: all .2s; cursor: pointer; border:none;}
+  .btn-primary:active { transform: scale(.96); }
+  .btn-admin { background: linear-gradient(135deg,#fbbf24,#d97706); box-shadow: 0 10px 30px -5px rgba(251,191,36,.6); color: #020617; }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
+  .toast.show { opacity: 1; transform: scale(1); }
+  
+  /* Toggle Switch Admin */
+  .toggle-checkbox:checked { right: 0; border-color: #10b981; }
+  .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
 </style>
 </head>
-<body class="relative min-h-screen">
+<body class="text-slate-100 min-h-screen pb-24 relative">
 
 <canvas id="bg" aria-hidden="true"></canvas>
+<div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none"></div>
 
-<!-- TELA DE LOGIN ADMIN -->
-<div id="login-view" class="fixed inset-0 z-50 flex items-center justify-center bg-[#020617] px-4">
-  <div class="glass rounded-3xl p-8 max-w-sm w-full text-center relative overflow-hidden">
-    <div class="glow-amber"></div>
-    <div class="mx-auto w-16 h-16 bg-amber-500/20 border border-amber-500 rounded-2xl flex items-center justify-center mb-4">
-      <i data-lucide="crown" class="w-8 h-8 text-amber-400"></i>
-    </div>
-    <h1 class="text-2xl font-black text-amber-400">CEO Cockpit</h1>
-    <p class="text-xs text-slate-400 mt-2 mb-8">Acesso restrito à administração da plataforma PlanilhaViva Pro.</p>
-    <button id="btnGoogleLogin" class="w-full py-3 bg-white text-black font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-slate-200 transition">
-      <i data-lucide="mail" class="w-5 h-5"></i> Validar Credenciais Google
-    </button>
+<!-- ==================== SPLASH SCREEN ==================== -->
+<div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center">
+  <div class="relative z-10 animate-float">
+    <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full z-0 animate-pulse"></div>
+    <div id="splash-avatar" class="relative z-10 w-32 h-32 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
   </div>
+  <h2 id="greeting-text" class="text-3xl font-black text-white mt-8 tracking-tight z-10">Olá,</h2>
+  <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10">Investidor!</h2>
+  <p id="splash-status" class="text-cyan-200 text-xs mt-6 font-mono flex items-center gap-2 z-10 font-bold">
+    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Inicializando IA Financeira...
+  </p>
 </div>
 
-<!-- PAINEL DE CONTROLO -->
-<main id="app-view" class="hidden relative z-10 p-6 max-w-6xl mx-auto space-y-6">
-  
-  <header class="flex justify-between items-center glass p-4 rounded-2xl">
-    <div class="flex items-center gap-3">
-      <i data-lucide="crown" class="w-8 h-8 text-amber-400"></i>
+<main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
+
+  <!-- ==================== TELA DE LOGIN ==================== -->
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 relative">
+    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_40px_rgba(34,211,238,.1)]">
+      <div class="glow"></div><div class="glow-purple"></div>
+      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-cyan-400/50 animate-float">
+        <div class="w-20 h-20 bg-cyan-500 rounded-2xl flex items-center justify-center"><i data-lucide="line-chart" class="w-10 h-10 text-white"></i></div>
+      </div>
       <div>
-        <h1 class="text-xl font-black text-white">Painel de Controlo</h1>
-        <p class="text-xs text-amber-200 font-mono" id="admin-email">admin@email.com</p>
+        <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
+        <p class="text-xs text-cyan-100/70 mt-2 font-medium leading-relaxed">Seu banco de dados financeiro contínuo e conectado à nuvem.</p>
+      </div>
+      <div class="pt-4 flex flex-col items-center gap-4 relative z-20">
+        <button id="btnGoogleLogin" type="button" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-cyan-400/50 rounded-full font-bold hover:bg-slate-700 transition">
+          <i data-lucide="mail" class="w-5 h-5"></i> Acessar com o Google
+        </button>
       </div>
     </div>
-    <button onclick="Admin.loadData()" class="bg-amber-500/20 text-amber-400 p-2 rounded-lg border border-amber-500/50 hover:bg-amber-500/40 transition">
-      <i data-lucide="refresh-cw" class="w-5 h-5"></i>
-    </button>
-  </header>
+  </section>
 
-  <!-- KPIs Estratégicos -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <div class="glass p-4 rounded-2xl border-l-4 border-l-blue-500">
-      <p class="text-[10px] uppercase text-slate-400 font-bold mb-1">Total Clientes</p>
-      <p class="text-3xl font-black text-white" id="kpi-total">0</p>
-    </div>
-    <div class="glass p-4 rounded-2xl border-l-4 border-l-emerald-500">
-      <p class="text-[10px] uppercase text-slate-400 font-bold mb-1">Pagantes Ativos</p>
-      <p class="text-3xl font-black text-emerald-400" id="kpi-ativos">0</p>
-    </div>
-    <div class="glass p-4 rounded-2xl border-l-4 border-l-rose-500">
-      <p class="text-[10px] uppercase text-slate-400 font-bold mb-1">Inadimplentes</p>
-      <p class="text-3xl font-black text-rose-400" id="kpi-devendo">0</p>
-    </div>
-    <div class="glass p-4 rounded-2xl border-l-4 border-l-amber-500 relative overflow-hidden">
-      <div class="glow-amber" style="width:100px;height:100px;top:-20px;right:-20px;"></div>
-      <p class="text-[10px] uppercase text-amber-200 font-bold mb-1">Receita Mensal (MRR)</p>
-      <p class="text-3xl font-black text-amber-400" id="kpi-mrr">R$ 0,00</p>
-    </div>
-  </div>
-
-  <div class="grid md:grid-cols-3 gap-6">
+  <!-- ==================== APP PRINCIPAL ==================== -->
+  <section id="view-app" class="hidden flex-1 flex-col w-full">
     
-    <!-- Configurações da Plataforma -->
-    <div class="glass p-5 rounded-2xl space-y-4 col-span-1">
-      <h2 class="font-bold text-amber-400 flex items-center gap-2"><i data-lucide="settings" class="w-4 h-4"></i> Definições Globais</h2>
-      
-      <div>
-        <label class="text-[10px] uppercase text-slate-400 font-bold block mb-1">Valor Padrão da Assinatura (R$)</label>
-        <div class="flex gap-2">
-          <input type="number" step="0.01" id="config-price" class="input" placeholder="2.90">
-          <button onclick="Admin.updateGlobalPrice()" class="bg-amber-500 text-black font-bold px-4 rounded-lg hover:bg-amber-400 transition">Salvar</button>
+    <!-- HEADER -->
+    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
+      <div class="flex items-center gap-3">
+        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-cyan-400 overflow-hidden shadow-[0_0_15px_rgba(34,211,238,.4)]"></div>
+        <div class="flex flex-col">
+          <span class="text-[9px] text-cyan-400 font-black uppercase flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> <span id="header-time">00:00</span></span>
+          <h2 id="header-date" class="text-xs font-bold text-white"></h2>
         </div>
-        <p class="text-[9px] text-slate-500 mt-1">Este valor será usado nos e-mails automáticos de cobrança.</p>
       </div>
+      <div class="flex gap-2">
+        <!-- BOTÃO ADMIN (Só aparece para o email mestre) -->
+        <button id="btnAdminPanel" class="hidden text-amber-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-amber-700/50 transition-colors" onclick="App.nav('admin')">
+          <i data-lucide="crown" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </header>
 
-      <div class="pt-4 border-t border-slate-700">
-        <h3 class="text-xs font-bold text-white mb-2">Saúde da Base</h3>
-        <div class="w-full h-40"><canvas id="chartStatus"></canvas></div>
-      </div>
-    </div>
+    <div class="px-5 pt-6 space-y-6">
 
-    <!-- Tabela de Gestão de Clientes (CRM) -->
-    <div class="glass p-5 rounded-2xl col-span-2 overflow-hidden flex flex-col">
-      <h2 class="font-bold text-amber-400 flex items-center gap-2 mb-4"><i data-lucide="users" class="w-4 h-4"></i> Gestão de Clientes</h2>
-      
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm whitespace-nowrap">
-          <thead class="text-[10px] uppercase text-slate-400 border-b border-slate-700">
-            <tr>
-              <th class="pb-2">E-mail</th>
-              <th class="pb-2">Vencimento</th>
-              <th class="pb-2">Pagamento</th>
-              <th class="pb-2 text-center">Status</th>
-              <th class="pb-2 text-right">Ações Rápidas</th>
-            </tr>
-          </thead>
-          <tbody id="users-tbody" class="divide-y divide-slate-800/50">
-            <!-- Linhas geradas via JS -->
-            <tr><td colspan="5" class="py-4 text-center text-slate-500 text-xs">Carregando base de dados...</td></tr>
-          </tbody>
-        </table>
+      <!-- ESPAÇO RESERVADO PARA ABA 1, 2, 3 e 4 (Omitidas por brevidade, mantém as originais) -->
+      <div id="view-fluxo" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Visualização de Fluxo Oculta nesta demo</div></div>
+      <div id="view-resumo" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Visualização de Resumo Oculta nesta demo</div></div>
+      <div id="view-investir" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Visualização de Investir Oculta nesta demo</div></div>
+      <div id="view-config" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Visualização de Config Oculta nesta demo</div></div>
+
+      <!-- ==================== ABA 5: MODO DEUS (ADMIN SUPERALIMENTADO) ==================== -->
+      <div id="view-admin" class="view space-y-5 active">
+        
+        <!-- HEADER ADMIN -->
+        <div class="glass glass-admin rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center border border-amber-500/40 shadow-[0_0_40px_rgba(251,191,36,.2)]">
+          <div class="glow-amber"></div>
+          <p class="text-xs uppercase tracking-widest text-amber-400 font-bold flex items-center gap-2 mb-1">
+            <i data-lucide="crown" class="w-4 h-4"></i> Painel Estratégico
+          </p>
+          <p class="text-xl font-black text-white mt-1">Gestão PlanilhaViva</p>
+          <button onclick="App.nav('fluxo')" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-full border border-slate-700">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- MÓDULO 1: COBRANÇA E ASSINATURAS -->
+        <div class="glass rounded-2xl p-5 space-y-4 border border-emerald-500/20">
+          <h3 class="section-title text-emerald-400 flex items-center gap-2"><i data-lucide="credit-card" class="w-4 h-4"></i> Estratégia de Cobrança</h3>
+          
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700 space-y-4">
+            <div>
+              <label class="label text-emerald-300">Valor Base da Assinatura (Mensal)</label>
+              <input type="number" class="input input-admin font-bold" value="29.90" placeholder="R$ 29,90">
+            </div>
+            
+            <div class="flex items-center justify-between border-t border-slate-700 pt-4">
+              <div>
+                <p class="text-xs font-bold text-white">Desconto no Cartão (Débito Automático)</p>
+                <p class="text-[9px] text-slate-400 mt-1">Estimula a recorrência automatizada.</p>
+              </div>
+              <!-- Toggle UI -->
+              <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                <input type="checkbox" name="toggle" id="toggle-discount" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-slate-600 appearance-none cursor-pointer transition-all duration-300 z-10" checked/>
+                <label for="toggle-discount" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-600 cursor-pointer transition-colors duration-300"></label>
+              </div>
+            </div>
+            <div id="discount-value-container">
+              <label class="label text-emerald-300">% de Desconto</label>
+              <input type="number" class="input input-admin font-bold text-emerald-400" value="15" placeholder="15%">
+            </div>
+            <button class="w-full bg-emerald-600/20 text-emerald-400 border border-emerald-500/50 p-3 rounded-lg text-xs font-bold hover:bg-emerald-600/40 transition" onclick="UI.toast('Políticas de cobrança atualizadas!', 'success')">
+              Salvar Estratégia Financeira
+            </button>
+          </div>
+        </div>
+
+        <!-- MÓDULO 2: COMUNICAÇÃO ESTRATÉGICA -->
+        <div class="glass rounded-2xl p-5 space-y-4 border border-blue-500/20">
+          <h3 class="section-title text-blue-400 flex items-center gap-2"><i data-lucide="send" class="w-4 h-4"></i> Central de Notificações</h3>
+          <p class="text-[10px] text-slate-400">Envie mensagens diretas para os usuários da plataforma.</p>
+          
+          <div class="space-y-3">
+            <div>
+              <label class="label">Público Alvo</label>
+              <select id="msg-target" class="input input-admin">
+                <option value="all">Todos os Usuários</option>
+                <option value="ativos">Apenas Adimplentes (Ativos)</option>
+                <option value="devendo">Apenas Inadimplentes (Devendo)</option>
+              </select>
+            </div>
+            <div>
+              <label class="label">Sua Mensagem</label>
+              <textarea id="msg-content" class="input input-admin h-24 resize-none" placeholder="Ex: Aproveite o desconto de 15% no cadastro do cartão de crédito..."></textarea>
+            </div>
+            <button class="btn-primary btn-admin w-full py-3 rounded-xl flex items-center justify-center gap-2 text-xs" onclick="AdminActions.sendMessage()">
+              <i data-lucide="radio" class="w-4 h-4"></i> Disparar Mensagem
+            </button>
+          </div>
+        </div>
+
+        <!-- MÓDULO 3: MODERAÇÃO DE FEEDBACKS -->
+        <div class="glass rounded-2xl p-5 space-y-4 border border-rose-500/20">
+          <h3 class="section-title text-rose-400 flex items-center gap-2"><i data-lucide="message-square-dashed" class="w-4 h-4"></i> Triagem de Depoimentos</h3>
+          <p class="text-[10px] text-slate-400">Avalie os comentários deixados pelos usuários. Aprove para exibir publicamente ou acate como melhoria.</p>
+
+          <div class="space-y-3 mt-2" id="admin-feedback-list">
+            
+            <!-- Item Mockado de Feedback -->
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-700/50" id="feed-1">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="w-6 h-6 rounded-full bg-cyan-900 flex items-center justify-center text-[10px] font-bold text-cyan-300">SM</div>
+                <span class="text-xs font-bold text-white">Samuel Danilo</span>
+              </div>
+              <p class="text-xs text-slate-300 italic mb-3">"A plataforma é incrível, a segurança de ter tudo no Google Sheets é genial. Gostaria apenas de poder trocar as cores."</p>
+              
+              <div class="grid grid-cols-2 gap-2">
+                <button class="bg-emerald-900/30 text-emerald-400 border border-emerald-700/50 py-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 hover:bg-emerald-800 transition" onclick="AdminActions.resolveFeedback('feed-1', 'aprovar')">
+                  <i data-lucide="check-circle" class="w-3 h-3"></i> Aprovar (Público)
+                </button>
+                <button class="bg-amber-900/30 text-amber-400 border border-amber-700/50 py-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 hover:bg-amber-800 transition" onclick="AdminActions.resolveFeedback('feed-1', 'acatar')">
+                  <i data-lucide="lightbulb" class="w-3 h-3"></i> Acatar (Interno)
+                </button>
+              </div>
+            </div>
+
+             <!-- Item Mockado de Feedback 2 -->
+             <div class="bg-slate-900 p-4 rounded-xl border border-slate-700/50" id="feed-2">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="w-6 h-6 rounded-full bg-purple-900 flex items-center justify-center text-[10px] font-bold text-purple-300">GL</div>
+                <span class="text-xs font-bold text-white">Gilnei L.</span>
+              </div>
+              <p class="text-xs text-slate-300 italic mb-3">"O desconto no cartão automático me salvou de esquecer a mensalidade. Nota 10!"</p>
+              
+              <div class="grid grid-cols-2 gap-2">
+                <button class="bg-emerald-900/30 text-emerald-400 border border-emerald-700/50 py-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 hover:bg-emerald-800 transition" onclick="AdminActions.resolveFeedback('feed-2', 'aprovar')">
+                  <i data-lucide="check-circle" class="w-3 h-3"></i> Aprovar (Público)
+                </button>
+                <button class="bg-amber-900/30 text-amber-400 border border-amber-700/50 py-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 hover:bg-amber-800 transition" onclick="AdminActions.resolveFeedback('feed-2', 'acatar')">
+                  <i data-lucide="lightbulb" class="w-3 h-3"></i> Acatar (Interno)
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
+      <!-- FIM MODO DEUS -->
     </div>
-  </div>
+  </section>
 </main>
 
-<!-- Modal Enviar Mensagem -->
-<div id="modal-msg" class="fixed inset-0 z-[100] bg-black/80 hidden items-center justify-center px-4">
-  <div class="glass p-6 rounded-2xl w-full max-w-md">
-    <h2 class="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2"><i data-lucide="send" class="w-4 h-4"></i> Enviar E-mail</h2>
-    <input type="hidden" id="msg-email">
-    <p class="text-xs text-slate-400 mb-2">Para: <span id="msg-display-email" class="text-white font-bold"></span></p>
-    <input type="text" id="msg-assunto" class="input mb-3" placeholder="Assunto (Ex: Promoção Especial)">
-    <textarea id="msg-texto" class="input min-h-[100px] mb-4" placeholder="Escreva a sua mensagem aqui..."></textarea>
-    <div class="flex gap-2 justify-end">
-      <button onclick="document.getElementById('modal-msg').classList.replace('flex','hidden')" class="px-4 py-2 rounded-lg text-xs font-bold text-slate-300 border border-slate-700 hover:bg-slate-800">Cancelar</button>
-      <button onclick="Admin.sendMessage()" class="px-4 py-2 rounded-lg text-xs font-bold bg-amber-500 text-black hover:bg-amber-400">Enviar Agora</button>
-    </div>
-  </div>
-</div>
-
 <script>
-// AQUI ENTRA A CHAVE DO NOVO SCRIPT COM AS FUNÇÕES ADMIN!
 const CONFIG = {
-  CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  SCRIPT_URL: "COLE_AQUI_O_LINK_DO_APPS_SCRIPT_ATUALIZADO", // <- IMPORTANTE!
-  ADMIN_EMAIL: "gilneycriative@gmail.com" // SEU E-MAIL
+  ADMIN_EMAIL: "seuemail@gmail.com", // Substitua pelo seu email administrador
 };
 
-const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-let myChart = null;
+const State = { user: { email: "seuemail@gmail.com", name: "Admin" }, particleColor: "rgba(251,191,36,0.5)" };
+const $ = id => document.getElementById(id);
 
-// Efeito de fundo
-const canvas = document.getElementById("bg"); const ctx = canvas.getContext("2d"); let p = [];
-function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; p = Array.from({length: 40}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.5, vy: (Math.random()-.5)*.5, r: Math.random()*2+.5})); }
-function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); p.forEach(i=>{ i.x+=i.vx; i.y+=i.vy; if(i.x<0||i.x>canvas.width)i.vx*=-1; if(i.y<0||i.y>canvas.height)i.vy*=-1; ctx.fillStyle="rgba(251,191,36,0.3)"; ctx.beginPath(); ctx.arc(i.x,i.y,i.r,0,Math.PI*2); ctx.fill(); }); requestAnimationFrame(anim); }
-window.addEventListener("resize", resize); resize(); anim();
-
-const Admin = {
-  token: null,
-  
-  initLogin: () => {
-    lucide.createIcons();
-    if (!window.google) return setTimeout(Admin.initLogin, 300);
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: CONFIG.CLIENT_ID, scope: "email",
-      callback: async (t) => {
-        if(t.error) return alert("Erro no Login.");
-        const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
-        const profile = await res.json();
-        
-        if (profile.email.toLowerCase() === CONFIG.ADMIN_EMAIL.toLowerCase()) {
-          document.getElementById("login-view").classList.add("hidden");
-          document.getElementById("app-view").classList.remove("hidden");
-          document.getElementById("admin-email").textContent = profile.email;
-          Admin.loadData();
-        } else {
-          alert("Acesso Negado. Este painel é exclusivo para o CEO da plataforma.");
-        }
-      }
-    });
-    document.getElementById("btnGoogleLogin").addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
-  },
-
-  api: async (action, payload = {}) => {
-    const res = await fetch(CONFIG.SCRIPT_URL, {
-      method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "admin_" + action, email: CONFIG.ADMIN_EMAIL, ...payload })
-    });
-    return await res.json();
-  },
-
-  loadData: async () => {
-    const tbody = document.getElementById("users-tbody");
-    tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-amber-400 text-xs animate-pulse">Sincronizando com Banco de Dados...</td></tr>';
-    
-    try {
-      const res = await Admin.api("get_data");
-      const users = res.data.users;
-      document.getElementById("config-price").value = res.data.config.precoAtual;
-      
-      let html = ''; let ativos = 0, devendo = 0, trials = 0; let mrr = 0;
-      
-      users.forEach(u => {
-        if (u.status === "Ativo") { ativos++; mrr += parseFloat(u.planoValor); }
-        else if (u.status === "Devendo" || u.status === "Vencido") devendo++;
-        else trials++;
-
-        let badge = `badge-trial`;
-        if(u.status === "Ativo") badge = `badge-ativo`;
-        if(u.status === "Devendo" || u.status === "Vencido") badge = `badge-devendo`;
-
-        html += `
-          <tr class="hover:bg-slate-800/30 transition-colors">
-            <td class="py-3 font-bold text-white">${u.email}</td>
-            <td class="py-3 text-slate-300">
-              <input type="date" value="${u.vencimento}" class="bg-transparent border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none focus:border-amber-400" onchange="Admin.updateUser(${u.row}, null, this.value)">
-            </td>
-            <td class="py-3 text-xs text-slate-400">${u.metodoPagamento}</td>
-            <td class="py-3 text-center">
-              <select class="text-[9px] uppercase font-bold px-2 py-1 rounded-md outline-none cursor-pointer ${badge}" onchange="Admin.updateUser(${u.row}, this.value, null)">
-                <option value="Ativo" ${u.status === 'Ativo' ? 'selected' : ''}>Ativo</option>
-                <option value="Devendo" ${u.status === 'Devendo' ? 'selected' : ''}>Devendo</option>
-                <option value="Trial" ${u.status === 'Trial' ? 'selected' : ''}>Trial</option>
-              </select>
-            </td>
-            <td class="py-3 text-right">
-              <button onclick="Admin.openMsg('${u.email}')" class="text-blue-400 hover:text-white p-1" title="Enviar Mensagem"><i data-lucide="mail" class="w-4 h-4"></i></button>
-            </td>
-          </tr>
-        `;
-      });
-
-      tbody.innerHTML = html;
-      document.getElementById("kpi-total").textContent = users.length;
-      document.getElementById("kpi-ativos").textContent = ativos;
-      document.getElementById("kpi-devendo").textContent = devendo;
-      document.getElementById("kpi-mrr").textContent = brl.format(mrr);
-      
-      Admin.renderChart(ativos, devendo, trials);
-      lucide.createIcons();
-
-    } catch(e) {
-      tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-rose-500 text-xs">Erro ao carregar dados.</td></tr>`;
-    }
-  },
-
-  updateUser: async (row, newStatus, newDate) => {
-    try {
-      await Admin.api("update_user", { targetRow: row, newStatus: newStatus, newDate: newDate });
-      alert("Sucesso!"); Admin.loadData();
-    } catch(e) { alert("Erro ao atualizar."); }
-  },
-
-  updateGlobalPrice: async () => {
-    const val = document.getElementById("config-price").value;
-    await Admin.api("update_price", { newPrice: val });
-    alert("Preço base atualizado!"); Admin.loadData();
-  },
-
-  openMsg: (email) => {
-    document.getElementById("msg-email").value = email;
-    document.getElementById("msg-display-email").textContent = email;
-    document.getElementById("modal-msg").classList.replace("hidden", "flex");
-  },
-
-  sendMessage: async () => {
-    const email = document.getElementById("msg-email").value;
-    const subj = document.getElementById("msg-assunto").value;
-    const text = document.getElementById("msg-texto").value;
-    
-    document.getElementById("modal-msg").classList.replace("flex", "hidden");
-    await Admin.api("send_message", { targetEmail: email, subject: subj, message: text });
-    alert("Mensagem disparada com sucesso para " + email);
-  },
-
-  renderChart: (a, d, t) => {
-    if(myChart) myChart.destroy();
-    Chart.defaults.color = '#94a3b8';
-    myChart = new Chart(document.getElementById("chartStatus"), {
-      type: 'doughnut',
-      data: { labels: ['Ativos', 'Inadimplentes', 'Trial'], datasets: [{ data: [a, d, t], backgroundColor: ['#10b981', '#f43f5e', '#38bdf8'], borderWidth:0, cutout:'70%' }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } } }
-    });
+// --- UTILIDADES ---
+const UI = {
+  refreshIcons: () => { if (window.lucide) lucide.createIcons(); },
+  toast: (msg, type = "success") => {
+    const icon = type === "error" ? "alert-triangle" : type === "warning" ? "info" : "check-circle";
+    const color = type === "error" ? "text-rose-400" : type === "warning" ? "text-amber-400" : "text-cyan-400";
+    const t = document.createElement("div");
+    t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-slate-500/50 z-[9999]";
+    t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 shrink-0 ${color}"></i><span>${msg}</span>`;
+    $("toasts").append(t); UI.refreshIcons();
+    requestAnimationFrame(() => t.classList.add("show"));
+    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3000);
   }
 };
 
-window.onload = Admin.initLogin;
+// --- AÇÕES DO ADMIN MOCKADAS PARA O APPS SCRIPT ---
+const AdminActions = {
+  sendMessage: () => {
+    const target = $("msg-target").value;
+    const content = $("msg-content").value;
+    if(!content.trim()) return UI.toast("Digite uma mensagem primeiro.", "error");
+    
+    // Aqui você enviaria para o App Script para notificar o banco de dados
+    // API.call("admin_send_message", { target, content });
+
+    UI.toast(`Mensagem enviada para o grupo: ${target.toUpperCase()}`, "success");
+    $("msg-content").value = "";
+  },
+
+  resolveFeedback: (feedId, action) => {
+    const el = $(feedId);
+    el.style.opacity = '0.5';
+    el.style.pointerEvents = 'none';
+
+    // Aqui você conectaria ao Google Apps Script
+    // API.call("admin_resolve_feedback", { id: feedId, status: action });
+    
+    setTimeout(() => {
+      el.remove();
+      if(action === 'aprovar') {
+        UI.toast("Depoimento publicado no Carrossel da Home!", "success");
+      } else {
+        UI.toast("Feedback arquivado como Ponto de Melhoria.", "warning");
+      }
+      
+      if($("admin-feedback-list").children.length === 0) {
+        $("admin-feedback-list").innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Tudo limpo! Nenhum feedback pendente.</p>`;
+      }
+    }, 600);
+  }
+};
+
+// --- INICIALIZAÇÃO BÁSICA DO PREVIEW ---
+const App = {
+  init: () => {
+    UI.refreshIcons();
+    $("btnAdminPanel").classList.remove("hidden"); // Forçado visível para testes
+    
+    // Lógica do Toggle de Desconto
+    $("toggle-discount").addEventListener("change", (e) => {
+      $("discount-value-container").style.display = e.target.checked ? "block" : "none";
+    });
+  },
+  nav: (view) => {
+    // Apenas simulação para ocultar/mostrar Admin
+    if(view === 'admin') {
+      $("view-admin").classList.add("active", "block");
+      $("view-admin").classList.remove("hidden");
+    } else {
+      $("view-admin").classList.remove("active", "block");
+      $("view-admin").classList.add("hidden");
+    }
+  }
+};
+
+document.addEventListener("DOMContentLoaded", App.init);
 </script>
 </body>
 </html>
