@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=0">
 <meta name="theme-color" content="#020617">
-<title>PlanilhaViva Pro - Inteligência & Admin</title>
+<title>PlanilhaViva Pro</title>
 
+<!-- SEO & Partilha -->
 <meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
 <meta name="description" content="A sua central financeira pessoal ligada ao Google Sheets.">
-<meta property="og:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
+<!-- Bibliotecas -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
@@ -22,29 +23,25 @@
   :root { color-scheme: dark; }
   body { background-color: #020617; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; font-family: ui-sans-serif, system-ui, sans-serif; }
   
+  /* PARTICULAS */
   #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
   
+  /* GLASSMORPHISM & NEON */
   .glass { background: rgba(15,23,42,.65); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(148,163,184,.15); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
   .glass-neon { border: 1px solid rgba(34,211,238,.4); box-shadow: 0 0 35px rgba(34,211,238,.15), inset 0 0 20px rgba(34,211,238,.08); }
-  .glass-admin { border: 1px solid rgba(251,191,36,.5); box-shadow: 0 0 35px rgba(251,191,36,.2), inset 0 0 20px rgba(251,191,36,.1); }
   
   .glow { position: absolute; width: 220px; height: 220px; border-radius: 9999px; background: rgba(6,182,212,.25); filter: blur(80px); top: -60px; right: -60px; pointer-events: none; transition: background 0.8s ease; }
   .glow-purple { background: rgba(168,85,247,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
   .glow-green { background: rgba(16,185,129,.25); }
   .glow-red { background: rgba(244,63,94,.25); }
-  .glow-amber { background: rgba(251,191,36,.25); }
   .glow-blue { background: rgba(59,130,246,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
 
+  /* ANIMAÇÕES */
   .animate-float { animation: float 6s ease-in-out infinite; }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
   .icon-pop svg { animation: pop .5s cubic-bezier(.175,.885,.32,1.275) both; }
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
   
-  .carousel-wrapper { overflow: hidden; width: 100%; white-space: nowrap; position: relative; }
-  .carousel-track { display: inline-flex; gap: 1rem; animation: scroll 30s linear infinite; }
-  .carousel-track:hover { animation-play-state: paused; }
-  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 0.5rem)); } }
-
   .view { display: none; opacity: 0; }
   .view.active { display: block; animation: viewIn .5s ease-out forwards; }
   @keyframes viewIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
@@ -52,9 +49,9 @@
   #welcome-splash { transition: all .6s ease; backdrop-filter: blur(25px); }
   #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(15px); }
 
+  /* COMPONENTES */
   .input { width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9); border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc; transition: all .3s; outline: none; }
   .input:focus { border-color: #22d3ee; box-shadow: 0 0 20px rgba(34,211,238,.3); }
-  .input-admin:focus { border-color: #fbbf24; box-shadow: 0 0 20px rgba(251,191,36,.3); }
   select.input option { background: #0f172a; }
   .label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #94a3b8; font-weight: 800; margin-bottom: .4rem; }
   
@@ -66,7 +63,6 @@
   .btn-green { background: linear-gradient(135deg,#10b981,#059669); box-shadow: 0 10px 30px -5px rgba(16,185,129,.6); color: #fff; }
   .btn-red { background: linear-gradient(135deg,#f43f5e,#e11d48); box-shadow: 0 10px 30px -5px rgba(244,63,94,.6); color: #fff; }
   .btn-purple { background: linear-gradient(135deg,#a855f7,#7e22ce); box-shadow: 0 10px 30px -5px rgba(168,85,247,.6); color: #fff; }
-  .btn-admin { background: linear-gradient(135deg,#fbbf24,#d97706); box-shadow: 0 10px 30px -5px rgba(251,191,36,.6); color: #020617; }
   
   .seg-container { display: flex; gap: 4px; padding: 4px; border-radius: .75rem; background: rgba(15,23,42,.9); border: 1px solid rgba(51,65,85,.9); }
   .seg-btn { flex: 1; padding: .65rem; border-radius: .55rem; font-size: .75rem; font-weight: 800; color: #94a3b8; transition: all .3s cubic-bezier(.16,1,.3,1); cursor: pointer; text-align: center; }
@@ -79,16 +75,36 @@
 
   .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
   .toast.show { opacity: 1; transform: scale(1); }
-  
-  .toggle-checkbox:checked { right: 0; border-color: #10b981; }
-  .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
 </style>
 </head>
 <body class="text-slate-100 min-h-screen pb-24 relative">
 
+<!-- POEIRA LUMINOSA CONECTADA -->
 <canvas id="bg" aria-hidden="true"></canvas>
 
 <div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none"></div>
+
+<!-- ==================== MODAL DE NOTIFICAÇÃO DO ADMIN ==================== -->
+<div id="notif-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 bg-[#020617]/80 backdrop-blur-md opacity-0 transition-opacity duration-300">
+  <div class="glass glass-neon rounded-3xl p-6 w-full max-w-sm transform scale-95 transition-transform duration-300 relative overflow-hidden" id="notif-card">
+    <div id="notif-glow" class="glow-purple" style="top:-50px;right:-50px;"></div>
+    
+    <button class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors" onclick="NotificationSystem.close()">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+    
+    <div id="notif-icon-container" class="w-14 h-14 rounded-full bg-purple-900/50 flex items-center justify-center border border-purple-500 mb-4 shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+      <i data-lucide="bell-ring" class="w-6 h-6 text-purple-400" id="notif-icon"></i>
+    </div>
+    
+    <h3 id="notif-title" class="text-xl font-black text-white mb-2">Mensagem do Admin</h3>
+    <p id="notif-body" class="text-sm text-slate-300 leading-relaxed mb-6 font-medium">Conteúdo da notificação estratégica irá aparecer aqui.</p>
+    
+    <button id="notif-btn" class="w-full bg-purple-600/30 text-purple-400 border border-purple-500/50 p-4 rounded-xl text-xs font-bold hover:bg-purple-600/50 transition-colors flex items-center justify-center gap-2" onclick="NotificationSystem.close()">
+      <i data-lucide="check-circle" class="w-4 h-4"></i> Entendido
+    </button>
+  </div>
+</div>
 
 <!-- ==================== SPLASH SCREEN ==================== -->
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center">
@@ -99,7 +115,7 @@
   <h2 id="greeting-text" class="text-3xl font-black text-white mt-8 tracking-tight z-10">Olá,</h2>
   <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10">Investidor!</h2>
   <p id="splash-status" class="text-cyan-200 text-xs mt-6 font-mono flex items-center gap-2 z-10 font-bold">
-    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Inicializando IA Financeira...
+    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Inicializando Banco de Dados...
   </p>
 </div>
 
@@ -109,10 +125,8 @@
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 relative">
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_40px_rgba(34,211,238,.1)]">
       <div class="glow"></div><div class="glow-purple"></div>
-      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-cyan-400/50 animate-float">
-        <div class="w-20 h-20 bg-cyan-500 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,1)]">
-          <i data-lucide="line-chart" class="w-10 h-10 text-white"></i>
-        </div>
+      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-cyan-400/50 animate-float shadow-[0_0_20px_rgba(34,211,238,1)]">
+        <i data-lucide="line-chart" class="w-10 h-10 text-white"></i>
       </div>
       <div>
         <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
@@ -124,17 +138,12 @@
         </button>
       </div>
     </div>
-    <footer class="mt-10 text-center text-[10px] text-slate-500 space-y-1.5 z-10 font-medium tracking-wide">
-      <p>© Direitos reservados <span class="text-cyan-400 font-bold">PlanilhaViva Pro</span>.</p>
-      <p>Programador: <span class="text-slate-300 font-bold">Gilnei Laurindo</span></p>
-      <p>Ideias e dedicatória: <span class="text-slate-400 font-bold">Samuel Danilo</span></p>
-    </footer>
   </section>
 
   <!-- ==================== APP PRINCIPAL ==================== -->
   <section id="view-app" class="hidden flex-1 flex-col w-full">
     
-    <!-- HEADER -->
+    <!-- HEADER COM SINO DE NOTIFICAÇÃO -->
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
       <div class="flex items-center gap-3">
         <div id="avatar" class="w-10 h-10 rounded-full border-2 border-cyan-400 overflow-hidden shadow-[0_0_15px_rgba(34,211,238,.4)]"></div>
@@ -146,8 +155,13 @@
         </div>
       </div>
       <div class="flex gap-2">
-        <button id="btnAdminPanel" class="hidden text-amber-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-amber-700/50 transition-colors" onclick="App.nav('admin')">
-          <i data-lucide="crown" class="w-4 h-4"></i>
+        <!-- BOTÃO DE NOTIFICAÇÃO -->
+        <button id="btnNotificacoes" class="relative text-cyan-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700 transition-colors" onclick="NotificationSystem.openFromIcon()">
+          <i data-lucide="bell" class="w-4 h-4"></i>
+          <span id="notif-badge" class="absolute top-0 right-0 flex h-2.5 w-2.5 hidden">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500 border border-slate-900"></span>
+          </span>
         </button>
         <button id="btnRefreshHeader" class="text-cyan-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700 transition-colors">
           <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
@@ -178,7 +192,6 @@
               <label class="label" for="amount"><i data-lucide="circle-dollar-sign" class="w-3 h-3 inline mb-0.5"></i> Valor (R$)</label>
               <input id="amount" type="number" step="0.01" class="input font-bold text-lg" placeholder="0,00" required>
             </div>
-
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="label" for="date"><i data-lucide="calendar" class="w-3 h-3 inline mb-0.5"></i> Data Exata</label>
@@ -197,8 +210,8 @@
       </div>
 
       <!-- ==================== ABAS 2 E 3 OCULTADAS NESTE CÓDIGO POR BREVIDADE ==================== -->
-      <div id="view-resumo" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Resumo</div></div>
-      <div id="view-investir" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Investir</div></div>
+      <div id="view-resumo" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Resumo Dinâmico do Período</div></div>
+      <div id="view-investir" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Evolução Patrimonial</div></div>
 
       <!-- ==================== ABA 4: CONFIGURAÇÕES E FEEDBACK ==================== -->
       <div id="view-config" class="view space-y-5">
@@ -208,19 +221,19 @@
           <p id="cfg-email" class="text-xs text-slate-500 font-mono mt-2"></p>
         </div>
         
-        <!-- NOVA ÁREA DE ENVIO DE FEEDBACK/DÚVIDAS DO USUÁRIO -->
+        <!-- ÁREA DE COMUNICAÇÃO COM O ADMIN -->
         <div class="glass rounded-2xl p-5 space-y-4 border border-blue-500/30 relative overflow-hidden">
           <div class="glow-blue"></div>
           <h3 class="section-title text-blue-400"><i data-lucide="message-circle" class="w-4 h-4"></i> Fale com o Suporte</h3>
-          <p class="text-[10px] text-slate-300 mb-2">Envie um depoimento, tire uma dúvida ou sugira melhorias.</p>
+          <p class="text-[10px] text-slate-300 mb-2">Envie um depoimento, tire uma dúvida ou sugira melhorias para a equipe.</p>
           <select id="user-feedback-type" class="input text-xs mb-2">
             <option value="duvida">Tenho uma Dúvida</option>
             <option value="depoimento">Deixar Depoimento</option>
             <option value="melhoria">Sugerir Melhoria</option>
           </select>
           <textarea id="user-feedback-msg" class="input h-20 resize-none text-xs" placeholder="Escreva sua mensagem aqui..."></textarea>
-          <button class="w-full bg-blue-600/30 text-blue-400 border border-blue-500/50 p-3 rounded-lg text-xs font-bold hover:bg-blue-600/50 transition" onclick="UserActions.sendFeedback()">
-            Enviar Mensagem
+          <button class="w-full bg-blue-600/30 text-blue-400 border border-blue-500/50 p-3 rounded-lg text-xs font-bold hover:bg-blue-600/50 transition flex items-center justify-center gap-2" onclick="App.sendFeedback()">
+            <i data-lucide="send" class="w-3 h-3"></i> Enviar para o QG
           </button>
         </div>
 
@@ -229,110 +242,6 @@
         </button>
       </div>
 
-      <!-- ==================== ABA 5: MODO DEUS (ADMIN ANALÍTICO) ==================== -->
-      <div id="view-admin" class="view space-y-5 hidden">
-        <div class="glass glass-admin rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center border border-amber-500/40 shadow-[0_0_40px_rgba(251,191,36,.2)]">
-          <div class="glow-amber"></div>
-          <p class="text-xs uppercase tracking-widest text-amber-400 font-bold flex items-center gap-2 mb-1">
-            <i data-lucide="crown" class="w-4 h-4"></i> Painel Estratégico
-          </p>
-          <p class="text-xl font-black text-white mt-1">Gestão de Inteligência</p>
-          <button onclick="App.nav('fluxo')" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-full border border-slate-700">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- MÓDULO INTELIGÊNCIA E ENGAJAMENTO (NOVO) -->
-        <div class="glass rounded-2xl p-5 space-y-4 border border-cyan-500/30">
-          <h3 class="section-title text-cyan-400 flex items-center gap-2"><i data-lucide="pie-chart" class="w-4 h-4"></i> Inteligência de Engajamento</h3>
-          <p class="text-[10px] text-slate-400">Análise de quem mais utiliza a plataforma e quem está inativo.</p>
-          
-          <div class="relative w-full max-h-[180px] flex justify-center mx-auto mb-4">
-            <canvas id="chartEngajamento"></canvas>
-          </div>
-
-          <!-- Ranking List -->
-          <div class="space-y-2 mt-4">
-            <div class="flex justify-between items-center text-xs p-2 bg-emerald-900/20 border border-emerald-500/30 rounded-lg">
-              <div class="flex items-center gap-2"><i data-lucide="award" class="w-3 h-3 text-emerald-400"></i><span class="font-bold text-slate-200">Gilnei L.</span></div>
-              <span class="text-emerald-400 font-mono">145 Acessos</span>
-            </div>
-            <div class="flex justify-between items-center text-xs p-2 bg-emerald-900/20 border border-emerald-500/30 rounded-lg">
-              <div class="flex items-center gap-2"><i data-lucide="award" class="w-3 h-3 text-emerald-400"></i><span class="font-bold text-slate-200">Samuel D.</span></div>
-              <span class="text-emerald-400 font-mono">132 Acessos</span>
-            </div>
-            <div class="flex justify-between items-center text-xs p-2 bg-rose-900/20 border border-rose-500/30 rounded-lg">
-              <div class="flex items-center gap-2"><i data-lucide="user-minus" class="w-3 h-3 text-rose-400"></i><span class="font-bold text-slate-200">Carlos M.</span></div>
-              <span class="text-rose-400 font-mono text-[10px]">Inativo há 12 dias</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- MÓDULO INTELIGÊNCIA DE DÚVIDAS E SUPORTE (NOVO) -->
-        <div class="glass rounded-2xl p-5 space-y-4 border border-purple-500/30">
-          <h3 class="section-title text-purple-400 flex items-center gap-2"><i data-lucide="help-circle" class="w-4 h-4"></i> Mapa de Dúvidas / Suporte</h3>
-          <p class="text-[10px] text-slate-400">Usuários que mais necessitam de acompanhamento ou tutoriais.</p>
-          
-          <div class="relative w-full max-h-[160px] flex justify-center mx-auto mb-2">
-            <canvas id="chartDuvidas"></canvas>
-          </div>
-
-          <!-- Help Ranking -->
-          <div class="space-y-2 mt-4">
-            <div class="flex justify-between items-center text-xs p-2 bg-purple-900/20 border border-purple-500/30 rounded-lg">
-              <span class="font-bold text-slate-200">Ana P.</span>
-              <span class="text-purple-400 font-mono">5 Dúvidas</span>
-            </div>
-            <div class="flex justify-between items-center text-xs p-2 bg-slate-800/50 border border-slate-700 rounded-lg">
-              <span class="font-bold text-slate-200">Carlos M.</span>
-              <span class="text-slate-400 font-mono">2 Dúvidas</span>
-            </div>
-            <div class="flex justify-between items-center text-xs p-2 bg-slate-800/50 border border-slate-700 rounded-lg">
-              <span class="font-bold text-slate-200">Samuel D.</span>
-              <span class="text-slate-400 font-mono">1 Dúvida</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- MÓDULOS DE COBRANÇA E COMUNICAÇÃO -->
-        <div class="glass rounded-2xl p-5 space-y-4 border border-emerald-500/20">
-          <h3 class="section-title text-emerald-400 flex items-center gap-2"><i data-lucide="credit-card" class="w-4 h-4"></i> Estratégia de Cobrança</h3>
-          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700 space-y-4">
-            <div>
-              <label class="label text-emerald-300">Valor Base (Mensal)</label>
-              <input type="number" class="input input-admin font-bold" value="29.90">
-            </div>
-            <div class="flex items-center justify-between border-t border-slate-700 pt-4">
-              <div>
-                <p class="text-xs font-bold text-white">Desconto no Cartão</p>
-              </div>
-              <div class="relative inline-block w-10 mr-2 align-middle select-none">
-                <input type="checkbox" id="toggle-discount" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-slate-600 appearance-none cursor-pointer" checked/>
-                <label for="toggle-discount" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-600 cursor-pointer"></label>
-              </div>
-            </div>
-            <button class="w-full bg-emerald-600/20 text-emerald-400 border border-emerald-500/50 p-3 rounded-lg text-xs font-bold" onclick="UI.toast('Políticas de cobrança atualizadas!', 'success')">Salvar</button>
-          </div>
-        </div>
-
-        <div class="glass rounded-2xl p-5 space-y-4 border border-blue-500/20">
-          <h3 class="section-title text-blue-400 flex items-center gap-2"><i data-lucide="send" class="w-4 h-4"></i> Disparo Estratégico</h3>
-          <div class="space-y-3">
-            <select id="msg-target" class="input input-admin text-xs">
-              <option value="all">Todos os Usuários</option>
-              <option value="duvidas">Usuários com muitas Dúvidas (Foco: Ajuda)</option>
-              <option value="inativos">Usuários Inativos (Foco: Reengajamento)</option>
-              <option value="ativos">Top Usuários (Foco: Upsell/Elogio)</option>
-            </select>
-            <textarea id="msg-content" class="input input-admin h-20 resize-none text-xs" placeholder="Sua mensagem estratégica..."></textarea>
-            <button class="btn-primary btn-admin w-full py-3 rounded-xl flex items-center justify-center gap-2 text-xs" onclick="AdminActions.sendMessage()">
-              <i data-lucide="radio" class="w-4 h-4"></i> Enviar
-            </button>
-          </div>
-        </div>
-
-      </div>
-      <!-- FIM MODO DEUS -->
     </div>
   </section>
 </main>
@@ -351,19 +260,16 @@
 <script>
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  SCRIPT_URL: "SEU_LINK_DO_APP_SCRIPT_AQUI",
   STORAGE_KEY: "planilhaviva_user_v7",
-  CATEGORIES: ["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"],
-  ADMIN_EMAILS: ["gilneilaurindo@gmail.com", "samueldanilo@gmail.com"]
+  CATEGORIES: ["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"]
 };
 
-const State = { user: null, prefName: "", particleColor: "rgba(34,211,238,0.5)" };
+const State = { user: null, prefName: "", particleColor: "rgba(34,211,238,0.5)", lastNotification: null };
 const $ = id => document.getElementById(id);
 
-// --- PARTICULAS & UI ---
+// --- PARTICULAS & UI (Minificado para focar na lógica principal) ---
 function initParticles() {
-  const canvas = $("bg"); if(!canvas) return;
-  const ctx = canvas.getContext("2d"); let p = [];
+  const canvas = $("bg"); if(!canvas) return; const ctx = canvas.getContext("2d"); let p = [];
   const rz = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; p = Array.from({length: Math.min(60, Math.floor(canvas.width*canvas.height/9000))}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.7, vy: (Math.random()-.5)*.7, r: Math.random()*2+.5})); };
   const an = () => { 
     ctx.clearRect(0,0,canvas.width,canvas.height); 
@@ -373,11 +279,7 @@ function initParticles() {
       ctx.fillStyle = State.particleColor; ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
       for(let j=i+1; j<p.length; j++){
         let dx = p[i].x - p[j].x, dy = p[i].y - p[j].y; let dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 100) {
-          ctx.beginPath(); let rgbMatch = State.particleColor.match(/\d+, *\d+, *\d+/);
-          ctx.strokeStyle = `rgba(${rgbMatch ? rgbMatch[0] : "34, 211, 238"}, ${0.3*(1-dist/100)})`;
-          ctx.lineWidth = 1.5; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke();
-        }
+        if(dist < 100) { ctx.beginPath(); let rgbMatch = State.particleColor.match(/\d+, *\d+, *\d+/); ctx.strokeStyle = `rgba(${rgbMatch ? rgbMatch[0] : "34, 211, 238"}, ${0.3*(1-dist/100)})`; ctx.lineWidth = 1.5; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke(); }
       }
     }
     requestAnimationFrame(an); 
@@ -397,96 +299,152 @@ const UI = {
     requestAnimationFrame(() => t.classList.add("show"));
     setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3000);
   },
-  setAvatar: (el, user) => { if(el && user?.picture) el.innerHTML = `<img src="${user.picture}" class="w-full h-full object-cover">`; }
+  setupSegments: () => {
+    document.querySelectorAll(".seg-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".seg-btn").forEach(b => b.setAttribute("aria-pressed", "false"));
+        btn.setAttribute("aria-pressed", "true");
+        const color = btn.dataset.color;
+        $("btnSave").className = "btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300";
+        $("form-glow").className = "glow transition-colors duration-500";
+        $("cat-container").style.display = color === "purple" ? "none" : "block";
+        
+        if(color === "green") { $("btnSave").classList.add("btn-green"); $("form-glow").classList.add("glow-green"); $("form-icon").className = "w-5 h-5 text-emerald-400"; $("form-title").innerHTML = `<i data-lucide="arrow-down-circle" class="w-5 h-5 text-emerald-400"></i> Lançar Receita`; State.particleColor = "rgba(16,185,129,0.5)"; }
+        else if(color === "red") { $("btnSave").classList.add("btn-red"); $("form-glow").classList.add("glow-red"); $("form-icon").className = "w-5 h-5 text-rose-400"; $("form-title").innerHTML = `<i data-lucide="arrow-up-circle" class="w-5 h-5 text-rose-400"></i> Lançar Despesa`; State.particleColor = "rgba(244,63,94,0.5)"; }
+        else if(color === "purple") { $("btnSave").classList.add("btn-purple"); $("form-glow").classList.add("glow-purple"); $("form-icon").className = "w-5 h-5 text-purple-400"; $("form-title").innerHTML = `<i data-lucide="trending-up" class="w-5 h-5 text-purple-400"></i> Realizar Aporte`; State.particleColor = "rgba(168,85,247,0.5)"; }
+        UI.refreshIcons();
+      });
+    });
+  }
 };
 
-// --- GRÁFICOS ADMIN (CHART.JS) ---
-const AdminCharts = {
+// ============================================================================
+// SISTEMA DE NOTIFICAÇÃO
+// ============================================================================
+const NotificationSystem = {
   init: () => {
-    Chart.defaults.color = '#94a3b8'; Chart.defaults.font.family = 'system-ui';
+    // Simula o recebimento de uma notificação do painel Admin 4 segundos após entrar
+    setTimeout(() => {
+      NotificationSystem.trigger({
+        title: "Desconto Liberado! 🎁",
+        body: "Ative o débito automático no cartão de crédito e ganhe 15% de desconto vitalício na sua mensalidade. Oferta enviada pelo Administrador.",
+        type: "promo", // Pode ser promo, alert, info
+        btnText: "Quero Ativar Desconto",
+        btnAction: () => {
+          UI.toast("Desconto de 15% ativado com sucesso!", "success");
+          NotificationSystem.close();
+          $("notif-badge").classList.add("hidden"); // Remove o ponto vermelho
+        }
+      });
+    }, 4000);
+  },
+  
+  trigger: (data) => {
+    State.lastNotification = data; // Salva para reabrir se o usuário clicar no sino
+    $("notif-title").textContent = data.title;
+    $("notif-body").textContent = data.body;
     
-    // Gráfico de Engajamento (Top Ativos vs Inativos)
-    if($("chartEngajamento")) {
-      new Chart($("chartEngajamento"), {
-        type: 'doughnut',
-        data: { labels: ['Acessos Diários', 'Acessos Semanais', 'Inativos'], datasets: [{ data: [65, 25, 10], backgroundColor: ['#10b981', '#3b82f6', '#f43f5e'], borderWidth: 0, cutout: '70%' }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } } }
-      });
+    const btn = $("notif-btn");
+    btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> ${data.btnText || "Entendido"}`;
+    btn.onclick = data.btnAction || NotificationSystem.close;
+    
+    // Atualiza estética baseada no tipo de mensagem
+    const glow = $("notif-glow"), iconBox = $("notif-icon-container"), icon = $("notif-icon");
+    if(data.type === 'promo') {
+        glow.className = "glow-purple";
+        iconBox.className = "w-14 h-14 rounded-full bg-purple-900/50 flex items-center justify-center border border-purple-500 mb-4 shadow-[0_0_20px_rgba(168,85,247,0.4)]";
+        icon.className = "w-6 h-6 text-purple-400";
+        iconBox.innerHTML = `<i data-lucide="gift" class="w-6 h-6 text-purple-400"></i>`;
+        btn.className = "w-full bg-purple-600/30 text-purple-400 border border-purple-500/50 p-4 rounded-xl text-xs font-bold hover:bg-purple-600/50 transition-colors flex items-center justify-center gap-2";
+    } else {
+        glow.className = "glow-blue";
+        iconBox.className = "w-14 h-14 rounded-full bg-blue-900/50 flex items-center justify-center border border-blue-500 mb-4 shadow-[0_0_20px_rgba(59,130,246,0.4)]";
+        icon.className = "w-6 h-6 text-blue-400";
+        iconBox.innerHTML = `<i data-lucide="bell-ring" class="w-6 h-6 text-blue-400"></i>`;
+        btn.className = "w-full bg-blue-600/30 text-blue-400 border border-blue-500/50 p-4 rounded-xl text-xs font-bold hover:bg-blue-600/50 transition-colors flex items-center justify-center gap-2";
     }
 
-    // Gráfico de Dúvidas / Suporte
-    if($("chartDuvidas")) {
-      new Chart($("chartDuvidas"), {
-        type: 'bar',
-        data: { labels: ['Ana P.', 'Carlos', 'Samuel', 'Gilnei'], datasets: [{ label: 'Qtd. Dúvidas', data: [5, 2, 1, 0], backgroundColor: '#a855f7', borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
-      });
+    $("notif-badge").classList.remove("hidden"); // Ativa o "ping" no cabeçalho
+    NotificationSystem.openModal();
+  },
+
+  openFromIcon: () => {
+    if (State.lastNotification) {
+      NotificationSystem.openModal();
+      $("notif-badge").classList.add("hidden"); // Limpa o badge ao visualizar
+    } else {
+      UI.toast("Nenhuma nova mensagem do Administrador.", "success");
     }
+  },
+
+  openModal: () => {
+    const modal = $("notif-modal");
+    const card = $("notif-card");
+    modal.classList.remove("hidden");
+    UI.refreshIcons();
+    void modal.offsetWidth; // Force reflow
+    modal.classList.remove("opacity-0");
+    card.classList.remove("scale-95");
+  },
+
+  close: () => {
+    const modal = $("notif-modal");
+    const card = $("notif-card");
+    modal.classList.add("opacity-0");
+    card.classList.add("scale-95");
+    setTimeout(() => { modal.classList.add("hidden"); }, 300);
   }
 };
 
-// --- AÇÕES ---
-const UserActions = {
-  sendFeedback: () => {
-    const type = $("user-feedback-type").value;
-    const msg = $("user-feedback-msg").value;
-    if(!msg.trim()) return UI.toast("Escreva algo antes de enviar.", "error");
-    UI.toast("Enviado com sucesso! A equipe responderá em breve.", "success");
-    $("user-feedback-msg").value = "";
-  }
-};
-
-const AdminActions = {
-  sendMessage: () => {
-    const target = $("msg-target").options[$("msg-target").selectedIndex].text;
-    const content = $("msg-content").value;
-    if(!content.trim()) return UI.toast("Digite uma mensagem primeiro.", "error");
-    UI.toast(`Mensagem enviada estrategicamente para: ${target}`, "success");
-    $("msg-content").value = "";
-  }
-};
-
-// --- CORE APP ---
+// ============================================================================
+// LÓGICA CORE
+// ============================================================================
 const App = {
   init: () => {
     initParticles();
+    UI.setupSegments();
+    setInterval(() => { const n = new Date(); if($("header-date")) $("header-date").textContent = n.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase(); if($("header-time")) $("header-time").textContent = n.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }, 1000);
+    
+    if($("category")) CONFIG.CATEGORIES.forEach(c => $("category").append(new Option(c, c)));
+    if($("date")) State.datePicker = flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
+    
     document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
+    if($("btnLogout")) $("btnLogout").addEventListener("click", () => { localStorage.removeItem(CONFIG.STORAGE_KEY); location.reload(); });
+
     const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
     if(saved) { State.user = JSON.parse(saved); State.prefName = State.user.name.split(" ")[0]; App.startSession(); }
     else { if($("view-auth")) { $("view-auth").classList.remove("hidden"); $("view-auth").classList.add("flex"); } }
   },
   
-  startSession: async () => {
+  startSession: () => {
     if($("view-auth")) $("view-auth").classList.replace("flex", "hidden");
-    const isAdmin = CONFIG.ADMIN_EMAILS.some(email => email.toLowerCase() === State.user.email.toLowerCase());
-    if (isAdmin && $("btnAdminPanel")) $("btnAdminPanel").classList.remove("hidden");
+    if($("splash-avatar") && State.user?.picture) $("splash-avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
+    if($("splash-name")) $("splash-name").textContent = State.prefName + "!";
     
     const splash = $("welcome-splash");
     if(splash) { splash.classList.remove("hidden", "hide-splash"); splash.classList.add("flex"); }
+    
     setTimeout(() => {
       if(splash) splash.classList.add("hide-splash");
       setTimeout(() => { if(splash) splash.classList.replace("flex", "hidden"); App.enter(); }, 600);
-    }, 1000);
+    }, 1500);
   },
 
   enter: () => {
     if($("pref-name")) $("pref-name").value = State.prefName;
-    UI.setAvatar($("avatar"), State.user); UI.setAvatar($("cfg-avatar"), State.user);
+    if($("cfg-email")) $("cfg-email").textContent = State.user.email;
+    if(State.user?.picture && $("avatar")) $("avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
+    if(State.user?.picture && $("cfg-avatar")) $("cfg-avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
+    
     if($("view-app")) { $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex"); }
     if($("bottom-nav")) $("bottom-nav").classList.remove("hidden");
     App.nav("fluxo");
-    AdminCharts.init(); // Inicia gráficos do admin
+    
+    // Inicia a escuta de notificações
+    NotificationSystem.init();
   },
 
   nav: (view) => {
-    if (view === 'admin') {
-      if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === State.user.email.toLowerCase())) return UI.toast("Acesso restrito.", "error");
-      State.particleColor = "rgba(251,191,36,0.5)";
-      $("view-admin").classList.add("active", "block"); $("view-admin").classList.remove("hidden");
-      ["fluxo", "resumo", "investir", "config"].forEach(v => { if($("view-" + v)) { $("view-" + v).classList.remove("active"); $("view-" + v).classList.add("hidden"); } });
-      return;
-    }
-    if($("view-admin")) { $("view-admin").classList.remove("active", "block"); $("view-admin").classList.add("hidden"); }
     ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
       const act = v === view;
       if($("view-" + v)) { $("view-" + v).classList.toggle("active", act); $("view-" + v).classList.toggle("hidden", !act); }
@@ -497,7 +455,15 @@ const App = {
       }
     });
     window.scrollTo(0, 0); UI.refreshIcons();
-    State.particleColor = view !== 'fluxo' ? "rgba(34,211,238,0.5)" : "rgba(16,185,129,0.5)";
+    if (view !== 'fluxo') State.particleColor = "rgba(34,211,238,0.5)";
+    else { const s = document.querySelector('.seg-btn[aria-pressed="true"]'); if(s) s.click(); }
+  },
+
+  sendFeedback: () => {
+    const msg = $("user-feedback-msg").value;
+    if(!msg.trim()) return UI.toast("Escreva sua mensagem primeiro.", "error");
+    UI.toast("Mensagem enviada! O Administrador irá analisá-la.", "success");
+    $("user-feedback-msg").value = "";
   }
 };
 
