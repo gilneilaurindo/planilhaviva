@@ -31,9 +31,7 @@
 <style>
   :root { color-scheme: dark; }
   body {
-    background-color: #020617;
-    margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; 
-    font-family: ui-sans-serif, system-ui, sans-serif;
+    background-color: #020617; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; font-family: ui-sans-serif, system-ui, sans-serif;
   }
 
   /* EFEITOS NEON E CONEXÕES REATIVAS */
@@ -54,6 +52,12 @@
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
   .slide-down { animation: slideDown 0.4s ease-out forwards; }
   @keyframes slideDown { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
+  
+  /* Carrossel Infinito (Marquee) */
+  .carousel-wrapper { overflow: hidden; width: 100%; white-space: nowrap; position: relative; }
+  .carousel-track { display: inline-flex; gap: 1rem; animation: scroll 30s linear infinite; }
+  .carousel-track:hover { animation-play-state: paused; }
+  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 0.5rem)); } }
 
   .view { display: none; opacity: 0; }
   .view.active { display: block; animation: viewIn .5s ease-out forwards; }
@@ -92,7 +96,7 @@
 
   /* Blocos de Ads */
   .ad-block { background: rgba(15,23,42,.4); border: 1px dashed rgba(34,211,238,.3); border-radius: 1rem; padding: 0.5rem; text-align: center; position: relative; min-height: 80px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 1rem; margin-bottom: 1rem;}
-  .ad-label { position: absolute; top: 4px; left: 8px; font-size: 8px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; }
+  .ad-label { position: absolute; top: 4px; left: 8px; font-size: 8px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; font-weight:bold; }
 
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -105,7 +109,7 @@
 </head>
 <body class="text-slate-100 min-h-screen pb-24 relative">
 
-<!-- EFEITO LUMINOSO REATIVO (Partículas que mudam de cor com a ação) -->
+<!-- EFEITO LUMINOSO REATIVO (Partículas conectadas) -->
 <canvas id="bg" aria-hidden="true"></canvas>
 
 <div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none" aria-live="polite"></div>
@@ -125,7 +129,7 @@
 
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
 
-  <!-- ==================== TELA DE LOGIN (COM CRÉDITOS E HONRA) ==================== -->
+  <!-- ==================== TELA DE LOGIN (COM CRÉDITOS) ==================== -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 relative">
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_40px_rgba(34,211,238,.1)]">
       <div class="glow"></div>
@@ -137,7 +141,7 @@
 
       <div>
         <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
-        <p class="text-xs text-cyan-100/70 mt-2 font-medium leading-relaxed">O seu banco de dados financeiro contínuo e conectado à nuvem.</p>
+        <p class="text-xs text-cyan-100/70 mt-2 font-medium leading-relaxed">O seu banco de dados financeiro contínuo, blindado e conectado à nuvem.</p>
       </div>
 
       <div class="pt-4 flex flex-col items-center gap-4 relative z-20">
@@ -156,14 +160,17 @@
     </footer>
   </section>
 
-  <!-- ==================== APP SHELL ==================== -->
+  <!-- ==================== APP PRINCIPAL ==================== -->
   <section id="view-app" class="hidden flex-col">
+    <!-- HEADER DINÂMICO COM RELÓGIO -->
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
       <div class="flex items-center gap-3">
         <div id="avatar" class="w-10 h-10 rounded-full border-2 border-cyan-400 overflow-hidden shadow-[0_0_15px_rgba(34,211,238,.4)]"></div>
         <div class="flex flex-col">
-          <span class="text-[9px] text-cyan-400 font-black uppercase flex items-center gap-1"><i data-lucide="shield-check" class="w-3 h-3"></i> Protegido</span>
-          <h2 id="user-name" class="text-sm font-bold text-white"></h2>
+          <span class="text-[9px] text-cyan-400 font-black uppercase flex items-center gap-1">
+            <i data-lucide="clock" class="w-3 h-3"></i> <span id="header-time">00:00</span>
+          </span>
+          <h2 id="header-date" class="text-xs font-bold text-white"></h2>
         </div>
       </div>
       <button id="btnRefreshHeader" class="text-cyan-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700 transition-colors">
@@ -173,11 +180,12 @@
 
     <div class="px-5 pt-6 space-y-6">
 
-      <!-- ==================== ABA 1: LANÇAMENTOS DINÂMICOS ==================== -->
+      <!-- ==================== ABA 1: LANÇAMENTOS ==================== -->
       <div id="view-fluxo" class="view active space-y-5">
         
+        <!-- Ad Topo -->
         <div class="ad-block">
-          <span class="ad-label">Publicidade</span>
+          <span class="ad-label"><i data-lucide="megaphone" class="w-3 h-3 inline"></i> Publicidade</span>
           <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="horizontal"></ins>
         </div>
 
@@ -193,12 +201,12 @@
 
           <form id="txForm" class="space-y-4">
             <div>
-              <label class="label" for="desc">Descrição do Movimento</label>
+              <label class="label" for="desc"><i data-lucide="pen-line" class="w-3 h-3 inline mb-0.5"></i> Descrição do Movimento</label>
               <input id="desc" class="input" placeholder="Ex: Conta de Luz, Salário..." required>
             </div>
             
             <div>
-              <label class="label" for="amount">Valor (R$)</label>
+              <label class="label" for="amount"><i data-lucide="circle-dollar-sign" class="w-3 h-3 inline mb-0.5"></i> Valor (R$)</label>
               <input id="amount" type="number" step="0.01" class="input font-bold text-lg" placeholder="0,00" required>
               <!-- Valores Rápidos (Chips) -->
               <div class="flex gap-2 mt-2 overflow-x-auto no-scrollbar py-1">
@@ -211,30 +219,29 @@
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="label" for="date">Data Exata</label>
+                <label class="label" for="date"><i data-lucide="calendar" class="w-3 h-3 inline mb-0.5"></i> Data Exata</label>
                 <input id="date" type="text" class="input font-bold text-center" placeholder="Hoje" required>
               </div>
               <div id="cat-container">
-                <label class="label" for="category">Categoria</label>
+                <label class="label" for="category"><i data-lucide="tag" class="w-3 h-3 inline mb-0.5"></i> Categoria</label>
                 <select id="category" class="input font-medium text-xs h-[42px]"></select>
               </div>
             </div>
             <button id="btnSave" type="submit" class="btn-primary btn-red w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300">
-              <i data-lucide="check-circle" class="w-5 h-5"></i> Confirmar Transação
+              <i data-lucide="send" class="w-5 h-5 animate-pulse"></i> Confirmar Transação
             </button>
           </form>
         </div>
 
-        <!-- Histórico Local (Novidade) -->
-        <div class="glass rounded-2xl p-4">
+        <!-- Histórico Local da Sessão -->
+        <div class="glass rounded-2xl p-4 border border-cyan-500/20">
           <h3 class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
             <i data-lucide="history" class="w-3 h-3"></i> Lançamentos desta Sessão
           </h3>
           <div id="local-history" class="space-y-2 text-xs">
-            <p class="text-slate-500 text-center py-2 italic" id="empty-history">Aguardando lançamentos...</p>
+            <p class="text-slate-500 text-center py-2 italic" id="empty-history">Aguardando lançamentos hoje...</p>
           </div>
         </div>
-
       </div>
 
       <!-- ==================== ABA 2: RESUMO ==================== -->
@@ -242,13 +249,14 @@
         <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)]">
           <div class="glow"></div>
           <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2 mb-1">
-            <i data-lucide="wallet" class="w-4 h-4"></i> Saldo em Caixa
+            <i data-lucide="wallet" class="w-4 h-4"></i> Saldo Consolidado
           </p>
           <p id="saldo" class="text-4xl font-black tabular-nums text-white drop-shadow-lg">R$ 0,00</p>
+          <p id="resumo-mes-nome" class="text-[10px] font-mono text-cyan-200 mt-2 absolute bottom-4 right-6"></p>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="pie-chart" class="w-4 h-4"></i> Fluxo Consolidado</h3>
+          <h3 class="section-title"><i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Fluxo do Período</h3>
           <div class="relative w-full aspect-square max-h-[220px] flex justify-center mx-auto">
             <canvas id="chartFluxo"></canvas>
           </div>
@@ -259,12 +267,12 @@
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="bar-chart" class="w-4 h-4"></i> Desempenho</h3>
+          <h3 class="section-title"><i data-lucide="bar-chart" class="w-4 h-4 text-cyan-400"></i> Desempenho Contínuo</h3>
           <div class="w-full max-h-[200px]"><canvas id="chartDesempenho"></canvas></div>
         </div>
 
         <div class="ad-block">
-          <span class="ad-label">Publicidade</span>
+          <span class="ad-label"><i data-lucide="megaphone" class="w-3 h-3 inline"></i> Publicidade</span>
           <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto"></ins>
         </div>
       </div>
@@ -286,7 +294,7 @@
 
         <div class="glass rounded-2xl p-5 space-y-4">
           <h3 class="section-title text-blue-400"><i data-lucide="layers" class="w-4 h-4"></i> Distribuição Ideal</h3>
-          <p class="text-[10px] text-slate-400 mb-3">Recomendação de alocação estruturada.</p>
+          <p class="text-[10px] text-slate-400 mb-3">Recomendação de alocação estruturada inteligente.</p>
           <div class="space-y-4">
             <div>
               <div class="flex justify-between text-xs font-bold text-slate-200 mb-1"><span>Renda Fixa Segura</span> <span class="text-blue-400">60%</span></div>
@@ -304,7 +312,7 @@
         </div>
 
         <div class="ad-block">
-          <span class="ad-label">Publicidade</span>
+          <span class="ad-label"><i data-lucide="megaphone" class="w-3 h-3 inline"></i> Publicidade</span>
           <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto"></ins>
         </div>
       </div>
@@ -321,50 +329,86 @@
 
         <a id="link-planilha" href="#" target="_blank" rel="noopener" class="relative glass bg-emerald-900/40 border border-emerald-500/50 p-6 rounded-3xl flex flex-col items-center justify-center gap-3 shadow-[0_10px_30px_rgba(16,185,129,.2)] hover:bg-emerald-900/60 transition-colors group">
           <div class="w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(16,185,129,.6)]">
-            <i data-lucide="database" class="w-6 h-6 text-white"></i>
+            <i data-lucide="database" class="w-6 h-6 text-white animate-pulse"></i>
           </div>
           <div class="text-center">
             <h3 class="font-black text-emerald-400 text-lg uppercase tracking-wide">Meu Banco de Dados</h3>
-            <p class="text-xs text-slate-300 mt-1">Acessar a Planilha no Google Sheets</p>
+            <p class="text-[11px] text-slate-300 mt-1">Acessar a Planilha Privada no Google Sheets</p>
           </div>
         </a>
 
-        <!-- PROVA SOCIAL COM AVATARES REAIS -->
-        <div class="space-y-3">
-          <h3 class="section-title text-yellow-400"><i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i> Avaliações da Comunidade</h3>
-          <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar pb-2">
-            
-            <div class="snap-center shrink-0 w-64 glass rounded-xl p-4 border border-slate-700">
-              <div class="flex items-center gap-3 mb-2">
-                <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" class="w-10 h-10 rounded-full border border-yellow-400">
-                <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
+        <!-- CARROSSEL INFINITO E EDUCATIVO (PROVA SOCIAL) -->
+        <div class="space-y-3 relative">
+          <h3 class="section-title text-yellow-400"><i data-lucide="heart" class="w-4 h-4 fill-rose-500 text-rose-500"></i> Avaliações da Comunidade</h3>
+          
+          <div class="carousel-wrapper py-2">
+            <div class="carousel-track">
+              
+              <!-- Review 1: Segurança -->
+              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
+                <div class="flex items-center gap-3 mb-2">
+                  <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" class="w-10 h-10 rounded-full border border-yellow-400">
+                  <div>
+                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
+                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Carlos M., Empreendedor</p>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-200 italic">"Incrível como os dados vão direto para o meu próprio Google Drive. Segurança total, só eu tenho acesso ao meu banco de dados!"</p>
               </div>
-              <p class="text-xs text-slate-200 italic">"O app que faltava! Ter tudo registrado automaticamente no meu Google Drive com a hora exata é fantástico."</p>
-              <p class="text-[10px] text-slate-400 font-bold mt-2">— Carlos M., Empreendedor</p>
-            </div>
-            
-            <div class="snap-center shrink-0 w-64 glass rounded-xl p-4 border border-slate-700">
-              <div class="flex items-center gap-3 mb-2">
-                <img src="https://i.pravatar.cc/150?img=32" alt="Ana" class="w-10 h-10 rounded-full border border-yellow-400">
-                <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
+              
+              <!-- Review 2: Sistema Contínuo -->
+              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
+                <div class="flex items-center gap-3 mb-2">
+                  <img src="https://i.pravatar.cc/150?img=32" alt="Ana" class="w-10 h-10 rounded-full border border-yellow-400">
+                  <div>
+                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
+                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Ana P., Médica</p>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-200 italic">"Finalmente um sistema contínuo! O histórico fica todo guardado e nunca expira. Salva o meu dia a dia."</p>
               </div>
-              <p class="text-xs text-slate-200 italic">"Os gráficos de desempenho são lindos e o fato de ser um sistema contínuo infinito salvou o meu controle."</p>
-              <p class="text-[10px] text-slate-400 font-bold mt-2">— Ana P., Médica</p>
-            </div>
 
-            <div class="snap-center shrink-0 w-64 glass rounded-xl p-4 border border-slate-700">
-              <div class="flex items-center gap-3 mb-2">
-                <img src="https://i.pravatar.cc/150?img=15" alt="Roberto" class="w-10 h-10 rounded-full border border-yellow-400">
-                <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-slate-600"></i></div>
+              <!-- Review 3: Gráficos e Nuvem -->
+              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
+                <div class="flex items-center gap-3 mb-2">
+                  <img src="https://i.pravatar.cc/150?img=15" alt="Roberto" class="w-10 h-10 rounded-full border border-yellow-400">
+                  <div>
+                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
+                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Roberto S., Designer</p>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-200 italic">"A sincronização em nuvem é mágica. Lanço no celular na rua e quando abro os gráficos dinâmicos no PC está tudo lá."</p>
               </div>
-              <p class="text-xs text-slate-200 italic">"Simples, seguro e os efeitos neon deixam tudo com cara de app Premium. A sincronização é perfeita."</p>
-              <p class="text-[10px] text-slate-400 font-bold mt-2">— Roberto Silva, Designer</p>
-            </div>
 
+              <!-- Review 4: Design e UX (Duplicado para efeito carrossel infinito) -->
+              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
+                <div class="flex items-center gap-3 mb-2">
+                  <img src="https://i.pravatar.cc/150?img=47" alt="Julia" class="w-10 h-10 rounded-full border border-yellow-400">
+                  <div>
+                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
+                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Júlia F., Advogada</p>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-200 italic">"O design neon e as cores que mudam quando lanço receita ou despesa evitam que eu erre. Muito inteligente e intuitivo!"</p>
+              </div>
+              
+              <!-- Cópia do primeiro para loop perfeito -->
+              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
+                <div class="flex items-center gap-3 mb-2">
+                  <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" class="w-10 h-10 rounded-full border border-yellow-400">
+                  <div>
+                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
+                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Carlos M., Empreendedor</p>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-200 italic">"Incrível como os dados vão direto para o meu próprio Google Drive. Segurança total, só eu tenho acesso ao meu banco de dados!"</p>
+              </div>
+
+            </div>
           </div>
         </div>
 
-        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
+        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors mt-6">
           <i data-lucide="log-out" class="w-4 h-4"></i> Encerrar Sessão
         </button>
       </div>
@@ -387,7 +431,7 @@
       <i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Investir</span>
     </button>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config">
-      <i data-lucide="user" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Perfil</span>
+      <i data-lucide="settings-2" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Ajustes</span>
     </button>
   </div>
 </nav>
@@ -398,9 +442,8 @@
 // ============================================================================
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  // O SEU SCRIPT ATUALIZADO
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwfbpENkvp0yHb7IIFeiNYrrswzTyploeg5ESTaqxfzhWaKILTW6tLZnR13uBqxFQk0/exec",
-  STORAGE_KEY: "planilhaviva_user_v4",
+  STORAGE_KEY: "planilhaviva_user_v5",
   CATEGORIES: ["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"] 
 };
 
@@ -409,7 +452,7 @@ const $ = id => document.getElementById(id);
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
 // ============================================================================
-// EFEITOS LUMINOSOS E CONEXÕES REATIVAS (O FUNDO "RESPIRA" COM O UTILIZADOR)
+// EFEITOS LUMINOSOS E CONEXÕES REATIVAS
 // ============================================================================
 function initParticles() {
   const canvas = $("bg"); const ctx = canvas.getContext("2d"); let p = [];
@@ -426,13 +469,11 @@ function initParticles() {
       ctx.fillStyle = State.particleColor; 
       ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
       
-      // Linhas de conexão
       for(let j=i+1; j<p.length; j++){
         let dx = p[i].x - p[j].x, dy = p[i].y - p[j].y;
         let dist = Math.sqrt(dx*dx + dy*dy);
         if(dist < 100) {
           ctx.beginPath(); 
-          // O fio neon adapta-se à cor global
           let rgb = State.particleColor.match(/\d+, *\d+, *\d+/)[0];
           ctx.strokeStyle = `rgba(${rgb}, ${0.3*(1-dist/100)})`;
           ctx.lineWidth = 1.5; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke();
@@ -443,6 +484,34 @@ function initParticles() {
   };
   window.addEventListener("resize", rz); rz(); an();
 }
+
+// ============================================================================
+// RELÓGIO & CALENDÁRIO INTELIGENTE
+// ============================================================================
+const TimeManager = {
+  startClock: () => {
+    setInterval(() => {
+      const now = new Date();
+      $("header-time").textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      
+      const options = { weekday: 'short', day: 'numeric', month: 'short' };
+      $("header-date").textContent = now.toLocaleDateString('pt-BR', options).toUpperCase();
+      
+      $("resumo-mes-nome").textContent = "FLUXO DE " + now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
+    }, 1000);
+  },
+  
+  // Calcula os rótulos dos últimos 4 meses de forma dinâmica para os gráficos
+  getDynamicMonthLabels: () => {
+    const labels = [];
+    const date = new Date();
+    for(let i=3; i>=0; i--) {
+      let d = new Date(date.getFullYear(), date.getMonth() - i, 1);
+      labels.push(d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.','').toUpperCase());
+    }
+    return labels;
+  }
+};
 
 // ============================================================================
 // UI & CHART MANAGER
@@ -465,11 +534,6 @@ const UI = {
     if (user?.picture) el.innerHTML = `<img src="${user.picture}" class="w-full h-full object-cover" referrerpolicy="no-referrer">`;
   },
 
-  getGreeting: () => {
-    const hr = new Date().getHours();
-    return hr < 12 ? "Bom dia," : hr < 18 ? "Boa tarde," : "Boa noite,";
-  },
-
   setupColorSegments: () => {
     const btns = document.querySelectorAll(".seg-btn");
     const formGlow = $("form-glow"), formIcon = $("form-icon"), formTitle = $("form-title"), btnSave = $("btnSave"), catContainer = $("cat-container");
@@ -484,7 +548,6 @@ const UI = {
         formGlow.className = "glow transition-colors duration-500";
         catContainer.style.display = "block";
         
-        // A MAGIA DA COR: Altera o layout E as partículas de fundo!
         if(color === "green") {
           btnSave.classList.add("btn-green"); formGlow.classList.add("glow-green");
           formIcon.className = "w-5 h-5 text-emerald-400 transition-colors";
@@ -523,23 +586,24 @@ const UI = {
 };
 
 // ============================================================================
-// GRÁFICOS (CHART.JS)
+// GRÁFICOS (CHART.JS) - COM LABELS DINÂMICOS NO TEMPO
 // ============================================================================
 const Charts = {
   fluxo: null, desempenho: null, crescimento: null,
   
   init: () => {
     Chart.defaults.color = '#94a3b8'; Chart.defaults.font.family = 'system-ui';
+    const dynamicLabels = TimeManager.getDynamicMonthLabels();
     
     Charts.fluxo = new Chart($("chartFluxo"), {
       type: 'doughnut',
       data: { labels: ['Receitas', 'Despesas'], datasets: [{ data: [1, 1], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, animation: { animateScale: true } }
     });
 
     Charts.desempenho = new Chart($("chartDesempenho"), {
       type: 'bar',
-      data: { labels: ['Mês -3', 'Mês -2', 'Mês -1', 'Atual'], datasets: [
+      data: { labels: dynamicLabels, datasets: [
         { label: 'Receitas', data: [0,0,0,0], backgroundColor: '#10b981', borderRadius: 4 },
         { label: 'Despesas', data: [0,0,0,0], backgroundColor: '#f43f5e', borderRadius: 4 }
       ]},
@@ -548,7 +612,7 @@ const Charts = {
 
     Charts.crescimento = new Chart($("chartCrescimento"), {
       type: 'line',
-      data: { labels: ['Mês -3', 'Mês -2', 'Mês -1', 'Atual'], datasets: [{ label: 'Patrimônio', data: [0,0,0,0], borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] },
+      data: { labels: dynamicLabels, datasets: [{ label: 'Patrimônio', data: [0,0,0,0], borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] },
       options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { color: '#334155' } } }, plugins: { legend: { display: false } }, elements: { point: { radius: 0 } } }
     });
   },
@@ -564,7 +628,7 @@ const Charts = {
 };
 
 // ============================================================================
-// API COM O SEU BACKEND
+// API
 // ============================================================================
 const API = {
   call: async (action, payload = {}) => {
@@ -589,7 +653,7 @@ const API = {
       
       Charts.update(totalEntradas, totalSaidas, totalInvestido);
     } catch (e) {
-      console.log("Mantendo dados visuais locais. Motivo:", e);
+      console.log("Mantendo dados visuais locais.", e);
     }
   }
 };
@@ -600,14 +664,13 @@ const API = {
 const App = {
   init: () => {
     initParticles();
+    TimeManager.startClock();
     UI.setupColorSegments();
     CONFIG.CATEGORIES.forEach(c => $("category").append(new Option(c, c)));
     State.datePicker = flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
     
     Charts.init();
     App.bindEvents();
-    
-    $("greeting-text").textContent = UI.getGreeting();
 
     const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
     if(saved) { 
@@ -650,7 +713,7 @@ const App = {
       }
       $("splash-status").innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Segurança estabelecida!`; 
     } catch (e) {
-      $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Verificando acesso...`; 
+      $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Entrando no modo rápido...`; 
     }
     UI.refreshIcons();
 
@@ -694,10 +757,8 @@ const App = {
       }
     });
     window.scrollTo(0, 0); UI.refreshIcons();
-    
-    // Retorna cor ao padrão ciano se sair da aba de lançamentos para manter coerência visual do App
     if(view !== 'fluxo') State.particleColor = "rgba(34,211,238,0.5)";
-    else document.querySelector('.seg-btn[aria-pressed="true"]').click(); // Força a cor do segmento atual
+    else document.querySelector('.seg-btn[aria-pressed="true"]').click();
   },
 
   bindEvents: () => {
@@ -718,7 +779,6 @@ const App = {
       UI.toast("Nome de preferência guardado!", "success");
     });
 
-    // SUBMIT LANÇAMENTO AVANÇADO COM HORÁRIO E LOCAL HISTORY
     $("txForm").addEventListener("submit", async e => {
       e.preventDefault();
       const btn = $("btnSave");
@@ -740,19 +800,14 @@ const App = {
       const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
 
       const payload = {
-        desc: descVal, amount: parseFloat(amountVal), 
-        type: finalType, category: finalCat, 
-        date: dateVal,
-        timestamp: `${dateVal} ${timeStr}`
+        desc: descVal, amount: parseFloat(amountVal), type: finalType, category: finalCat, 
+        date: dateVal, timestamp: `${dateVal} ${timeStr}`
       };
 
       try {
         await API.call("add_transaction", payload);
         UI.toast("Transação guardada na Nuvem!", "success");
-        
-        // Adiciona à lista da sessão
         UI.addLocalHistory(descVal, amountVal, dataType);
-
         $("txForm").reset();
         document.querySelector('.seg-btn[data-color="red"]').click(); 
         if(State.datePicker) State.datePicker.setDate("today");
