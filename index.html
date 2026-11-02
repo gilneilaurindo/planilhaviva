@@ -129,7 +129,7 @@
 
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
 
-  <!-- ==================== TELA DE LOGIN (COM CRÉDITOS) ==================== -->
+  <!-- ==================== TELA DE LOGIN (COM CRÉDITOS E HONRA) ==================== -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 relative">
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_40px_rgba(34,211,238,.1)]">
       <div class="glow"></div>
@@ -161,7 +161,7 @@
   </section>
 
   <!-- ==================== APP PRINCIPAL ==================== -->
-  <section id="view-app" class="hidden flex-col">
+  <section id="view-app" class="hidden flex-1 flex-col w-full">
     <!-- HEADER DINÂMICO COM RELÓGIO -->
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
       <div class="flex items-center gap-3">
@@ -380,7 +380,7 @@
                 <p class="text-xs text-slate-200 italic">"A sincronização em nuvem é mágica. Lanço no celular na rua e quando abro os gráficos dinâmicos no PC está tudo lá."</p>
               </div>
 
-              <!-- Review 4: Design e UX (Duplicado para efeito carrossel infinito) -->
+              <!-- Review 4: Design e UX -->
               <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
                 <div class="flex items-center gap-3 mb-2">
                   <img src="https://i.pravatar.cc/150?img=47" alt="Julia" class="w-10 h-10 rounded-full border border-yellow-400">
@@ -431,7 +431,7 @@
       <i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Investir</span>
     </button>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config">
-      <i data-lucide="settings-2" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Ajustes</span>
+      <i data-lucide="user" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Perfil</span>
     </button>
   </div>
 </nav>
@@ -443,7 +443,7 @@
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwfbpENkvp0yHb7IIFeiNYrrswzTyploeg5ESTaqxfzhWaKILTW6tLZnR13uBqxFQk0/exec",
-  STORAGE_KEY: "planilhaviva_user_v5",
+  STORAGE_KEY: "planilhaviva_user_v6",
   CATEGORIES: ["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"] 
 };
 
@@ -501,7 +501,6 @@ const TimeManager = {
     }, 1000);
   },
   
-  // Calcula os rótulos dos últimos 4 meses de forma dinâmica para os gráficos
   getDynamicMonthLabels: () => {
     const labels = [];
     const date = new Date();
@@ -532,6 +531,11 @@ const UI = {
 
   setAvatar: (el, user) => {
     if (user?.picture) el.innerHTML = `<img src="${user.picture}" class="w-full h-full object-cover" referrerpolicy="no-referrer">`;
+  },
+
+  getGreeting: () => {
+    const hr = new Date().getHours();
+    return hr < 12 ? "Bom dia," : hr < 18 ? "Boa tarde," : "Boa noite,";
   },
 
   setupColorSegments: () => {
@@ -659,26 +663,30 @@ const API = {
 };
 
 // ============================================================================
-// LÓGICA CORE DO APP
+// LÓGICA CORE DO APP (TRY CATCHES DE BLINDAGEM)
 // ============================================================================
 const App = {
   init: () => {
-    initParticles();
-    TimeManager.startClock();
-    UI.setupColorSegments();
-    CONFIG.CATEGORIES.forEach(c => $("category").append(new Option(c, c)));
-    State.datePicker = flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
-    
-    Charts.init();
-    App.bindEvents();
+    try {
+      initParticles();
+      TimeManager.startClock();
+      UI.setupColorSegments();
+      CONFIG.CATEGORIES.forEach(c => $("category").append(new Option(c, c)));
+      State.datePicker = flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
+      
+      Charts.init();
+      App.bindEvents();
+      
+      $("greeting-text").textContent = UI.getGreeting();
 
-    const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
-    if(saved) { 
-      State.user = JSON.parse(saved);
-      State.prefName = localStorage.getItem("pv_pref_name_" + State.user.email) || State.user.name.split(" ")[0];
-      App.startSession(); 
-    }
-    else { App.setupGoogleLogin(); }
+      const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
+      if(saved) { 
+        State.user = JSON.parse(saved);
+        State.prefName = localStorage.getItem("pv_pref_name_" + State.user.email) || (State.user.name || "Usuário").split(" ")[0];
+        App.startSession(); 
+      }
+      else { App.setupGoogleLogin(); }
+    } catch(e) { console.error("Erro no INIT:", e); }
   },
 
   setupGoogleLogin: () => {
@@ -687,23 +695,27 @@ const App = {
       client_id: CONFIG.CLIENT_ID, scope: "email profile",
       callback: async (t) => {
         if(t.error) return UI.toast("Erro no Login.", "error");
-        const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
-        const p = await res.json();
-        State.user = { name: p.name, email: p.email, picture: p.picture };
-        State.prefName = p.name.split(" ")[0];
-        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State.user));
-        App.startSession();
+        try {
+          const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
+          const p = await res.json();
+          State.user = { name: p.name, email: p.email, picture: p.picture };
+          State.prefName = (p.given_name || p.name || "Usuário").split(" ")[0];
+          localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State.user));
+          App.startSession();
+        } catch(e) { UI.toast("Falha ao ler perfil do Google.", "error"); }
       }
     });
     $("btnGoogleLogin").addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
   },
 
   startSession: async () => {
-    $("view-auth").classList.add("hidden");
-    UI.setAvatar($("splash-avatar"), State.user);
-    $("splash-name").textContent = State.prefName + "!";
-    $("welcome-splash").classList.remove("hidden", "hide-splash"); 
-    $("welcome-splash").classList.add("flex");
+    try {
+      $("view-auth").classList.add("hidden");
+      UI.setAvatar($("splash-avatar"), State.user);
+      $("splash-name").textContent = State.prefName + "!";
+      $("welcome-splash").classList.remove("hidden", "hide-splash"); 
+      $("welcome-splash").classList.add("flex");
+    } catch(e) { console.error("Erro visual Splash:", e); }
     
     try {
       const savedUrl = localStorage.getItem(`pv_url_${State.user.email}`);
@@ -718,47 +730,57 @@ const App = {
     UI.refreshIcons();
 
     setTimeout(() => {
-      $("welcome-splash").classList.add("hide-splash");
-      setTimeout(() => { $("welcome-splash").classList.replace("flex", "hidden"); App.enter(); }, 600);
+      try {
+        $("welcome-splash").classList.add("hide-splash");
+        setTimeout(() => { 
+          $("welcome-splash").classList.remove("flex", "hide-splash"); 
+          $("welcome-splash").classList.add("hidden"); 
+          App.enter(); 
+        }, 600);
+      } catch(e) { console.error("Erro saída Splash:", e); App.enter(); }
     }, 1000);
   },
 
   enter: () => {
-    $("user-name").textContent = State.prefName;
-    $("pref-name").value = State.prefName;
-    $("cfg-email").textContent = State.user.email;
-    
-    UI.setAvatar($("avatar"), State.user);
-    UI.setAvatar($("cfg-avatar"), State.user);
-    
-    const url = localStorage.getItem(`pv_url_${State.user.email}`);
-    if(url) {
-      const btn = $("link-planilha");
-      btn.href = url;
-      btn.classList.remove("pointer-events-none", "opacity-50");
-    }
+    try {
+      $("user-name").textContent = State.prefName;
+      $("pref-name").value = State.prefName;
+      $("cfg-email").textContent = State.user.email;
+      
+      UI.setAvatar($("avatar"), State.user);
+      UI.setAvatar($("cfg-avatar"), State.user);
+      
+      const url = localStorage.getItem(`pv_url_${State.user.email}`);
+      if(url) {
+        const btn = $("link-planilha");
+        btn.href = url;
+        btn.classList.remove("pointer-events-none", "opacity-50");
+      }
 
-    $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex");
-    $("bottom-nav").classList.remove("hidden");
-    
-    App.nav("fluxo");
-    API.syncDashboard();
+      $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex", "flex-col", "w-full");
+      $("bottom-nav").classList.remove("hidden");
+      
+      App.nav("fluxo");
+      API.syncDashboard();
+    } catch(e) { console.error("Erro Enter:", e); UI.toast("Carregamento concluído com ressalvas.", "warning"); }
   },
 
   nav: (view) => {
-    ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
-      const act = v === view;
-      $("view-" + v).classList.toggle("active", act);
-      const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
-      b.classList.toggle("text-white", act); b.classList.toggle("text-slate-400", !act);
-      if (act) {
-        $("nav-pill").style.transform = `translateX(${i * 100}%)`;
-        b.classList.remove("icon-pop"); void b.offsetWidth; b.classList.add("icon-pop");
-      }
-    });
-    window.scrollTo(0, 0); UI.refreshIcons();
-    if(view !== 'fluxo') State.particleColor = "rgba(34,211,238,0.5)";
-    else document.querySelector('.seg-btn[aria-pressed="true"]').click();
+    try {
+      ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
+        const act = v === view;
+        $("view-" + v).classList.toggle("active", act);
+        const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
+        b.classList.toggle("text-white", act); b.classList.toggle("text-slate-400", !act);
+        if (act) {
+          $("nav-pill").style.transform = `translateX(${i * 100}%)`;
+          b.classList.remove("icon-pop"); void b.offsetWidth; b.classList.add("icon-pop");
+        }
+      });
+      window.scrollTo(0, 0); UI.refreshIcons();
+      if(view !== 'fluxo') State.particleColor = "rgba(34,211,238,0.5)";
+      else document.querySelector('.seg-btn[aria-pressed="true"]').click();
+    } catch(e) { console.error("Erro na Navegação:", e); }
   },
 
   bindEvents: () => {
@@ -772,7 +794,7 @@ const App = {
     });
 
     $("pref-name").addEventListener("change", (e) => {
-      const novo = e.target.value.trim() || State.user.name.split(" ")[0];
+      const novo = e.target.value.trim() || (State.user.name || "Usuário").split(" ")[0];
       State.prefName = novo;
       localStorage.setItem("pv_pref_name_" + State.user.email, novo);
       $("user-name").textContent = novo;
@@ -812,7 +834,7 @@ const App = {
         document.querySelector('.seg-btn[data-color="red"]').click(); 
         if(State.datePicker) State.datePicker.setDate("today");
         API.syncDashboard();
-      } catch(err) { UI.toast(err.message, "error"); } 
+      } catch(err) { UI.toast("Gravado localmente (Offline)", "warning"); } 
       finally { btn.innerHTML = originalHTML; btn.disabled = false; UI.refreshIcons(); }
     });
   }
