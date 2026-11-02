@@ -147,11 +147,10 @@
 
 <script>
 const CONFIG = {
-  CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
+  GOOGLE_CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
   
-  // ⚠️ ATENÇÃO: COLOQUE AQUI A SUA URL DA NOVA IMPLEMENTAÇÃO
-  // Substitua este link pelo gerado no "Passo 1"
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzBg4wutoNXwAV6Bi0fSc1xnxsPeKe1iB42YS7NRPovGYpRnyBybCeNRkT8fJ136k8/exec",
+  // ⚠️ ATENÇÃO: COLOQUE AQUI A SUA URL DA NOVA IMPLEMENTAÇÃO DO PASSO 1
+  SCRIPT_URL: "COLE_AQUI_A_NOVA_URL_DO_PASSO_1",
   
   ADMIN_EMAILS: ["gilneycriative@gmail.com", "samueldanilo11@gmail.com", "gilneilaurindo@gmail.com"]
 };
@@ -192,13 +191,13 @@ const API = {
         body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
       });
     } catch(networkError) {
-      throw new Error("Erro de ligação. Verifique se autorizou o script no Google (Novo Deploy) e se copiou o URL certo.");
+      throw new Error("Erro de ligação. Verifique a sua conexão.");
     }
     
     try {
       json = await res.json();
     } catch(parseError) {
-      throw new Error("Resposta inválida do servidor. O Google pode estar a bloquear o script devido a permissões em falta.");
+      throw new Error("Resposta inválida do servidor.");
     }
 
     if (json.status !== "success") throw new Error(json.message || "Erro desconhecido do Servidor.");
@@ -209,9 +208,9 @@ const API = {
 const Admin = {
   syncData: async () => {
     try {
-      UI.toast("Buscando dados...", "success");
+      UI.toast("A procurar dados...", "success");
       $("chart-loader").classList.remove("hidden");
-      $("chart-loader").textContent = "A ler a Planilha Mestra...";
+      $("chart-loader").textContent = "A ler a Base de Dados...";
       
       const res = await API.call("get_admin_data");
       const { kpis, usuarios, planilhaUrl } = res.data;
@@ -306,7 +305,7 @@ const App = {
   setupGoogleLogin: () => {
     if (!window.google) return setTimeout(App.setupGoogleLogin, 300);
     const client = google.accounts.oauth2.initTokenClient({
-      client_id: CONFIG.CLIENT_ID, scope: "email profile",
+      client_id: CONFIG.GOOGLE_CLIENT_ID, scope: "email profile",
       callback: async (t) => {
         if (t.error) return UI.toast("Falha no login Google.", "error");
         try {
