@@ -4,282 +4,247 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=0">
 <meta name="theme-color" content="#020617">
-<title>PlanilhaViva Pro</title>
-
-<!-- SEO & Partilha -->
-<meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
-<meta name="description" content="A sua central financeira pessoal ligada ao Google Sheets.">
+<title>QG Estratégico | PlanilhaViva</title>
 
 <!-- Bibliotecas -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/pt.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
   :root { color-scheme: dark; }
-  body { background-color: #020617; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; font-family: ui-sans-serif, system-ui, sans-serif; }
-  
-  /* PARTICULAS */
+  body { background-color: #020617; margin: 0; overflow-x: hidden; font-family: ui-sans-serif, system-ui, sans-serif; }
   #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
   
-  /* GLASSMORPHISM & NEON */
-  .glass { background: rgba(15,23,42,.65); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(148,163,184,.15); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
-  .glass-neon { border: 1px solid rgba(34,211,238,.4); box-shadow: 0 0 35px rgba(34,211,238,.15), inset 0 0 20px rgba(34,211,238,.08); }
+  /* GLASSMORPHISM ADMIN */
+  .glass { background: rgba(15,23,42,.7); backdrop-filter: blur(28px); border: 1px solid rgba(251,191,36,.2); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
+  .glass-neon { border: 1px solid rgba(251,191,36,.5); box-shadow: 0 0 35px rgba(251,191,36,.2), inset 0 0 20px rgba(251,191,36,.1); }
   
-  .glow { position: absolute; width: 220px; height: 220px; border-radius: 9999px; background: rgba(6,182,212,.25); filter: blur(80px); top: -60px; right: -60px; pointer-events: none; transition: background 0.8s ease; }
-  .glow-purple { background: rgba(168,85,247,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
-  .glow-green { background: rgba(16,185,129,.25); }
-  .glow-red { background: rgba(244,63,94,.25); }
-  .glow-blue { background: rgba(59,130,246,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
-
-  /* ANIMAÇÕES */
-  .animate-float { animation: float 6s ease-in-out infinite; }
-  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-  .icon-pop svg { animation: pop .5s cubic-bezier(.175,.885,.32,1.275) both; }
-  @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+  .glow-amber { position: absolute; width: 250px; height: 250px; border-radius: 9999px; background: rgba(251,191,36,.15); filter: blur(80px); top: -50px; right: -50px; pointer-events: none; }
+  .glow-red { position: absolute; width: 200px; height: 200px; border-radius: 9999px; background: rgba(244,63,94,.15); filter: blur(80px); bottom: -50px; left: -50px; pointer-events: none; }
   
   .view { display: none; opacity: 0; }
   .view.active { display: block; animation: viewIn .5s ease-out forwards; }
   @keyframes viewIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
 
-  #welcome-splash { transition: all .6s ease; backdrop-filter: blur(25px); }
-  #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(15px); }
-
-  /* COMPONENTES */
   .input { width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9); border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc; transition: all .3s; outline: none; }
-  .input:focus { border-color: #22d3ee; box-shadow: 0 0 20px rgba(34,211,238,.3); }
+  .input:focus { border-color: #fbbf24; box-shadow: 0 0 20px rgba(251,191,36,.3); }
   select.input option { background: #0f172a; }
-  .label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #94a3b8; font-weight: 800; margin-bottom: .4rem; }
-  
-  .quick-chip { padding: 0.35rem 0.7rem; border-radius: 9999px; background: rgba(30,41,59,0.8); border: 1px solid rgba(51,65,85,1); font-size: 0.7rem; font-weight: 700; color: #94a3b8; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-  .quick-chip:hover, .quick-chip:active { background: #22d3ee; color: #020617; border-color: #22d3ee; }
+  .label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #fbbf24; font-weight: 800; margin-bottom: .4rem; }
 
-  .btn-primary { background: linear-gradient(135deg,#06b6d4,#3b82f6); color: #020617; font-weight: 800; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 10px 30px -5px rgba(6,182,212,.6); transition: all .2s; cursor: pointer; border:none;}
-  .btn-primary:active { transform: scale(.96); }
-  .btn-green { background: linear-gradient(135deg,#10b981,#059669); box-shadow: 0 10px 30px -5px rgba(16,185,129,.6); color: #fff; }
-  .btn-red { background: linear-gradient(135deg,#f43f5e,#e11d48); box-shadow: 0 10px 30px -5px rgba(244,63,94,.6); color: #fff; }
-  .btn-purple { background: linear-gradient(135deg,#a855f7,#7e22ce); box-shadow: 0 10px 30px -5px rgba(168,85,247,.6); color: #fff; }
-  
-  .seg-container { display: flex; gap: 4px; padding: 4px; border-radius: .75rem; background: rgba(15,23,42,.9); border: 1px solid rgba(51,65,85,.9); }
-  .seg-btn { flex: 1; padding: .65rem; border-radius: .55rem; font-size: .75rem; font-weight: 800; color: #94a3b8; transition: all .3s cubic-bezier(.16,1,.3,1); cursor: pointer; text-align: center; }
-  .seg-btn[data-color="green"][aria-pressed="true"] { color: #fff; background: #10b981; box-shadow: 0 0 20px rgba(16,185,129,.7); }
-  .seg-btn[data-color="red"][aria-pressed="true"] { color: #fff; background: #f43f5e; box-shadow: 0 0 20px rgba(244,63,94,.7); }
-  .seg-btn[data-color="purple"][aria-pressed="true"] { color: #fff; background: #a855f7; box-shadow: 0 0 20px rgba(168,85,247,.7); }
-
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .btn-admin { background: linear-gradient(135deg,#fbbf24,#d97706); color: #020617; font-weight: 900; font-size: .8rem; text-transform: uppercase; border-radius: .75rem; padding: 1rem; width: 100%; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: transform .2s; }
+  .btn-admin:active { transform: scale(.96); }
 
   .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
   .toast.show { opacity: 1; transform: scale(1); }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 </head>
-<body class="text-slate-100 min-h-screen pb-24 relative">
+<body class="text-slate-100 min-h-screen pb-24">
 
-<!-- POEIRA LUMINOSA CONECTADA -->
 <canvas id="bg" aria-hidden="true"></canvas>
-
 <div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none"></div>
 
-<!-- ==================== MODAL DE NOTIFICAÇÃO DO ADMIN ==================== -->
-<div id="notif-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 bg-[#020617]/80 backdrop-blur-md opacity-0 transition-opacity duration-300">
-  <div class="glass glass-neon rounded-3xl p-6 w-full max-w-sm transform scale-95 transition-transform duration-300 relative overflow-hidden" id="notif-card">
-    <div id="notif-glow" class="glow-purple" style="top:-50px;right:-50px;"></div>
-    
-    <button class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors" onclick="NotificationSystem.close()">
-      <i data-lucide="x" class="w-5 h-5"></i>
-    </button>
-    
-    <div id="notif-icon-container" class="w-14 h-14 rounded-full bg-purple-900/50 flex items-center justify-center border border-purple-500 mb-4 shadow-[0_0_20px_rgba(168,85,247,0.4)]">
-      <i data-lucide="bell-ring" class="w-6 h-6 text-purple-400" id="notif-icon"></i>
+<!-- SPLASH SCREEN -->
+<div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center transition-all duration-500">
+  <div class="relative z-10">
+    <div class="w-32 h-32 rounded-full border-4 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(251,191,36,.5)]" id="splash-avatar">
+      <i data-lucide="shield-check" class="w-16 h-16 text-amber-400"></i>
     </div>
-    
-    <h3 id="notif-title" class="text-xl font-black text-white mb-2">Mensagem do Admin</h3>
-    <p id="notif-body" class="text-sm text-slate-300 leading-relaxed mb-6 font-medium">Conteúdo da notificação estratégica irá aparecer aqui.</p>
-    
-    <button id="notif-btn" class="w-full bg-purple-600/30 text-purple-400 border border-purple-500/50 p-4 rounded-xl text-xs font-bold hover:bg-purple-600/50 transition-colors flex items-center justify-center gap-2" onclick="NotificationSystem.close()">
-      <i data-lucide="check-circle" class="w-4 h-4"></i> Entendido
-    </button>
   </div>
-</div>
-
-<!-- ==================== SPLASH SCREEN ==================== -->
-<div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center">
-  <div class="relative z-10 animate-float">
-    <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full z-0 animate-pulse"></div>
-    <div id="splash-avatar" class="relative z-10 w-32 h-32 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
-  </div>
-  <h2 id="greeting-text" class="text-3xl font-black text-white mt-8 tracking-tight z-10">Olá,</h2>
-  <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10">Investidor!</h2>
-  <p id="splash-status" class="text-cyan-200 text-xs mt-6 font-mono flex items-center gap-2 z-10 font-bold">
-    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Inicializando Banco de Dados...
-  </p>
+  <h2 class="text-3xl font-black text-white mt-6">QG <span class="text-amber-400">Admin</span></h2>
+  <p class="text-amber-200/70 text-xs mt-2 font-mono">Autenticando credenciais estratégicas...</p>
 </div>
 
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
-
-  <!-- ==================== TELA DE LOGIN ==================== -->
-  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 relative">
-    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_40px_rgba(34,211,238,.1)]">
-      <div class="glow"></div><div class="glow-purple"></div>
-      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-cyan-400/50 animate-float shadow-[0_0_20px_rgba(34,211,238,1)]">
-        <i data-lucide="line-chart" class="w-10 h-10 text-white"></i>
+  
+  <!-- LOGIN ADMIN -->
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6">
+    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
+      <div class="glow-amber"></div>
+      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-amber-400/50 shadow-[0_0_20px_rgba(251,191,36,0.5)]">
+        <i data-lucide="briefcase" class="w-10 h-10 text-amber-400"></i>
       </div>
       <div>
-        <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
-        <p class="text-xs text-cyan-100/70 mt-2 font-medium leading-relaxed">Seu banco de dados financeiro contínuo e conectado à nuvem.</p>
+        <h1 class="text-3xl font-black text-white">Controle <span class="text-amber-400">Pro</span></h1>
+        <p class="text-xs text-amber-100/70 mt-2 font-medium">Gestão de Usuários, MRR e Comunicação.</p>
       </div>
-      <div class="pt-4 flex flex-col items-center gap-4 relative z-20">
-        <button id="btnGoogleLogin" type="button" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-cyan-400/50 rounded-full font-bold hover:bg-slate-700 transition">
-          <i data-lucide="mail" class="w-5 h-5"></i> Acessar com o Google
-        </button>
-      </div>
+      <button id="btnGoogleLogin" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-amber-400/50 rounded-full font-bold hover:bg-slate-700 transition relative z-20">
+        <i data-lucide="key" class="w-5 h-5 text-amber-400"></i> Acesso Restrito
+      </button>
     </div>
   </section>
 
-  <!-- ==================== APP PRINCIPAL ==================== -->
+  <!-- PAINEL DE CONTROLE -->
   <section id="view-app" class="hidden flex-1 flex-col w-full">
-    
-    <!-- HEADER COM SINO DE NOTIFICAÇÃO -->
-    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
+    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-4 flex items-center justify-between shadow-lg border-b border-amber-500/20">
       <div class="flex items-center gap-3">
-        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-cyan-400 overflow-hidden shadow-[0_0_15px_rgba(34,211,238,.4)]"></div>
-        <div class="flex flex-col">
-          <span class="text-[9px] text-cyan-400 font-black uppercase flex items-center gap-1">
-            <i data-lucide="clock" class="w-3 h-3"></i> <span id="header-time">00:00</span>
-          </span>
-          <h2 id="header-date" class="text-xs font-bold text-white"></h2>
+        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-amber-400 overflow-hidden"></div>
+        <div>
+          <span class="text-[9px] text-amber-400 font-black uppercase tracking-widest block mb-0.5">Visão Estratégica</span>
+          <h2 class="text-xs font-bold text-white" id="admin-name">Líder</h2>
         </div>
       </div>
-      <div class="flex gap-2">
-        <!-- BOTÃO DE NOTIFICAÇÃO -->
-        <button id="btnNotificacoes" class="relative text-cyan-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700 transition-colors" onclick="NotificationSystem.openFromIcon()">
-          <i data-lucide="bell" class="w-4 h-4"></i>
-          <span id="notif-badge" class="absolute top-0 right-0 flex h-2.5 w-2.5 hidden">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500 border border-slate-900"></span>
-          </span>
-        </button>
-        <button id="btnRefreshHeader" class="text-cyan-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700 transition-colors">
-          <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
-        </button>
-      </div>
+      <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700" onclick="Admin.syncData()">
+        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+      </button>
     </header>
 
     <div class="px-5 pt-6 space-y-6">
 
-      <!-- ==================== ABA 1: LANÇAMENTOS ==================== -->
-      <div id="view-fluxo" class="view active space-y-5">
-        <div class="glass glass-neon rounded-3xl p-6 relative overflow-hidden" id="form-container">
-          <div class="glow transition-colors duration-500" id="form-glow"></div>
-          <h3 class="section-title mb-5 text-white" id="form-title"><i data-lucide="zap" class="w-5 h-5 text-rose-400 transition-colors duration-300" id="form-icon"></i> Lançar Despesa</h3>
-          
-          <div class="seg-container mb-6">
-            <button type="button" class="seg-btn" data-color="green" data-type="in" aria-pressed="false">Receita</button>
-            <button type="button" class="seg-btn" data-color="red" data-type="out" aria-pressed="true">Despesa</button>
-            <button type="button" class="seg-btn" data-color="purple" data-type="invest" aria-pressed="false">Investir</button>
+      <!-- ABA 1: INTELIGÊNCIA & INDICADORES -->
+      <div id="view-dashboard" class="view active space-y-5">
+        
+        <div class="grid grid-cols-2 gap-3">
+          <div class="glass p-4 rounded-2xl border border-emerald-500/30">
+            <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-bold mb-1">Receita MRR</p>
+            <p class="text-xl font-black text-white">R$ 2.450</p>
           </div>
+          <div class="glass p-4 rounded-2xl border border-blue-500/30">
+            <p class="text-[9px] uppercase tracking-widest text-blue-400 font-bold mb-1">Base Ativa</p>
+            <p class="text-xl font-black text-white">82 <span class="text-[10px] text-slate-400">usuários</span></p>
+          </div>
+        </div>
 
-          <form id="txForm" class="space-y-4">
+        <div class="glass rounded-2xl p-5 border border-amber-500/20">
+          <h3 class="text-xs font-black uppercase text-amber-400 flex items-center gap-2 mb-4"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Nível de Engajamento</h3>
+          <div class="w-full h-[180px]"><canvas id="chartUsage"></canvas></div>
+        </div>
+
+        <div class="glass rounded-2xl p-5 border border-rose-500/20">
+          <h3 class="text-xs font-black uppercase text-rose-400 flex items-center gap-2 mb-3"><i data-lucide="activity" class="w-4 h-4"></i> Risco de Abandono (Churn)</h3>
+          <div class="flex justify-between items-center bg-slate-900 p-3 rounded-lg border border-slate-700">
             <div>
-              <label class="label" for="desc"><i data-lucide="pen-line" class="w-3 h-3 inline mb-0.5"></i> Descrição do Movimento</label>
-              <input id="desc" class="input" placeholder="Ex: Conta de Luz, Salário..." required>
+              <p class="text-xs font-bold text-white">Carlos M.</p>
+              <p class="text-[9px] text-slate-400">Inativo há 14 dias</p>
             </div>
-            <div>
-              <label class="label" for="amount"><i data-lucide="circle-dollar-sign" class="w-3 h-3 inline mb-0.5"></i> Valor (R$)</label>
-              <input id="amount" type="number" step="0.01" class="input font-bold text-lg" placeholder="0,00" required>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="label" for="date"><i data-lucide="calendar" class="w-3 h-3 inline mb-0.5"></i> Data Exata</label>
-                <input id="date" type="text" class="input font-bold text-center" placeholder="Hoje" required>
-              </div>
-              <div id="cat-container">
-                <label class="label" for="category"><i data-lucide="tag" class="w-3 h-3 inline mb-0.5"></i> Categoria</label>
-                <select id="category" class="input font-medium text-xs h-[42px]"></select>
-              </div>
-            </div>
-            <button id="btnSave" type="submit" class="btn-primary btn-red w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300">
-              <i data-lucide="send" class="w-5 h-5 animate-pulse"></i> Confirmar Transação
-            </button>
-          </form>
+            <button class="bg-blue-600/30 text-blue-400 px-3 py-1.5 rounded text-[10px] font-bold border border-blue-500/50" onclick="UI.toast('Mensagem de retenção enviada!', 'success')">Notificar</button>
+          </div>
         </div>
       </div>
 
-      <!-- ==================== ABAS 2 E 3 OCULTADAS NESTE CÓDIGO POR BREVIDADE ==================== -->
-      <div id="view-resumo" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Resumo Dinâmico do Período</div></div>
-      <div id="view-investir" class="view space-y-5"><div class="glass p-6 text-center text-slate-400 text-sm">Evolução Patrimonial</div></div>
+      <!-- ABA 2: CRM & BLOQUEIOS -->
+      <div id="view-crm" class="view space-y-5">
+        <div class="glass rounded-2xl p-5 border border-blue-500/30 relative overflow-hidden">
+          <div class="glow-blue absolute right-0 bottom-0"></div>
+          <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="users" class="w-4 h-4"></i> Gestão de Usuários</h3>
+          
+          <div class="relative z-10 mb-4">
+            <input type="text" class="input text-xs h-10" placeholder="Buscar e-mail ou nome...">
+          </div>
 
-      <!-- ==================== ABA 4: CONFIGURAÇÕES E FEEDBACK ==================== -->
-      <div id="view-config" class="view space-y-5">
-        <div class="glass rounded-3xl p-6 text-center relative overflow-hidden border border-cyan-500/30">
-          <div id="cfg-avatar" class="w-20 h-20 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3 shadow-[0_0_20px_rgba(34,211,238,.4)]"></div>
-          <input id="pref-name" type="text" class="bg-transparent text-2xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1 transition-colors" placeholder="Seu Nome">
-          <p id="cfg-email" class="text-xs text-slate-500 font-mono mt-2"></p>
-        </div>
-        
-        <!-- ÁREA DE COMUNICAÇÃO COM O ADMIN -->
-        <div class="glass rounded-2xl p-5 space-y-4 border border-blue-500/30 relative overflow-hidden">
-          <div class="glow-blue"></div>
-          <h3 class="section-title text-blue-400"><i data-lucide="message-circle" class="w-4 h-4"></i> Fale com o Suporte</h3>
-          <p class="text-[10px] text-slate-300 mb-2">Envie um depoimento, tire uma dúvida ou sugira melhorias para a equipe.</p>
-          <select id="user-feedback-type" class="input text-xs mb-2">
-            <option value="duvida">Tenho uma Dúvida</option>
-            <option value="depoimento">Deixar Depoimento</option>
-            <option value="melhoria">Sugerir Melhoria</option>
-          </select>
-          <textarea id="user-feedback-msg" class="input h-20 resize-none text-xs" placeholder="Escreva sua mensagem aqui..."></textarea>
-          <button class="w-full bg-blue-600/30 text-blue-400 border border-blue-500/50 p-3 rounded-lg text-xs font-bold hover:bg-blue-600/50 transition flex items-center justify-center gap-2" onclick="App.sendFeedback()">
-            <i data-lucide="send" class="w-3 h-3"></i> Enviar para o QG
-          </button>
-        </div>
+          <div class="space-y-3">
+            <!-- Usuário 1 (Ativo) -->
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-xs font-bold text-white">Samuel Danilo</p>
+                  <p class="text-[10px] text-slate-400 font-mono">samuel@gmail.com</p>
+                </div>
+                <span class="bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Ativo</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Uso: <span class="text-white font-bold">Alto</span></div>
+                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'samuel@gmail.com')">Inativar Acesso</button>
+              </div>
+            </div>
 
-        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors mt-6">
-          <i data-lucide="log-out" class="w-4 h-4"></i> Encerrar Sessão
-        </button>
+            <!-- Usuário 2 (Vencido) -->
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-xs font-bold text-white">João Silva</p>
+                  <p class="text-[10px] text-slate-400 font-mono">joao@gmail.com</p>
+                </div>
+                <span class="bg-rose-900/40 text-rose-400 border border-rose-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Vencido</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Bloqueio Automático</div>
+                <button class="bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition" onclick="Admin.toggleUserStatus(this, 'joao@gmail.com', true)">Reativar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 3: MENSAGENS ESTRATÉGICAS -->
+      <div id="view-comunicacao" class="view space-y-5">
+        <div class="glass rounded-2xl p-5 border border-purple-500/30 relative overflow-hidden">
+          <div class="glow-amber absolute right-0 top-0"></div>
+          <h3 class="text-xs font-black uppercase text-purple-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="radio" class="w-4 h-4"></i> Disparo de Campanhas</h3>
+          
+          <form class="space-y-4 relative z-10" onsubmit="event.preventDefault(); Admin.sendMessage();">
+            <div>
+              <label class="label">Público Alvo</label>
+              <select id="msg-target" class="input text-xs">
+                <option value="all">Base Completa (Todos)</option>
+                <option value="vencimento">Aviso de Vencimento Próximo</option>
+                <option value="inativos">Reengajamento (Inativos)</option>
+                <option value="promo">Promoção / Desconto</option>
+              </select>
+            </div>
+            <div>
+              <label class="label">Título da Notificação</label>
+              <input id="msg-title" type="text" class="input text-xs" placeholder="Ex: Últimos dias para renovar!" required>
+            </div>
+            <div>
+              <label class="label">Mensagem (Aparecerá no App)</label>
+              <textarea id="msg-body" class="input h-24 resize-none text-xs" placeholder="Escreva a estratégia aqui..." required></textarea>
+            </div>
+            <button type="submit" class="btn-admin">
+              <i data-lucide="send" class="w-4 h-4"></i> Disparar Mensagem
+            </button>
+          </form>
+        </div>
       </div>
 
     </div>
   </section>
 </main>
 
-<!-- BOTTOM NAVIGATION -->
+<!-- BOTTOM NAVIGATION ADMIN -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
-  <div class="glass rounded-2xl relative grid grid-cols-4 p-1 shadow-[0_20px_40px_rgba(0,0,0,.9)] border border-slate-700">
-    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-slate-600 w-[calc((100%-0.5rem)/4)] transition-all duration-300 ease-out shadow-lg"></span>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="fluxo"><i data-lucide="plus-square" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Lançar</span></button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="resumo"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Resumo</span></button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="investir"><i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Investir</span></button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Perfil</span></button>
+  <div class="glass rounded-2xl relative grid grid-cols-3 p-1 shadow-2xl border border-slate-700">
+    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-amber-500/50 w-[calc((100%-0.5rem)/3)] transition-transform duration-300 ease-out shadow-[0_0_15px_rgba(251,191,36,.2)]"></span>
+    
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="dashboard">
+      <i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Painel</span>
+    </button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="crm">
+      <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Clientes</span>
+    </button>
+    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="comunicacao">
+      <i data-lucide="radio" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Disparos</span>
+    </button>
   </div>
 </nav>
 
 <script>
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  STORAGE_KEY: "planilhaviva_user_v7",
-  CATEGORIES: ["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"]
+  ADMIN_EMAILS: ["gilneilaurindo@gmail.com", "samueldanilo@gmail.com"] // Somente líderes entram aqui
 };
 
-const State = { user: null, prefName: "", particleColor: "rgba(34,211,238,0.5)", lastNotification: null };
 const $ = id => document.getElementById(id);
+let chartInstance = null;
 
-// --- PARTICULAS & UI (Minificado para focar na lógica principal) ---
+// UI & Particulas
 function initParticles() {
-  const canvas = $("bg"); if(!canvas) return; const ctx = canvas.getContext("2d"); let p = [];
-  const rz = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; p = Array.from({length: Math.min(60, Math.floor(canvas.width*canvas.height/9000))}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.7, vy: (Math.random()-.5)*.7, r: Math.random()*2+.5})); };
+  const canvas = $("bg"); if(!canvas) return;
+  const ctx = canvas.getContext("2d"); let p = [];
+  const rz = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; p = Array.from({length: 40}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.5, vy: (Math.random()-.5)*.5, r: Math.random()*2+.5})); };
   const an = () => { 
     ctx.clearRect(0,0,canvas.width,canvas.height); 
     for(let i=0; i<p.length; i++) {
       p[i].x += p[i].vx; p[i].y += p[i].vy; 
       if(p[i].x<0||p[i].x>canvas.width) p[i].vx*=-1; if(p[i].y<0||p[i].y>canvas.height) p[i].vy*=-1; 
-      ctx.fillStyle = State.particleColor; ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "rgba(251,191,36,0.3)"; ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
       for(let j=i+1; j<p.length; j++){
         let dx = p[i].x - p[j].x, dy = p[i].y - p[j].y; let dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 100) { ctx.beginPath(); let rgbMatch = State.particleColor.match(/\d+, *\d+, *\d+/); ctx.strokeStyle = `rgba(${rgbMatch ? rgbMatch[0] : "34, 211, 238"}, ${0.3*(1-dist/100)})`; ctx.lineWidth = 1.5; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke(); }
+        if(dist < 120) { ctx.beginPath(); ctx.strokeStyle = `rgba(251,191,36,${0.2*(1-dist/120)})`; ctx.lineWidth = 1; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke(); }
       }
     }
     requestAnimationFrame(an); 
@@ -290,180 +255,117 @@ function initParticles() {
 const UI = {
   refreshIcons: () => { if (window.lucide) lucide.createIcons(); },
   toast: (msg, type = "success") => {
-    const icon = type === "error" ? "alert-triangle" : type === "warning" ? "info" : "check-circle";
-    const color = type === "error" ? "text-rose-400" : type === "warning" ? "text-amber-400" : "text-cyan-400";
+    const icon = type === "error" ? "alert-triangle" : "check-circle";
+    const color = type === "error" ? "text-rose-400" : "text-amber-400";
     const t = document.createElement("div");
-    t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-slate-500/50 z-[9999]";
+    t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border z-[9999]";
     t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 shrink-0 ${color}"></i><span>${msg}</span>`;
     $("toasts").append(t); UI.refreshIcons();
     requestAnimationFrame(() => t.classList.add("show"));
     setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3000);
-  },
-  setupSegments: () => {
-    document.querySelectorAll(".seg-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".seg-btn").forEach(b => b.setAttribute("aria-pressed", "false"));
-        btn.setAttribute("aria-pressed", "true");
-        const color = btn.dataset.color;
-        $("btnSave").className = "btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300";
-        $("form-glow").className = "glow transition-colors duration-500";
-        $("cat-container").style.display = color === "purple" ? "none" : "block";
-        
-        if(color === "green") { $("btnSave").classList.add("btn-green"); $("form-glow").classList.add("glow-green"); $("form-icon").className = "w-5 h-5 text-emerald-400"; $("form-title").innerHTML = `<i data-lucide="arrow-down-circle" class="w-5 h-5 text-emerald-400"></i> Lançar Receita`; State.particleColor = "rgba(16,185,129,0.5)"; }
-        else if(color === "red") { $("btnSave").classList.add("btn-red"); $("form-glow").classList.add("glow-red"); $("form-icon").className = "w-5 h-5 text-rose-400"; $("form-title").innerHTML = `<i data-lucide="arrow-up-circle" class="w-5 h-5 text-rose-400"></i> Lançar Despesa`; State.particleColor = "rgba(244,63,94,0.5)"; }
-        else if(color === "purple") { $("btnSave").classList.add("btn-purple"); $("form-glow").classList.add("glow-purple"); $("form-icon").className = "w-5 h-5 text-purple-400"; $("form-title").innerHTML = `<i data-lucide="trending-up" class="w-5 h-5 text-purple-400"></i> Realizar Aporte`; State.particleColor = "rgba(168,85,247,0.5)"; }
-        UI.refreshIcons();
-      });
-    });
   }
 };
 
-// ============================================================================
-// SISTEMA DE NOTIFICAÇÃO
-// ============================================================================
-const NotificationSystem = {
-  init: () => {
-    // Simula o recebimento de uma notificação do painel Admin 4 segundos após entrar
-    setTimeout(() => {
-      NotificationSystem.trigger({
-        title: "Desconto Liberado! 🎁",
-        body: "Ative o débito automático no cartão de crédito e ganhe 15% de desconto vitalício na sua mensalidade. Oferta enviada pelo Administrador.",
-        type: "promo", // Pode ser promo, alert, info
-        btnText: "Quero Ativar Desconto",
-        btnAction: () => {
-          UI.toast("Desconto de 15% ativado com sucesso!", "success");
-          NotificationSystem.close();
-          $("notif-badge").classList.add("hidden"); // Remove o ponto vermelho
-        }
-      });
-    }, 4000);
+// Funções Estratégicas do Admin
+const Admin = {
+  initCharts: () => {
+    if(chartInstance) chartInstance.destroy();
+    Chart.defaults.color = '#94a3b8'; Chart.defaults.font.family = 'system-ui';
+    chartInstance = new Chart($("chartUsage"), {
+      type: 'bar',
+      data: { labels: ['Alta Frequência', 'Média', 'Baixa (Risco)'], datasets: [{ label: 'Usuários', data: [45, 25, 12], backgroundColor: ['#10b981', '#fbbf24', '#f43f5e'], borderRadius: 4 }] },
+      options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+    });
   },
   
-  trigger: (data) => {
-    State.lastNotification = data; // Salva para reabrir se o usuário clicar no sino
-    $("notif-title").textContent = data.title;
-    $("notif-body").textContent = data.body;
-    
-    const btn = $("notif-btn");
-    btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> ${data.btnText || "Entendido"}`;
-    btn.onclick = data.btnAction || NotificationSystem.close;
-    
-    // Atualiza estética baseada no tipo de mensagem
-    const glow = $("notif-glow"), iconBox = $("notif-icon-container"), icon = $("notif-icon");
-    if(data.type === 'promo') {
-        glow.className = "glow-purple";
-        iconBox.className = "w-14 h-14 rounded-full bg-purple-900/50 flex items-center justify-center border border-purple-500 mb-4 shadow-[0_0_20px_rgba(168,85,247,0.4)]";
-        icon.className = "w-6 h-6 text-purple-400";
-        iconBox.innerHTML = `<i data-lucide="gift" class="w-6 h-6 text-purple-400"></i>`;
-        btn.className = "w-full bg-purple-600/30 text-purple-400 border border-purple-500/50 p-4 rounded-xl text-xs font-bold hover:bg-purple-600/50 transition-colors flex items-center justify-center gap-2";
-    } else {
-        glow.className = "glow-blue";
-        iconBox.className = "w-14 h-14 rounded-full bg-blue-900/50 flex items-center justify-center border border-blue-500 mb-4 shadow-[0_0_20px_rgba(59,130,246,0.4)]";
-        icon.className = "w-6 h-6 text-blue-400";
-        iconBox.innerHTML = `<i data-lucide="bell-ring" class="w-6 h-6 text-blue-400"></i>`;
-        btn.className = "w-full bg-blue-600/30 text-blue-400 border border-blue-500/50 p-4 rounded-xl text-xs font-bold hover:bg-blue-600/50 transition-colors flex items-center justify-center gap-2";
-    }
-
-    $("notif-badge").classList.remove("hidden"); // Ativa o "ping" no cabeçalho
-    NotificationSystem.openModal();
+  sendMessage: () => {
+    // Aqui conectará ao Google Apps Script para inserir a mensagem no BD
+    const target = $("msg-target").options[$("msg-target").selectedIndex].text;
+    UI.toast(`Campanha enviada para: ${target}`, "success");
+    $("msg-title").value = ""; $("msg-body").value = "";
   },
 
-  openFromIcon: () => {
-    if (State.lastNotification) {
-      NotificationSystem.openModal();
-      $("notif-badge").classList.add("hidden"); // Limpa o badge ao visualizar
+  toggleUserStatus: (btnElement, email, isReactivating = false) => {
+    // Simulação da chamada de API para inativar no Google Sheets
+    if(isReactivating) {
+      UI.toast(`Acesso restaurado para ${email}.`, "success");
+      btnElement.textContent = "Inativar Acesso";
+      btnElement.className = "bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition";
+      btnElement.onclick = () => Admin.toggleUserStatus(btnElement, email, false);
+      btnElement.closest('.bg-slate-900\\/80').querySelector('.uppercase').className = "bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase";
+      btnElement.closest('.bg-slate-900\\/80').querySelector('.uppercase').textContent = "Ativo";
     } else {
-      UI.toast("Nenhuma nova mensagem do Administrador.", "success");
+      UI.toast(`Acesso bloqueado manualmente para ${email}.`, "success");
+      btnElement.textContent = "Reativar";
+      btnElement.className = "bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition";
+      btnElement.onclick = () => Admin.toggleUserStatus(btnElement, email, true);
+      btnElement.closest('.bg-slate-900\\/80').querySelector('.uppercase').className = "bg-rose-900/40 text-rose-400 border border-rose-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase";
+      btnElement.closest('.bg-slate-900\\/80').querySelector('.uppercase').textContent = "Inativo";
     }
   },
-
-  openModal: () => {
-    const modal = $("notif-modal");
-    const card = $("notif-card");
-    modal.classList.remove("hidden");
-    UI.refreshIcons();
-    void modal.offsetWidth; // Force reflow
-    modal.classList.remove("opacity-0");
-    card.classList.remove("scale-95");
-  },
-
-  close: () => {
-    const modal = $("notif-modal");
-    const card = $("notif-card");
-    modal.classList.add("opacity-0");
-    card.classList.add("scale-95");
-    setTimeout(() => { modal.classList.add("hidden"); }, 300);
+  
+  syncData: () => {
+    UI.toast("Sincronizando banco de dados...", "success");
   }
 };
 
-// ============================================================================
-// LÓGICA CORE
-// ============================================================================
+// Navegação e Login
 const App = {
   init: () => {
-    initParticles();
-    UI.setupSegments();
-    setInterval(() => { const n = new Date(); if($("header-date")) $("header-date").textContent = n.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase(); if($("header-time")) $("header-time").textContent = n.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }, 1000);
-    
-    if($("category")) CONFIG.CATEGORIES.forEach(c => $("category").append(new Option(c, c)));
-    if($("date")) State.datePicker = flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
-    
+    initParticles(); UI.refreshIcons();
     document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
-    if($("btnLogout")) $("btnLogout").addEventListener("click", () => { localStorage.removeItem(CONFIG.STORAGE_KEY); location.reload(); });
-
-    const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
-    if(saved) { State.user = JSON.parse(saved); State.prefName = State.user.name.split(" ")[0]; App.startSession(); }
-    else { if($("view-auth")) { $("view-auth").classList.remove("hidden"); $("view-auth").classList.add("flex"); } }
+    
+    // Ignorar Auth no ambiente de teste se necessário ou usar o Google
+    if(!window.google) setTimeout(App.setupAuth, 300); else App.setupAuth();
+    $("view-auth").classList.remove("hidden"); $("view-auth").classList.add("flex");
   },
   
-  startSession: () => {
-    if($("view-auth")) $("view-auth").classList.replace("flex", "hidden");
-    if($("splash-avatar") && State.user?.picture) $("splash-avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
-    if($("splash-name")) $("splash-name").textContent = State.prefName + "!";
-    
-    const splash = $("welcome-splash");
-    if(splash) { splash.classList.remove("hidden", "hide-splash"); splash.classList.add("flex"); }
-    
-    setTimeout(() => {
-      if(splash) splash.classList.add("hide-splash");
-      setTimeout(() => { if(splash) splash.classList.replace("flex", "hidden"); App.enter(); }, 600);
-    }, 1500);
+  setupAuth: () => {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: CONFIG.CLIENT_ID, scope: "email profile",
+      callback: async (t) => {
+        const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
+        const p = await res.json();
+        
+        // VALIDAÇÃO ESTRITA ADMIN
+        if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === p.email.toLowerCase())) {
+            return UI.toast("Acesso Negado. Esta área é restrita.", "error");
+        }
+        
+        $("admin-name").textContent = p.given_name || p.name.split(" ")[0];
+        if(p.picture) $("avatar").innerHTML = `<img src="${p.picture}" class="w-full h-full object-cover">`;
+        
+        $("view-auth").classList.replace("flex", "hidden");
+        const splash = $("welcome-splash");
+        splash.classList.remove("hidden"); splash.classList.add("flex");
+        setTimeout(() => {
+          splash.classList.add("opacity-0");
+          setTimeout(() => { splash.classList.replace("flex", "hidden"); App.enter(); }, 500);
+        }, 1500);
+      }
+    });
+    $("btnGoogleLogin").addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
   },
 
   enter: () => {
-    if($("pref-name")) $("pref-name").value = State.prefName;
-    if($("cfg-email")) $("cfg-email").textContent = State.user.email;
-    if(State.user?.picture && $("avatar")) $("avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
-    if(State.user?.picture && $("cfg-avatar")) $("cfg-avatar").innerHTML = `<img src="${State.user.picture}" class="w-full h-full object-cover">`;
-    
-    if($("view-app")) { $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex"); }
-    if($("bottom-nav")) $("bottom-nav").classList.remove("hidden");
-    App.nav("fluxo");
-    
-    // Inicia a escuta de notificações
-    NotificationSystem.init();
+    $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex");
+    $("bottom-nav").classList.remove("hidden");
+    App.nav("dashboard");
   },
 
   nav: (view) => {
-    ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
+    ["dashboard", "crm", "comunicacao"].forEach((v, i) => {
       const act = v === view;
-      if($("view-" + v)) { $("view-" + v).classList.toggle("active", act); $("view-" + v).classList.toggle("hidden", !act); }
+      $("view-" + v).classList.toggle("active", act);
+      $("view-" + v).classList.toggle("hidden", !act);
       const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
       if(b) {
           b.classList.toggle("text-white", act); b.classList.toggle("text-slate-400", !act);
-          if (act) { if($("nav-pill")) $("nav-pill").style.transform = `translateX(${i * 100}%)`; b.classList.remove("icon-pop"); void b.offsetWidth; b.classList.add("icon-pop"); }
+          if (act) { $("nav-pill").style.transform = `translateX(${i * 100}%)`; b.classList.remove("icon-pop"); void b.offsetWidth; b.classList.add("icon-pop"); }
       }
     });
     window.scrollTo(0, 0); UI.refreshIcons();
-    if (view !== 'fluxo') State.particleColor = "rgba(34,211,238,0.5)";
-    else { const s = document.querySelector('.seg-btn[aria-pressed="true"]'); if(s) s.click(); }
-  },
-
-  sendFeedback: () => {
-    const msg = $("user-feedback-msg").value;
-    if(!msg.trim()) return UI.toast("Escreva sua mensagem primeiro.", "error");
-    UI.toast("Mensagem enviada! O Administrador irá analisá-la.", "success");
-    $("user-feedback-msg").value = "";
+    if(view === 'dashboard') Admin.initCharts();
   }
 };
 
