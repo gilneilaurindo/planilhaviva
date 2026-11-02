@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -23,15 +23,15 @@
   :root { color-scheme: dark; }
   body { background-color: #020617; margin: 0; overflow-x: hidden; font-family: ui-sans-serif, system-ui, sans-serif; }
   #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
-  
+
   /* GLASSMORPHISM ADMIN */
   .glass { background: rgba(15,23,42,.7); backdrop-filter: blur(28px); border: 1px solid rgba(251,191,36,.2); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
   .glass-neon { border: 1px solid rgba(251,191,36,.5); box-shadow: 0 0 35px rgba(251,191,36,.2), inset 0 0 20px rgba(251,191,36,.1); }
-  
+
   .glow-amber { position: absolute; width: 250px; height: 250px; border-radius: 9999px; background: rgba(251,191,36,.15); filter: blur(80px); top: -50px; right: -50px; pointer-events: none; }
   .glow-red { position: absolute; width: 200px; height: 200px; border-radius: 9999px; background: rgba(244,63,94,.15); filter: blur(80px); bottom: -50px; left: -50px; pointer-events: none; }
   .glow-blue { position: absolute; width: 200px; height: 200px; border-radius: 9999px; background: rgba(59,130,246,.15); filter: blur(80px); bottom: -50px; right: -50px; pointer-events: none; }
-  
+
   .view { display: none; opacity: 0; }
   .view.active { display: block; animation: viewIn .5s ease-out forwards; }
   @keyframes viewIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
@@ -51,7 +51,7 @@
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
   /* SKELETON LOADING */
-  .skeleton { background: linear-gradient(90px, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 37%, rgba(255,255,255,0.05) 63%); background-size: 400% 100%; animation: skeleton-loading 1.4s ease infinite; border-radius: 4px; color: transparent !important; }
+  .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 37%, rgba(255,255,255,0.05) 63%); background-size: 400% 100%; animation: skeleton-loading 1.4s ease infinite; border-radius: 4px; color: transparent !important; }
   @keyframes skeleton-loading { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
 </style>
 </head>
@@ -72,7 +72,7 @@
 </div>
 
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
-  
+
   <!-- LOGIN ADMIN -->
   <section id="view-auth" class="flex-1 flex flex-col justify-center px-6">
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
@@ -109,7 +109,7 @@
 
       <!-- ABA 1: INTELIGÊNCIA & INDICADORES (KPIs) -->
       <div id="view-dashboard" class="view active space-y-5">
-        
+
         <!-- Matriz de Indicadores Reais -->
         <div class="grid grid-cols-2 gap-3">
           <div class="glass p-4 rounded-2xl border border-emerald-500/30">
@@ -143,8 +143,13 @@
       <div id="view-crm" class="view space-y-5">
         <div class="glass rounded-2xl p-5 border border-blue-500/30 relative overflow-hidden">
           <div class="glow-blue absolute right-0 bottom-0"></div>
-          <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="users" class="w-4 h-4"></i> Gestão de Clientes</h3>
-          
+          <div class="flex items-center justify-between mb-4 relative z-10">
+            <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Gestão de Clientes</h3>
+            <a id="open-sheet-link" href="#" target="_blank" rel="noopener" class="hidden text-[9px] font-bold uppercase text-amber-400 border border-amber-500/40 rounded-full px-3 py-1.5 hover:bg-amber-500/10 transition flex items-center gap-1">
+              <i data-lucide="external-link" class="w-3 h-3"></i> Abrir Planilha
+            </a>
+          </div>
+
           <div class="relative z-10 mb-4">
             <input type="text" class="input text-xs h-10" id="search-user" placeholder="Buscar e-mail ou nome..." onkeyup="Admin.filterUsers()">
           </div>
@@ -178,7 +183,7 @@
         <div class="glass rounded-2xl p-5 border border-purple-500/30 relative overflow-hidden">
           <div class="glow-red absolute left-0 bottom-0 opacity-40"></div>
           <h3 class="text-xs font-black uppercase text-purple-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="radio" class="w-4 h-4"></i> Central de Campanhas</h3>
-          
+
           <form class="space-y-4 relative z-10" onsubmit="event.preventDefault(); Admin.sendMessage();">
             <div>
               <label class="label text-purple-400">Direcionamento de Público</label>
@@ -211,7 +216,7 @@
 <nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
   <div class="glass rounded-2xl relative grid grid-cols-3 p-1 shadow-2xl border border-slate-700">
     <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-amber-500/50 w-[calc((100%-0.5rem)/3)] transition-transform duration-300 ease-out shadow-[0_0_15px_rgba(251,191,36,.2)]"></span>
-    
+
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="dashboard">
       <i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Métricas</span>
     </button>
@@ -219,7 +224,7 @@
       <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Clientes</span>
     </button>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="comunicacao">
-      <i data-lucide="radio" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Disparos</span>
+      <i data-lucide="radio" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase">Disparos</span>
     </button>
   </div>
 </nav>
@@ -230,9 +235,9 @@
 // ============================================================================
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxtC-RVuqs-n7CUNG150hwcXOS-M4T9bvgkVxySolIrAI-BJy7aUfTfRrhmRE9ml3qQJQ/exec", // <--- INSIRA SUA URL AQUI
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxtC-RVuqs-n7CUNG150hwcXOS-M4T9bvgkVxySolIrAI-BJy7aUfTfRrhmRE9ml3qQJQ/exec",
   ADMIN_EMAILS: [
-    "gilneycriative@gmail.com", 
+    "gilneycriative@gmail.com",
     "samueldanilo11@gmail.com",
     "gilneilaurindo@gmail.com"
   ]
@@ -249,18 +254,18 @@ function initParticles() {
   const canvas = $("bg"); if(!canvas) return;
   const ctx = canvas.getContext("2d"); let p = [];
   const rz = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; p = Array.from({length: 40}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.5, vy: (Math.random()-.5)*.5, r: Math.random()*2+.5})); };
-  const an = () => { 
-    ctx.clearRect(0,0,canvas.width,canvas.height); 
+  const an = () => {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
     for(let i=0; i<p.length; i++) {
-      p[i].x += p[i].vx; p[i].y += p[i].vy; 
-      if(p[i].x<0||p[i].x>canvas.width) p[i].vx*=-1; if(p[i].y<0||p[i].y>canvas.height) p[i].vy*=-1; 
+      p[i].x += p[i].vx; p[i].y += p[i].vy;
+      if(p[i].x<0||p[i].x>canvas.width) p[i].vx*=-1; if(p[i].y<0||p[i].y>canvas.height) p[i].vy*=-1;
       ctx.fillStyle = "rgba(251,191,36,0.3)"; ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
       for(let j=i+1; j<p.length; j++){
         let dx = p[i].x - p[j].x, dy = p[i].y - p[j].y; let dist = Math.sqrt(dx*dx + dy*dy);
         if(dist < 120) { ctx.beginPath(); ctx.strokeStyle = `rgba(251,191,36,${0.2*(1-dist/120)})`; ctx.lineWidth = 1; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke(); }
       }
     }
-    requestAnimationFrame(an); 
+    requestAnimationFrame(an);
   };
   window.addEventListener("resize", rz); rz(); an();
 }
@@ -285,20 +290,15 @@ const UI = {
 const API = {
   call: async (action, payload = {}) => {
     if (!State.user || !State.user.email) throw new Error("Acesso não validado.");
-    
-    // Fallback de segurança caso a URL não tenha sido preenchida pelo dev
-    if (CONFIG.SCRIPT_URL.includes("COLOQUE_AQUI")) {
-      throw new Error("URL do App Script não configurada no código HTML.");
-    }
 
     const res = await fetch(CONFIG.SCRIPT_URL, {
-      method: "POST", 
+      method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
     });
-    
+
     const json = await res.json();
-    if (json.status !== "success") throw new Error(json.message);
+    if (json.status !== "success") throw new Error(json.message || "Erro no servidor.");
     return json;
   }
 };
@@ -310,13 +310,17 @@ const Admin = {
   syncData: async () => {
     try {
       UI.toast("Buscando dados reais da Planilha...", "success");
-      
+
       const response = await API.call("get_admin_data");
-      const { kpis, usuarios } = response.data;
+      const { kpis, usuarios, planilhaUrl } = response.data;
+
+      // Link direto para a planilha de usuários (auto-criada pelo backend)
+      const sheetLink = $("open-sheet-link");
+      if (planilhaUrl && sheetLink) { sheetLink.href = planilhaUrl; sheetLink.classList.remove("hidden"); }
 
       // 1. Remove classe Skeleton e preenche KPIs
       const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-      
+
       const mrrEl = $("kpi-mrr");
       mrrEl.classList.remove("skeleton");
       mrrEl.innerHTML = `${brl.format(kpis.mrr)}`;
@@ -338,37 +342,42 @@ const Admin = {
       Admin.renderCharts(kpis);
 
       // 3. Renderizar Lista Real de Usuários
+      //    Ordena por quem MAIS usou a plataforma (maior nº de acessos primeiro)
+      usuarios.sort((a, b) => (b.acessos || 0) - (a.acessos || 0));
+
       const userList = $("real-user-list");
-      userList.innerHTML = ""; 
-      
+      userList.innerHTML = "";
+
       if (usuarios.length === 0) {
-        userList.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum cliente cadastrado na planilha ainda.</p>`;
+        userList.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum cliente cadastrado ainda. Ative o registro de acesso na plataforma (veja instruções).</p>`;
       } else {
         usuarios.forEach(u => {
           const isAtivo = u.status === "Ativo";
           const corBadge = isAtivo ? "bg-emerald-900/40 text-emerald-400 border-emerald-500/50" : "bg-rose-900/40 text-rose-400 border-rose-500/50";
           const textBadge = isAtivo ? "Ativo" : "Inativo";
           const iniciais = u.nome ? u.nome.substring(0,2).toUpperCase() : "US";
-          const dataAcesso = u.ultimoAcesso ? new Date(u.ultimoAcesso).toLocaleDateString() : "Sem registro";
-          
+          const dataAcesso = u.ultimoAcesso ? new Date(u.ultimoAcesso).toLocaleDateString("pt-BR") : "Sem registro";
+          const planoTag = (u.plano && u.plano > 0) ? ` <span class="text-amber-400/80">· R$${u.plano}/mês</span>` : "";
+
           userList.innerHTML += `
-            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10 user-card" data-search="${u.nome.toLowerCase()} ${u.email.toLowerCase()}">
-              <div class="flex justify-between items-start">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 font-bold text-[10px] border border-slate-600">${iniciais}</div>
-                  <div>
-                    <p class="text-xs font-bold text-white">${u.nome || "Usuário"}</p>
-                    <p class="text-[10px] text-slate-400 font-mono">${u.email}</p>
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10 user-card" data-search="${(u.nome + " " + u.email).toLowerCase()}">
+              <div class="flex justify-between items-start gap-2">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-8 h-8 shrink-0 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 font-bold text-[10px] border border-slate-600">${iniciais}</div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-white truncate">${u.nome || "Usuário"}</p>
+                    <p class="text-[10px] text-slate-400 font-mono break-all">${u.email}${planoTag}</p>
                   </div>
                 </div>
-                <span class="border px-2 py-0.5 rounded text-[9px] font-bold uppercase status-badge ${corBadge}">${textBadge}</span>
+                <span class="border px-2 py-0.5 rounded text-[9px] font-bold uppercase status-badge shrink-0 ${corBadge}">${textBadge}</span>
               </div>
               <div class="grid grid-cols-2 gap-2">
+                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center truncate" title="Total de acessos à plataforma">Acessos: <b class="text-amber-300">${u.acessos || 0}</b></div>
                 <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center truncate">Visto: ${dataAcesso}</div>
-                <button class="border py-1.5 rounded text-[10px] font-bold transition ${isAtivo ? 'bg-rose-900/30 text-rose-400 border-rose-500/50 hover:bg-rose-900/50' : 'bg-emerald-900/30 text-emerald-400 border-emerald-500/50 hover:bg-emerald-900/50'}" onclick="Admin.toggleUserStatus(this, '${u.email}', ${!isAtivo})">
-                  ${isAtivo ? 'Forçar Bloqueio' : 'Liberar Acesso'}
-                </button>
               </div>
+              <button class="border py-1.5 rounded text-[10px] font-bold transition ${isAtivo ? 'bg-rose-900/30 text-rose-400 border-rose-500/50 hover:bg-rose-900/50' : 'bg-emerald-900/30 text-emerald-400 border-emerald-500/50 hover:bg-emerald-900/50'}" onclick="Admin.toggleUserStatus(this, '${u.email}', ${!isAtivo})">
+                ${isAtivo ? 'Forçar Bloqueio' : 'Liberar Acesso'}
+              </button>
             </div>
           `;
         });
@@ -376,19 +385,19 @@ const Admin = {
       UI.refreshIcons();
     } catch (e) {
       console.error(e);
-      UI.toast(e.message === "URL do App Script não configurada no código HTML." ? e.message : "Erro ao ler dados da planilha mestre.", "error");
+      UI.toast(e.message ? e.message : "Erro ao ler dados da planilha mestre.", "error");
     }
   },
 
   renderCharts: (kpis) => {
     if(chartInstance) chartInstance.destroy();
     Chart.defaults.color = '#64748b'; Chart.defaults.font.family = 'system-ui';
-    
+
     chartInstance = new Chart($("chartUsage"), {
       type: 'doughnut',
-      data: { 
-        labels: ['Adimplentes', 'Inadimplentes (Churn)'], 
-        datasets: [{ data: [kpis.ativos, kpis.inativos], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] 
+      data: {
+        labels: ['Adimplentes', 'Inadimplentes (Churn)'],
+        datasets: [{ data: [kpis.ativos, kpis.inativos], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }]
       },
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
@@ -406,12 +415,12 @@ const Admin = {
     try {
       const originalText = btnElement.textContent;
       btnElement.textContent = "...";
-      
+
       // Chamada para a API salvar a mudança no Google Sheets
       await API.call("toggle_user_status", { targetEmail: userEmail, status: isReactivating ? "Ativo" : "Inativo" });
-      
+
       UI.toast(isReactivating ? `Acesso restaurado para ${userEmail}.` : `Acesso bloqueado para ${userEmail}.`, "success");
-      
+
       // Atualiza estética localmente sem precisar recarregar toda a lista
       if(isReactivating) {
         btnElement.textContent = "Forçar Bloqueio";
@@ -432,7 +441,7 @@ const Admin = {
       UI.toast("Erro ao alterar o status do usuário na planilha.", "error");
     }
   },
-  
+
   sendMessage: async () => {
     const target = $("msg-target").value;
     const title = $("msg-title").value;
@@ -444,19 +453,20 @@ const Admin = {
       const btn = $("btn-disparar");
       const originalText = btn.innerHTML;
       btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Disparando...`;
-      
+
       const res = await API.call("send_message", {
         target: target,
         messageData: { title: title, body: body, type: target === 'promo' ? 'promo' : 'alert', btnText: "Ok, Entendi" }
       });
 
-      UI.toast(`Notificação enviada para ${res.data.disparosRealizados} usuários.`, "success");
+      UI.toast(`Notificação registrada para ${res.data.disparosRealizados} usuários.`, "success");
       $("msg-title").value = ""; $("msg-body").value = "";
       btn.innerHTML = originalText;
       UI.refreshIcons();
     } catch(e) {
       UI.toast("Erro ao disparar mensagem para a planilha.", "error");
       $("btn-disparar").innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Lançar ao Servidor`;
+      UI.refreshIcons();
     }
   }
 };
@@ -468,33 +478,33 @@ const App = {
   init: () => {
     initParticles(); UI.refreshIcons();
     document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
-    
+
     if(!window.google) setTimeout(App.setupAuth, 300); else App.setupAuth();
     $("view-auth").classList.remove("hidden"); $("view-auth").classList.add("flex");
   },
-  
+
   setupAuth: () => {
     const client = google.accounts.oauth2.initTokenClient({
       client_id: CONFIG.CLIENT_ID, scope: "email profile",
       callback: async (t) => {
         const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
         const p = await res.json();
-        
+
         const authenticatedEmail = p.email.toLowerCase();
-        
+
         if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === authenticatedEmail)) {
             return UI.toast(`Acesso Negado: ${authenticatedEmail} não possui credenciais de líder.`, "error");
         }
-        
-        $("admin-name").textContent = p.given_name || p.name.split(" ")[0];
+
+        $("admin-name").textContent = p.given_name || (p.name ? p.name.split(" ")[0] : "Líder");
         if(p.picture) $("avatar").innerHTML = `<img src="${p.picture}" class="w-full h-full object-cover">`;
-        
+
         State.user = { name: p.name, email: p.email, picture: p.picture };
-        
+
         $("view-auth").classList.replace("flex", "hidden");
         const splash = $("welcome-splash");
         splash.classList.remove("hidden"); splash.classList.add("flex");
-        
+
         setTimeout(() => {
           splash.classList.add("opacity-0");
           setTimeout(() => { splash.classList.replace("flex", "hidden"); App.enter(); }, 500);
@@ -519,7 +529,7 @@ const App = {
       const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
       if(b) {
           b.classList.toggle("text-white", act); b.classList.toggle("text-slate-400", !act);
-          if (act) { $("nav-pill").style.transform = `translateX(${i * 100}%)`; b.classList.remove("icon-pop"); void b.offsetWidth; b.classList.add("icon-pop"); }
+          if (act) { $("nav-pill").style.transform = `translateX(${i * 100}%)`; }
       }
     });
     window.scrollTo(0, 0); UI.refreshIcons();
