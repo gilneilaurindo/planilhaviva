@@ -2,435 +2,413 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#020617">
 <title>PlanilhaViva Pro</title>
-
-<!-- SEO & Partilha -->
 <meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
 <meta name="description" content="A sua central financeira pessoal ligada ao Google Sheets.">
 <meta property="og:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
-<!-- Manifesto PWA -->
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
-<!-- Bibliotecas (Tailwind, Lucide, Flatpickr, Chart.js) -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/pt.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-<!--  AdSense -->
-<script async src="https://pagead2.syndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous"></script>
 
 <style>
   :root { color-scheme: dark; }
   body {
-    background-color: #020617; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; font-family: ui-sans-serif, system-ui, sans-serif;
+    background-color: #020617; margin: 0; overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent; font-family: ui-sans-serif, system-ui, sans-serif;
   }
-
-  /* EFEITOS NEON E CONEXÕES REATIVAS */
   #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
-  
-  .glass { background: rgba(15,23,42,.65); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(148,163,184,.15); box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,0.05); }
-  .glass-neon { border: 1px solid rgba(34,211,238,.4); box-shadow: 0 0 35px rgba(34,211,238,.15), inset 0 0 20px rgba(34,211,238,.08); }
-  
-  .glow { position: absolute; width: 220px; height: 220px; border-radius: 9999px; background: rgba(6,182,212,.25); filter: blur(80px); top: -60px; right: -60px; pointer-events: none; transition: background 0.8s ease; }
-  .glow-purple { background: rgba(168,85,247,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
-  .glow-green { background: rgba(16,185,129,.25); }
-  .glow-red { background: rgba(244,63,94,.25); }
 
-  /* Animações e Views */
+  .glass {
+    background: rgba(15,23,42,.65); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(148,163,184,.15);
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .glass-neon {
+    border: 1px solid rgba(34,211,238,.4);
+    box-shadow: 0 0 35px rgba(34,211,238,.15), inset 0 0 20px rgba(34,211,238,.08);
+  }
+  .glow {
+    position: absolute; width: 220px; height: 220px; border-radius: 9999px;
+    background: rgba(6,182,212,.25); filter: blur(80px);
+    top: -60px; right: -60px; pointer-events: none; transition: background .6s ease;
+  }
+  .glow-purple { background: rgba(168,85,247,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
+
   .animate-float { animation: float 6s ease-in-out infinite; }
-  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
   .icon-pop svg { animation: pop .5s cubic-bezier(.175,.885,.32,1.275) both; }
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
-  .slide-down { animation: slideDown 0.4s ease-out forwards; }
-  @keyframes slideDown { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
-  
-  /* Carrossel Infinito (Marquee) */
-  .carousel-wrapper { overflow: hidden; width: 100%; white-space: nowrap; position: relative; }
-  .carousel-track { display: inline-flex; gap: 1rem; animation: scroll 30s linear infinite; }
-  .carousel-track:hover { animation-play-state: paused; }
-  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 0.5rem)); } }
+  .slide-down { animation: slideDown .4s ease-out both; }
+  @keyframes slideDown { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: none; } }
 
-  .view { display: none; opacity: 0; }
-  .view.active { display: block; animation: viewIn .5s ease-out forwards; }
-  @keyframes viewIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+  .view { display: none; }
+  .view.active { display: block; animation: viewIn .5s ease-out both; }
+  @keyframes viewIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: none; } }
 
-  #welcome-splash { transition: all .6s ease; backdrop-filter: blur(25px); }
+  #welcome-splash { transition: opacity .6s ease, transform .6s ease, filter .6s ease; backdrop-filter: blur(25px); }
   #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(15px); }
 
-  /* Elementos de Formulário */
-  .input { width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9); border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc; transition: all .3s; outline: none; }
+  .carousel-wrapper { overflow: hidden; white-space: nowrap; position: relative; }
+  .carousel-track { display: inline-flex; gap: 1rem; animation: marquee 30s linear infinite; }
+  .carousel-wrapper:hover .carousel-track { animation-play-state: paused; }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - .5rem)); } }
+
+  .input {
+    width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9);
+    border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc;
+    transition: all .3s; outline: none;
+  }
   .input:focus { border-color: #22d3ee; box-shadow: 0 0 20px rgba(34,211,238,.3); }
   select.input option { background: #0f172a; }
-  .label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #94a3b8; font-weight: 800; margin-bottom: .4rem; }
+  .label {
+    display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    color: #94a3b8; font-weight: 800; margin-bottom: .4rem;
+  }
+  .section-title {
+    font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+    color: #67e8f9; display: flex; align-items: center; gap: .4rem;
+  }
 
-  /* Chips Valores Rápidos */
-  .quick-chip { padding: 0.35rem 0.7rem; border-radius: 9999px; background: rgba(30,41,59,0.8); border: 1px solid rgba(51,65,85,1); font-size: 0.7rem; font-weight: 700; color: #94a3b8; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-  .quick-chip:hover, .quick-chip:active { background: #22d3ee; color: #020617; border-color: #22d3ee; }
+  .quick-chip {
+    padding: .35rem .7rem; border-radius: 9999px; background: rgba(30,41,59,.8);
+    border: 1px solid rgba(51,65,85,1); font-size: .7rem; font-weight: 700; color: #94a3b8;
+    cursor: pointer; transition: all .2s; white-space: nowrap;
+  }
+  .quick-chip:hover, .quick-chip:focus-visible { background: #22d3ee; color: #020617; border-color: #22d3ee; outline: none; }
 
-  /* Botões e Segmentos por Cor */
-  .btn-primary { background: linear-gradient(135deg,#06b6d4,#3b82f6); color: #020617; font-weight: 800; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 10px 30px -5px rgba(6,182,212,.6); transition: all .2s; cursor: pointer; border:none;}
+  .btn-primary {
+    background: linear-gradient(135deg,#06b6d4,#3b82f6); color: #020617; font-weight: 800;
+    font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+    box-shadow: 0 10px 30px -5px rgba(6,182,212,.6); transition: all .2s; cursor: pointer; border: none;
+  }
   .btn-primary:active { transform: scale(.96); }
+  .btn-primary:disabled { opacity: .6; cursor: wait; }
   .btn-green { background: linear-gradient(135deg,#10b981,#059669); box-shadow: 0 10px 30px -5px rgba(16,185,129,.6); color: #fff; }
   .btn-red { background: linear-gradient(135deg,#f43f5e,#e11d48); box-shadow: 0 10px 30px -5px rgba(244,63,94,.6); color: #fff; }
   .btn-purple { background: linear-gradient(135deg,#a855f7,#7e22ce); box-shadow: 0 10px 30px -5px rgba(168,85,247,.6); color: #fff; }
-  
-  .btn--custom { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; width: 100%; max-width: 280px; padding: 1rem 1.25rem; background: rgba(15,23,42,.9); border: 1px solid rgba(34,211,238,.5); border-radius: 9999px; color: #f8fafc; font-size: .85rem; font-weight: 700; box-shadow: 0 8px 30px -8px rgba(34,211,238,.5); transition: all .2s; cursor: pointer; }
+
+  .btn--custom {
+    display: inline-flex; align-items: center; justify-content: center; gap: .75rem;
+    width: 100%; max-width: 280px; padding: 1rem 1.25rem;
+    background: rgba(15,23,42,.9); border: 1px solid rgba(34,211,238,.5); border-radius: 9999px;
+    color: #f8fafc; font-size: .85rem; font-weight: 700;
+    box-shadow: 0 8px 30px -8px rgba(34,211,238,.5); transition: all .2s; cursor: pointer;
+  }
   .btn--custom:hover { background: rgba(30,41,59,.9); transform: translateY(-2px); }
   .btn--custom:active { transform: scale(.96); }
 
-  .seg-container { display: flex; gap: 4px; padding: 4px; border-radius: .75rem; background: rgba(15,23,42,.9); border: 1px solid rgba(51,65,85,.9); }
-  .seg-btn { flex: 1; padding: .65rem; border-radius: .55rem; font-size: .75rem; font-weight: 800; color: #94a3b8; transition: all .3s cubic-bezier(.16,1,.3,1); cursor: pointer; text-align: center; }
-  
-  .seg-btn[data-color="green"][aria-pressed="true"] { color: #fff; background: #10b981; box-shadow: 0 0 20px rgba(16,185,129,.7); }
-  .seg-btn[data-color="red"][aria-pressed="true"] { color: #fff; background: #f43f5e; box-shadow: 0 0 20px rgba(244,63,94,.7); }
-  .seg-btn[data-color="purple"][aria-pressed="true"] { color: #fff; background: #a855f7; box-shadow: 0 0 20px rgba(168,85,247,.7); }
+  .ghost-btn { border: 1px solid rgba(51,65,85,.9); font-weight: 600; font-size: .75rem; transition: background .2s, transform .15s; }
 
-  /* Blocos de Ads */
-  .ad-block { background: rgba(15,23,42,.4); border: 1px dashed rgba(34,211,238,.3); border-radius: 1rem; padding: 0.5rem; text-align: center; position: relative; min-height: 80px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 1rem; margin-bottom: 1rem;}
-  .ad-label { position: absolute; top: 4px; left: 8px; font-size: 8px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; font-weight:bold; }
+  .seg-container {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px;
+    border-radius: .75rem; background: rgba(15,23,42,.9); border: 1px solid rgba(51,65,85,.9);
+  }
+  .seg-btn {
+    padding: .65rem .25rem; border-radius: .55rem; font-size: .75rem; font-weight: 800;
+    color: #94a3b8; transition: all .3s cubic-bezier(.16,1,.3,1); cursor: pointer; text-align: center;
+  }
+  .seg-btn[aria-pressed="true"][data-color="green"] { color: #fff; background: #10b981; box-shadow: 0 0 20px rgba(16,185,129,.7); }
+  .seg-btn[aria-pressed="true"][data-color="red"] { color: #fff; background: #f43f5e; box-shadow: 0 0 20px rgba(244,63,94,.7); }
+  .seg-btn[aria-pressed="true"][data-color="purple"] { color: #fff; background: #a855f7; box-shadow: 0 0 20px rgba(168,85,247,.7); }
 
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .ad-block:not([hidden]) {
+    display: flex; flex-direction: column; align-items: center; gap: .25rem;
+    background: rgba(15,23,42,.4); border: 1px dashed rgba(34,211,238,.3);
+    border-radius: 1rem; padding: .5rem; min-height: 80px;
+  }
+  .ad-label { font-size: 8px; text-transform: uppercase; letter-spacing: .1em; color: #64748b; font-weight: 700; }
 
   .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
   .toast.show { opacity: 1; transform: scale(1); }
-  .flatpickr-calendar { background: rgba(15,23,42,.95) !important; border: 1px solid rgba(34,211,238,.4) !important; box-shadow: 0 20px 50px -10px rgba(0,0,0,.9), 0 0 40px rgba(6,182,212,.3) !important; border-radius: 1rem !important; }
-  .flatpickr-day.selected { background: linear-gradient(135deg,#06b6d4,#3b82f6) !important; color: #020617 !important; font-weight: 900 !important; box-shadow: 0 0 20px rgba(6,182,212,.9) !important; }
+
+  .flatpickr-calendar {
+    background: rgba(15,23,42,.95) !important; border: 1px solid rgba(34,211,238,.4) !important;
+    box-shadow: 0 20px 50px -10px rgba(0,0,0,.9), 0 0 40px rgba(6,182,212,.3) !important;
+    border-radius: 1rem !important;
+  }
+  .flatpickr-day.selected {
+    background: linear-gradient(135deg,#06b6d4,#3b82f6) !important; color: #020617 !important;
+    font-weight: 900 !important; box-shadow: 0 0 20px rgba(6,182,212,.9) !important;
+  }
 </style>
 </head>
-<body class="text-slate-100 min-h-screen pb-24 relative">
+<body class="text-slate-100 min-h-screen pb-28">
 
-<!-- EFEITO LUMINOSO REATIVO (Partículas conectadas) -->
 <canvas id="bg" aria-hidden="true"></canvas>
-
 <div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none" aria-live="polite"></div>
 
-<!-- SPLASH SCREEN INTELIGENTE -->
+<!-- SPLASH -->
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center">
-  <div class="relative z-10 animate-float">
-    <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full z-0 animate-pulse"></div>
-    <div id="splash-avatar" class="relative z-10 w-32 h-32 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
+  <div class="relative animate-float">
+    <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full"></div>
+    <div id="splash-avatar" class="relative w-32 h-32 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
   </div>
-  <h2 id="greeting-text" class="text-3xl font-black text-white mt-8 tracking-tight z-10">Olá,</h2>
-  <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10">Investidor!</h2>
-  <p id="splash-status" class="text-cyan-200 text-xs mt-6 font-mono flex items-center gap-2 z-10 font-bold">
-    <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Inicializando IA Financeira...
-  </p>
+  <h2 id="greeting-text" class="text-3xl font-black text-white mt-8 tracking-tight"></h2>
+  <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1"></h2>
+  <p id="splash-status" class="text-cyan-200 text-xs mt-6 font-mono font-bold"></p>
 </div>
 
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
 
-  <!-- ==================== TELA DE LOGIN (COM CRÉDITOS) ==================== -->
-  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6 relative">
-    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden shadow-[0_0_40px_rgba(34,211,238,.1)]">
+  <!-- LOGIN -->
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6">
+    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow"></div>
       <div class="glow-purple"></div>
 
       <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-cyan-400/50 animate-float shadow-[0_0_40px_rgba(34,211,238,.4)]">
-        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="Logo" class="w-20 h-20 object-contain drop-shadow-[0_0_20px_rgba(34,211,238,1)]">
+        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="Logo PlanilhaViva" class="w-20 h-20 object-contain">
       </div>
 
       <div>
-        <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
-        <p class="text-xs text-cyan-100/70 mt-2 font-medium leading-relaxed">O seu banco de dados financeiro contínuo, blindado e conectado à nuvem.</p>
+        <h1 class="text-3xl font-black tracking-tight text-white">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
+        <p class="text-xs text-cyan-100/70 mt-2 font-medium leading-relaxed">O seu banco de dados financeiro, guardado na sua própria conta Google.</p>
       </div>
 
       <div class="pt-4 flex flex-col items-center gap-4 relative z-20">
-        <button id="btnGoogleLogin" type="button" class="btn--custom hover:bg-slate-800">
-          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        <button id="btnGoogleLogin" type="button" class="btn--custom">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
           <span class="font-bold">Acessar com o Google</span>
         </button>
       </div>
     </div>
 
-    <!-- RODAPÉ DE HONRA -->
-    <footer class="mt-10 text-center text-[10px] text-slate-500 space-y-1.5 z-10 font-medium tracking-wide">
+    <footer class="mt-10 text-center text-[10px] text-slate-500 space-y-1.5 font-medium tracking-wide">
       <p>© Direitos reservados <span class="text-cyan-400 font-bold">PlanilhaViva Pro</span>.</p>
       <p>Programador: <span class="text-slate-300 font-bold">Gilnei Laurindo</span></p>
       <p>Ideias e dedicatória: <span class="text-slate-400 font-bold">Samuel Danilo</span></p>
     </footer>
   </section>
 
-  <!-- ==================== APP PRINCIPAL ==================== -->
+  <!-- APP -->
   <section id="view-app" class="hidden flex-1 flex-col w-full">
-    <!-- HEADER DINÂMICO COM RELÓGIO -->
     <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
-      <div class="flex items-center gap-3">
-        <div id="avatar" class="w-10 h-10 rounded-full border-2 border-cyan-400 overflow-hidden shadow-[0_0_15px_rgba(34,211,238,.4)]"></div>
-        <div class="flex flex-col">
+      <div class="flex items-center gap-3 min-w-0">
+        <div id="avatar" class="w-10 h-10 shrink-0 rounded-full border-2 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800"></div>
+        <div class="flex flex-col min-w-0">
           <span class="text-[9px] text-cyan-400 font-black uppercase flex items-center gap-1">
-            <i data-lucide="clock" class="w-3 h-3"></i> <span id="header-time">00:00</span>
+            <i data-lucide="clock" class="w-3 h-3"></i> <span id="header-time">--:--</span>
           </span>
-          <h2 id="header-date" class="text-xs font-bold text-white"></h2>
+          <h2 id="user-name" class="text-xs font-bold text-white truncate"></h2>
         </div>
       </div>
-      <button id="btnRefreshHeader" class="text-cyan-400 hover:text-white bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700 transition-colors">
+      <button id="btnRefreshHeader" type="button" class="text-cyan-400 hover:text-white bg-slate-800 p-2 rounded-full border border-slate-700 transition-colors" aria-label="Atualizar dados">
         <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
       </button>
     </header>
 
     <div class="px-5 pt-6 space-y-6">
 
-      <!-- ==================== ABA 1: LANÇAMENTOS ==================== -->
+      <!-- LANÇAR -->
       <div id="view-fluxo" class="view active space-y-5">
-        
-        <!-- Ad Topo -->
-        <div class="ad-block">
-          <span class="ad-label"><i data-lucide="megaphone" class="w-3 h-3 inline"></i> Publicidade</span>
-          <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="horizontal"></ins>
+
+        <div class="ad-block" hidden data-ad>
+          <span class="ad-label">Publicidade</span>
+          <div class="ad-slot w-full"></div>
         </div>
 
-        <div class="glass glass-neon rounded-3xl p-6 relative overflow-hidden" id="form-container">
-          <div class="glow transition-colors duration-500" id="form-glow"></div>
-          <h3 class="section-title mb-5 text-white" id="form-title"><i data-lucide="zap" class="w-5 h-5 text-rose-400 transition-colors duration-300" id="form-icon"></i> Lançar Despesa</h3>
-          
-          <div class="seg-container mb-6">
-            <button type="button" class="seg-btn" data-color="green" data-type="in" aria-pressed="false">Receita</button>
-            <button type="button" class="seg-btn" data-color="red" data-type="out" aria-pressed="true">Despesa</button>
-            <button type="button" class="seg-btn" data-color="purple" data-type="invest" aria-pressed="false">Investir</button>
+        <div class="glass glass-neon rounded-3xl p-6 relative overflow-hidden">
+          <div class="glow" id="form-glow"></div>
+
+          <h3 class="section-title mb-5 text-white" id="form-title-wrap">
+            <span id="form-icon"></span> <span id="form-title">Lançar despesa</span>
+          </h3>
+
+          <div class="seg-container mb-6" role="group" aria-label="Tipo de lançamento">
+            <button type="button" class="seg-btn" data-type="in" data-color="green" aria-pressed="false">Receita</button>
+            <button type="button" class="seg-btn" data-type="out" data-color="red" aria-pressed="true">Despesa</button>
+            <button type="button" class="seg-btn" data-type="invest" data-color="purple" aria-pressed="false">Investir</button>
           </div>
 
           <form id="txForm" class="space-y-4">
+            <input type="hidden" id="type" value="out">
+
             <div>
-              <label class="label" for="desc"><i data-lucide="pen-line" class="w-3 h-3 inline mb-0.5"></i> Descrição do Movimento</label>
-              <input id="desc" class="input" placeholder="Ex: Conta de Luz, Salário..." required>
+              <label class="label" for="desc">Descrição</label>
+              <input id="desc" class="input" maxlength="60" placeholder="Ex.: Conta de luz, salário..." required>
             </div>
-            
+
             <div>
-              <label class="label" for="amount"><i data-lucide="circle-dollar-sign" class="w-3 h-3 inline mb-0.5"></i> Valor (R$)</label>
-              <input id="amount" type="number" step="0.01" class="input font-bold text-lg" placeholder="0,00" required>
-              <!-- Valores Rápidos (Chips) -->
+              <label class="label" for="amount">Valor (R$)</label>
+              <input id="amount" type="number" step="0.01" min="0.01" class="input font-bold text-lg" placeholder="0,00" required>
               <div class="flex gap-2 mt-2 overflow-x-auto no-scrollbar py-1">
-                <button type="button" class="quick-chip" onclick="$('amount').value=10">+ R$ 10</button>
-                <button type="button" class="quick-chip" onclick="$('amount').value=50">+ R$ 50</button>
-                <button type="button" class="quick-chip" onclick="$('amount').value=100">+ R$ 100</button>
-                <button type="button" class="quick-chip" onclick="$('amount').value=500">+ R$ 500</button>
+                <button type="button" class="quick-chip" data-amount="10">R$ 10</button>
+                <button type="button" class="quick-chip" data-amount="50">R$ 50</button>
+                <button type="button" class="quick-chip" data-amount="100">R$ 100</button>
+                <button type="button" class="quick-chip" data-amount="500">R$ 500</button>
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="label" for="date"><i data-lucide="calendar" class="w-3 h-3 inline mb-0.5"></i> Data Exata</label>
-                <input id="date" type="text" class="input font-bold text-center" placeholder="Hoje" required>
+                <label class="label" for="date">Data</label>
+                <input id="date" type="text" class="input font-bold text-center" placeholder="Data" required>
               </div>
               <div id="cat-container">
-                <label class="label" for="category"><i data-lucide="tag" class="w-3 h-3 inline mb-0.5"></i> Categoria</label>
+                <label class="label" for="category">Categoria</label>
                 <select id="category" class="input font-medium text-xs h-[42px]"></select>
               </div>
             </div>
+
             <button id="btnSave" type="submit" class="btn-primary btn-red w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300">
-              <i data-lucide="send" class="w-5 h-5 animate-pulse"></i> Confirmar Transação
+              <i data-lucide="send" class="w-5 h-5"></i> <span data-label>Confirmar lançamento</span>
             </button>
           </form>
         </div>
 
-        <!-- Histórico Local da Sessão -->
         <div class="glass rounded-2xl p-4 border border-cyan-500/20">
           <h3 class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
-            <i data-lucide="history" class="w-3 h-3"></i> Lançamentos desta Sessão
+            <i data-lucide="history" class="w-3 h-3"></i> Lançados nesta sessão
           </h3>
           <div id="local-history" class="space-y-2 text-xs">
-            <p class="text-slate-500 text-center py-2 italic" id="empty-history">Aguardando lançamentos hoje...</p>
+            <p id="empty-history" class="text-slate-500 text-center py-2 italic">Nenhum lançamento nesta sessão.</p>
           </div>
         </div>
       </div>
 
-      <!-- ==================== ABA 2: RESUMO ==================== -->
+      <!-- RESUMO -->
       <div id="view-resumo" class="view space-y-5">
-        <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)]">
+        <div class="glass rounded-3xl p-6 relative overflow-hidden border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)]">
           <div class="glow"></div>
           <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2 mb-1">
-            <i data-lucide="wallet" class="w-4 h-4"></i> Saldo Consolidado
+            <i data-lucide="wallet" class="w-4 h-4"></i> Saldo consolidado
           </p>
-          <p id="saldo" class="text-4xl font-black tabular-nums text-white drop-shadow-lg">R$ 0,00</p>
-          <p id="resumo-mes-nome" class="text-[10px] font-mono text-cyan-200 mt-2 absolute bottom-4 right-6"></p>
+          <p id="saldo" class="text-4xl font-black tabular-nums text-white">R$ 0,00</p>
+          <p class="text-[10px] font-mono text-cyan-200/70 mt-2">Entradas − saídas − investimentos · Out a Dez</p>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Fluxo do Período</h3>
-          <div class="relative w-full aspect-square max-h-[220px] flex justify-center mx-auto">
-            <canvas id="chartFluxo"></canvas>
-          </div>
-          <div class="flex justify-between text-xs font-bold font-mono px-4">
-            <span class="text-emerald-400" id="txt-in">R$ 0,00</span>
-            <span class="text-rose-400" id="txt-out">R$ 0,00</span>
+          <h3 class="section-title"><i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Fluxo do período</h3>
+          <div class="relative h-56"><canvas id="chartFluxo"></canvas></div>
+          <div class="flex justify-between text-xs font-bold font-mono">
+            <span class="text-emerald-400" id="txt-in">Entradas R$ 0,00</span>
+            <span class="text-rose-400" id="txt-out">Saídas R$ 0,00</span>
           </div>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="bar-chart" class="w-4 h-4 text-cyan-400"></i> Desempenho Contínuo</h3>
-          <div class="w-full max-h-[200px]"><canvas id="chartDesempenho"></canvas></div>
+          <h3 class="section-title"><i data-lucide="bar-chart" class="w-4 h-4 text-cyan-400"></i> Por mês</h3>
+          <div class="relative h-52"><canvas id="chartDesempenho"></canvas></div>
         </div>
 
-        <div class="ad-block">
-          <span class="ad-label"><i data-lucide="megaphone" class="w-3 h-3 inline"></i> Publicidade</span>
-          <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto"></ins>
+        <div class="ad-block" hidden data-ad>
+          <span class="ad-label">Publicidade</span>
+          <div class="ad-slot w-full"></div>
         </div>
       </div>
 
-      <!-- ==================== ABA 3: INVESTIR ==================== -->
+      <!-- INVESTIR -->
       <div id="view-investir" class="view space-y-5">
         <div class="glass rounded-3xl p-6 relative overflow-hidden text-center border border-purple-500/50 shadow-[0_0_40px_rgba(168,85,247,.2)]">
-          <div class="glow-purple" style="top:-50px; right:-50px;"></div>
+          <div class="glow glow-purple"></div>
           <h3 class="text-xs uppercase tracking-widest text-purple-300 font-bold mb-2 flex items-center justify-center gap-2">
-            <i data-lucide="shield" class="w-4 h-4"></i> Patrimônio Acumulado
+            <i data-lucide="shield" class="w-4 h-4"></i> Total investido no ano
           </h3>
-          <p id="invest-total" class="text-4xl font-black text-white tabular-nums drop-shadow-md">R$ 0,00</p>
+          <p id="invest-total" class="text-4xl font-black text-white tabular-nums">R$ 0,00</p>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title text-purple-400"><i data-lucide="trending-up" class="w-4 h-4"></i> Evolução de Aportes</h3>
-          <div class="w-full max-h-[220px]"><canvas id="chartCrescimento"></canvas></div>
+          <h3 class="section-title text-purple-400"><i data-lucide="trending-up" class="w-4 h-4"></i> Evolução acumulada</h3>
+          <div class="relative h-56"><canvas id="chartCrescimento"></canvas></div>
         </div>
 
-        <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title text-blue-400"><i data-lucide="layers" class="w-4 h-4"></i> Distribuição Ideal</h3>
-          <p class="text-[10px] text-slate-400 mb-3">Recomendação de alocação estruturada inteligente.</p>
-          <div class="space-y-4">
-            <div>
-              <div class="flex justify-between text-xs font-bold text-slate-200 mb-1"><span>Renda Fixa Segura</span> <span class="text-blue-400">60%</span></div>
-              <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[60%] shadow-[0_0_10px_rgba(59,130,246,0.8)]"></div></div>
-            </div>
-            <div>
-              <div class="flex justify-between text-xs font-bold text-slate-200 mb-1"><span>Ações / FIIs</span> <span class="text-purple-400">30%</span></div>
-              <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[30%] shadow-[0_0_10px_rgba(168,85,247,0.8)]"></div></div>
-            </div>
-            <div>
-              <div class="flex justify-between text-xs font-bold text-slate-200 mb-1"><span>Cripto / Risco</span> <span class="text-emerald-400">10%</span></div>
-              <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 w-[10%] shadow-[0_0_10px_rgba(16,185,129,0.8)]"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ad-block">
-          <span class="ad-label"><i data-lucide="megaphone" class="w-3 h-3 inline"></i> Publicidade</span>
-          <ins class="adsbygoogle w-full" style="display:block" data-ad-client="ca-pub-0000000000000000" data-ad-slot="0000000000" data-ad-format="auto"></ins>
+        <div class="ad-block" hidden data-ad>
+          <span class="ad-label">Publicidade</span>
+          <div class="ad-slot w-full"></div>
         </div>
       </div>
 
-      <!-- ==================== ABA 4: CONFIGURAÇÕES E PROVA SOCIAL ==================== -->
+      <!-- PERFIL -->
       <div id="view-config" class="view space-y-5">
-        
         <div class="glass rounded-3xl p-6 text-center relative overflow-hidden border border-cyan-500/30">
-          <div id="cfg-avatar" class="w-20 h-20 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3 shadow-[0_0_20px_rgba(34,211,238,.4)]"></div>
-          <label class="text-[10px] text-cyan-200 uppercase font-bold tracking-widest block mb-1">Como quer ser chamado?</label>
-          <input id="pref-name" type="text" class="bg-transparent text-2xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1 transition-colors" placeholder="Seu Nome">
-          <p id="cfg-email" class="text-xs text-slate-500 font-mono mt-2"></p>
+          <div id="cfg-avatar" class="w-20 h-20 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3 flex items-center justify-center bg-slate-800"></div>
+          <label for="pref-name" class="text-[10px] text-cyan-200 uppercase font-bold tracking-widest block mb-1">Como quer ser chamado?</label>
+          <input id="pref-name" type="text" maxlength="30" class="bg-transparent text-2xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1 transition-colors" placeholder="Seu nome">
+          <p id="cfg-email" class="text-xs text-slate-500 font-mono mt-2 break-all"></p>
         </div>
 
-        <a id="link-planilha" href="#" target="_blank" rel="noopener" class="relative glass bg-emerald-900/40 border border-emerald-500/50 p-6 rounded-3xl flex flex-col items-center justify-center gap-3 shadow-[0_10px_30px_rgba(16,185,129,.2)] hover:bg-emerald-900/60 transition-colors group">
+        <a id="link-planilha" href="#" target="_blank" rel="noopener"
+           class="glass bg-emerald-900/40 border border-emerald-500/50 p-6 rounded-3xl flex flex-col items-center justify-center gap-3 shadow-[0_10px_30px_rgba(16,185,129,.2)] hover:bg-emerald-900/60 transition-colors group">
           <div class="w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(16,185,129,.6)]">
-            <i data-lucide="database" class="w-6 h-6 text-white animate-pulse"></i>
+            <i data-lucide="database" class="w-6 h-6 text-white"></i>
           </div>
           <div class="text-center">
-            <h3 class="font-black text-emerald-400 text-lg uppercase tracking-wide">Meu Banco de Dados</h3>
-            <p class="text-[11px] text-slate-300 mt-1">Acessar a Planilha Privada no Google Sheets</p>
+            <h3 class="font-black text-emerald-400 text-lg uppercase tracking-wide">Meu banco de dados</h3>
+            <p class="text-[11px] text-slate-300 mt-1">Abrir a sua planilha privada no Google Sheets</p>
           </div>
         </a>
 
-        <!-- CARROSSEL INFINITO E EDUCATIVO (PROVA SOCIAL) -->
-        <div class="space-y-3 relative">
-          <h3 class="section-title text-yellow-400"><i data-lucide="heart" class="w-4 h-4 fill-rose-500 text-rose-500"></i> Avaliações da Comunidade</h3>
-          
+        <div class="space-y-3">
+          <h3 class="section-title text-yellow-400"><i data-lucide="sparkles" class="w-4 h-4"></i> Recursos</h3>
           <div class="carousel-wrapper py-2">
-            <div class="carousel-track">
-              
-              <!-- Review 1: Segurança -->
-              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
-                <div class="flex items-center gap-3 mb-2">
-                  <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" class="w-10 h-10 rounded-full border border-yellow-400">
-                  <div>
-                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
-                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Carlos M., Empreendedor</p>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-200 italic">"Incrível como os dados vão direto para o meu próprio Google Drive. Segurança total, só eu tenho acesso ao meu banco de dados!"</p>
+            <div id="carousel-track" class="carousel-track">
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
+                <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400 mb-2"></i>
+                <p class="text-xs font-bold text-white">Dados na sua conta</p>
+                <p class="text-[11px] text-slate-400 mt-1">Cada conta tem a sua planilha, com acesso privado.</p>
               </div>
-              
-              <!-- Review 2: Sistema Contínuo -->
-              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
-                <div class="flex items-center gap-3 mb-2">
-                  <img src="https://i.pravatar.cc/150?img=32" alt="Ana" class="w-10 h-10 rounded-full border border-yellow-400">
-                  <div>
-                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
-                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Ana P., Médica</p>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-200 italic">"Finalmente um sistema contínuo! O histórico fica todo guardado e nunca expira. Salva o meu dia a dia."</p>
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
+                <i data-lucide="cloud" class="w-5 h-5 text-cyan-400 mb-2"></i>
+                <p class="text-xs font-bold text-white">Sincronização na nuvem</p>
+                <p class="text-[11px] text-slate-400 mt-1">Lance pelo celular e veja os totais atualizados.</p>
               </div>
-
-              <!-- Review 3: Gráficos e Nuvem -->
-              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
-                <div class="flex items-center gap-3 mb-2">
-                  <img src="https://i.pravatar.cc/150?img=15" alt="Roberto" class="w-10 h-10 rounded-full border border-yellow-400">
-                  <div>
-                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-slate-600"></i></div>
-                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Roberto S., Designer</p>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-200 italic">"A sincronização em nuvem é mágica. Lanço no celular na rua e quando abro os gráficos dinâmicos no PC está tudo lá."</p>
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
+                <i data-lucide="repeat" class="w-5 h-5 text-purple-400 mb-2"></i>
+                <p class="text-xs font-bold text-white">Contas fixas</p>
+                <p class="text-[11px] text-slate-400 mt-1">Projete mensalidades e salários até dezembro.</p>
               </div>
-
-              <!-- Review 4: Design e UX -->
-              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
-                <div class="flex items-center gap-3 mb-2">
-                  <img src="https://i.pravatar.cc/150?img=47" alt="Julia" class="w-10 h-10 rounded-full border border-yellow-400">
-                  <div>
-                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
-                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Júlia F., Advogada</p>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-200 italic">"O design neon e as cores que mudam quando lanço receita ou despesa evitam que eu erre. Muito inteligente e intuitivo!"</p>
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
+                <i data-lucide="pie-chart" class="w-5 h-5 text-emerald-400 mb-2"></i>
+                <p class="text-xs font-bold text-white">Gráficos automáticos</p>
+                <p class="text-[11px] text-slate-400 mt-1">Entradas, saídas e aportes resumidos por mês.</p>
               </div>
-              
-              <!-- Cópia do primeiro para loop perfeito -->
-              <div class="w-72 glass rounded-xl p-4 border border-slate-700/50 inline-block whitespace-normal align-top">
-                <div class="flex items-center gap-3 mb-2">
-                  <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" class="w-10 h-10 rounded-full border border-yellow-400">
-                  <div>
-                    <div class="flex text-yellow-400"><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 fill-yellow-400"></i></div>
-                    <p class="text-[10px] text-slate-400 font-bold mt-0.5">Carlos M., Empreendedor</p>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-200 italic">"Incrível como os dados vão direto para o meu próprio Google Drive. Segurança total, só eu tenho acesso ao meu banco de dados!"</p>
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
+                <i data-lucide="tag" class="w-5 h-5 text-amber-400 mb-2"></i>
+                <p class="text-xs font-bold text-white">Categorias prontas</p>
+                <p class="text-[11px] text-slate-400 mt-1">Organize dízimo, saúde, dívidas e outros gastos.</p>
               </div>
-
             </div>
           </div>
         </div>
 
-        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors mt-6">
-          <i data-lucide="log-out" class="w-4 h-4"></i> Encerrar Sessão
+        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
+          <i data-lucide="log-out" class="w-4 h-4"></i> Encerrar sessão
         </button>
       </div>
     </div>
   </section>
 </main>
 
-<!-- BOTTOM NAVIGATION -->
+<!-- NAVEGAÇÃO -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
   <div class="glass rounded-2xl relative grid grid-cols-4 p-1 shadow-[0_20px_40px_rgba(0,0,0,.9)] border border-slate-700">
-    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-slate-600 w-[calc((100%-0.5rem)/4)] transition-all duration-300 ease-out shadow-lg"></span>
-    
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="fluxo">
+    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-slate-600 w-[calc((100%-0.5rem)/4)] transition-transform duration-300 ease-out shadow-lg"></span>
+    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="fluxo">
       <i data-lucide="plus-square" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Lançar</span>
     </button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="resumo">
+    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="resumo">
       <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Resumo</span>
     </button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="investir">
+    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="investir">
       <i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Investir</span>
     </button>
-    <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config">
+    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config">
       <i data-lucide="user" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Perfil</span>
     </button>
   </div>
@@ -438,500 +416,668 @@
 
 <script>
 // ============================================================================
-// CHAVES E CONFIGURAÇÕES
+// CONFIGURAÇÃO
 // ============================================================================
-const CONFIG = {
-  CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
+const CONFIG = Object.freeze({
+  GOOGLE_CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxEsf4BU7ocWwCobI81_esZSsJafWpi80bnknRME5s2zze5vlyhGH00Q4XLvxfRJdlFyw/exec",
-  STORAGE_KEY: "planilhaviva_user_v7",
-  CATEGORIES: ["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"] 
+  // Deixe vazio para ocultar os anúncios. Preencha com o ID real do AdSense quando estiver aprovado.
+  ADSENSE_CLIENT: "",
+  ADSENSE_SLOT: "",
+  STORAGE_USER: "planilhaviva_user_v7",
+  STORAGE_NAME_PREFIX: "pv_pref_name_",
+  CATEGORIES: Object.freeze(["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"]),
+  INCOME_CATEGORY: "Receita",
+  INVEST_CATEGORY: "Investimento",
+  VIEWS: Object.freeze(["fluxo", "resumo", "investir", "config"]),
+  HISTORY_LIMIT: 20,
+  TOAST_MS: 3000,
+  SPLASH_MS: 1000,
+  SDK_MAX_ATTEMPTS: 50,
+});
+
+// Configuração visual de cada tipo de lançamento
+const TYPE_UI = Object.freeze({
+  in:     { title: "Lançar receita",   icon: "arrow-down-circle", text: "text-emerald-400", btn: "btn-green",  rgb: "16, 185, 129",  showCategory: false },
+  out:    { title: "Lançar despesa",    icon: "arrow-up-circle",   text: "text-rose-400",    btn: "btn-red",    rgb: "244, 63, 94",   showCategory: true  },
+  invest: { title: "Realizar aporte",   icon: "trending-up",       text: "text-purple-400",  btn: "btn-purple", rgb: "168, 85, 247",  showCategory: false },
+});
+
+const DEFAULT_RGB = "34, 211, 238";
+const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const $ = (id) => document.getElementById(id);
+
+const State = {
+  user: null,
+  prefName: "",
+  sheetUrl: null,
+  datePicker: null,
+  tokenClient: null,
+  charts: { fluxo: null, mensal: null, investido: null },
+  particleRgb: DEFAULT_RGB,
 };
 
-const State = { user: null, prefName: "", datePicker: null, particleColor: "rgba(34,211,238,0.5)" };
-const $ = id => document.getElementById(id);
-const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+// ============================================================================
+// UTILITÁRIOS
+// ============================================================================
+const icons = () => { if (window.lucide) lucide.createIcons(); };
 
-// ============================================================================
-// EFEITOS LUMINOSOS E CONEXÕES REATIVAS
-// ============================================================================
-function initParticles() {
-  const canvas = $("bg"); 
-  if(!canvas) return;
-  const ctx = canvas.getContext("2d"); let p = [];
-  const rz = () => { 
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight; 
-    p = Array.from({length: Math.min(60, Math.floor(canvas.width*canvas.height/9000))}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-.5)*.7, vy: (Math.random()-.5)*.7, r: Math.random()*2+.5})); 
-  };
-  const an = () => { 
-    ctx.clearRect(0,0,canvas.width,canvas.height); 
-    for(let i=0; i<p.length; i++) {
-      p[i].x += p[i].vx; p[i].y += p[i].vy; 
-      if(p[i].x<0||p[i].x>canvas.width) p[i].vx*=-1; 
-      if(p[i].y<0||p[i].y>canvas.height) p[i].vy*=-1; 
-      ctx.fillStyle = State.particleColor; 
-      ctx.beginPath(); ctx.arc(p[i].x,p[i].y,p[i].r,0,Math.PI*2); ctx.fill();
-      
-      for(let j=i+1; j<p.length; j++){
-        let dx = p[i].x - p[j].x, dy = p[i].y - p[j].y;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 100) {
-          ctx.beginPath(); 
-          let rgbMatch = State.particleColor.match(/\d+, *\d+, *\d+/);
-          let rgb = rgbMatch ? rgbMatch[0] : "34, 211, 238"; 
-          ctx.strokeStyle = `rgba(${rgb}, ${0.3*(1-dist/100)})`;
-          ctx.lineWidth = 1.5; ctx.moveTo(p[i].x, p[i].y); ctx.lineTo(p[j].x, p[j].y); ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(an); 
-  };
-  window.addEventListener("resize", rz); rz(); an();
+const show = (node, on, display = "flex") => {
+  node.classList.toggle("hidden", !on);
+  node.classList.toggle(display, on);
+};
+
+const greeting = () => {
+  const h = new Date().getHours();
+  return h < 12 ? "Bom dia," : h < 18 ? "Boa tarde," : "Boa noite,";
+};
+
+const firstName = (user) => (user?.name || "Investidor").trim().split(/\s+/)[0];
+
+function setAvatar(container, picture) {
+  container.textContent = "";
+  if (picture) {
+    const img = document.createElement("img");
+    img.src = picture;
+    img.alt = "";
+    img.referrerPolicy = "no-referrer";
+    img.className = "w-full h-full object-cover";
+    container.append(img);
+  } else {
+    container.innerHTML = '<i data-lucide="user" class="w-1/2 h-1/2 text-slate-400"></i>';
+    icons();
+  }
 }
 
-// ============================================================================
-// RELÓGIO & CALENDÁRIO INTELIGENTE
-// ============================================================================
-const TimeManager = {
-  startClock: () => {
-    setInterval(() => {
-      const now = new Date();
-      if($("header-time")) $("header-time").textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      
-      const options = { weekday: 'short', day: 'numeric', month: 'short' };
-      if($("header-date")) $("header-date").textContent = now.toLocaleDateString('pt-BR', options).toUpperCase();
-      
-      if($("resumo-mes-nome")) $("resumo-mes-nome").textContent = "FLUXO DE " + now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
-    }, 1000);
-  },
-  
-  getDynamicMonthLabels: () => {
-    const labels = [];
-    const date = new Date();
-    for(let i=3; i>=0; i--) {
-      let d = new Date(date.getFullYear(), date.getMonth() - i, 1);
-      labels.push(d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.','').toUpperCase());
-    }
-    return labels;
+function toast(message, type = "success") {
+  const node = document.createElement("div");
+  node.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-cyan-400/50";
+
+  const icon = document.createElement("i");
+  icon.dataset.lucide = type === "error" ? "alert-triangle" : type === "warning" ? "alert-circle" : "check-circle";
+  icon.className = `w-6 h-6 shrink-0 ${type === "error" ? "text-rose-400" : type === "warning" ? "text-amber-400" : "text-cyan-400"}`;
+
+  const text = document.createElement("span");
+  text.textContent = message;
+
+  node.append(icon, text);
+  $("toasts").append(node);
+  icons();
+  requestAnimationFrame(() => node.classList.add("show"));
+  setTimeout(() => {
+    node.classList.remove("show");
+    setTimeout(() => node.remove(), 400);
+  }, CONFIG.TOAST_MS);
+}
+
+/** Desativa o botão e mostra um texto de carregamento enquanto a operação roda. */
+async function withBusy(button, label, operation) {
+  const text = button.querySelector("[data-label]");
+  const original = text.textContent;
+  button.disabled = true;
+  text.textContent = label;
+  try {
+    return await operation();
+  } finally {
+    button.disabled = false;
+    text.textContent = original;
   }
-};
-
-// ============================================================================
-// UI & CHART MANAGER
-// ============================================================================
-const UI = {
-  refreshIcons: () => { if (window.lucide) lucide.createIcons(); },
-  
-  toast: (msg, type = "success") => {
-    if(!$("toasts")) return;
-    const icon = type === "error" ? "alert-triangle" : "check-circle";
-    const color = type === "error" ? "text-rose-400" : "text-cyan-400";
-    const t = document.createElement("div");
-    t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-cyan-400/50 z-[9999]";
-    t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 shrink-0 ${color}"></i><span>${msg}</span>`;
-    $("toasts").append(t); UI.refreshIcons();
-    requestAnimationFrame(() => t.classList.add("show"));
-    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3000);
-  },
-
-  setAvatar: (el, user) => {
-    if(el) {
-        if (user?.picture) el.innerHTML = `<img src="${user.picture}" class="w-full h-full object-cover" referrerpolicy="no-referrer">`;
-        else { el.innerHTML = `<i data-lucide="user" class="w-1/2 h-1/2 text-slate-400"></i>`; UI.refreshIcons(); }
-    }
-  },
-
-  getGreeting: () => {
-    const hr = new Date().getHours();
-    return hr < 12 ? "Bom dia," : hr < 18 ? "Boa tarde," : "Boa noite,";
-  },
-
-  setupColorSegments: () => {
-    const btns = document.querySelectorAll(".seg-btn");
-    const formGlow = $("form-glow"), formIcon = $("form-icon"), formTitle = $("form-title"), btnSave = $("btnSave"), catContainer = $("cat-container");
-    
-    btns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        btns.forEach(b => b.setAttribute("aria-pressed", "false"));
-        btn.setAttribute("aria-pressed", "true");
-        
-        const color = btn.dataset.color;
-        if(btnSave) btnSave.className = "btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300";
-        if(formGlow) formGlow.className = "glow transition-colors duration-500";
-        if(catContainer) catContainer.style.display = "block";
-        
-        if(color === "green") {
-          if(btnSave) btnSave.classList.add("btn-green"); 
-          if(formGlow) formGlow.classList.add("glow-green");
-          if(formIcon) formIcon.className = "w-5 h-5 text-emerald-400 transition-colors";
-          if(formTitle && formIcon) formTitle.innerHTML = `<i data-lucide="arrow-down-circle" class="${formIcon.className}"></i> Lançar Receita`;
-          State.particleColor = "rgba(16,185,129,0.5)"; 
-        } else if(color === "red") {
-          if(btnSave) btnSave.classList.add("btn-red"); 
-          if(formGlow) formGlow.classList.add("glow-red");
-          if(formIcon) formIcon.className = "w-5 h-5 text-rose-400 transition-colors";
-          if(formTitle && formIcon) formTitle.innerHTML = `<i data-lucide="arrow-up-circle" class="${formIcon.className}"></i> Lançar Despesa`;
-          State.particleColor = "rgba(244,63,94,0.5)"; 
-        } else if(color === "purple") {
-          if(btnSave) btnSave.classList.add("btn-purple"); 
-          if(formGlow) formGlow.classList.add("glow-purple");
-          if(formIcon) formIcon.className = "w-5 h-5 text-purple-400 transition-colors";
-          if(formTitle && formIcon) formTitle.innerHTML = `<i data-lucide="trending-up" class="${formIcon.className}"></i> Realizar Aporte`;
-          if(catContainer) catContainer.style.display = "none";
-          State.particleColor = "rgba(168,85,247,0.5)"; 
-        }
-        UI.refreshIcons();
-      });
-    });
-  },
-
-  addLocalHistory: (desc, amount, typeColor) => {
-    const list = $("local-history");
-    if(!list) return;
-    if($("empty-history")) $("empty-history").remove();
-    
-    const div = document.createElement('div');
-    const color = typeColor === 'in' ? 'text-emerald-400' : typeColor === 'invest' ? 'text-purple-400' : 'text-rose-400';
-    const sinal = typeColor === 'in' ? '+' : '-';
-    
-    div.className = "flex justify-between items-center bg-slate-900/50 p-2 rounded-lg border border-slate-700/50 slide-down";
-    div.innerHTML = `<span class="text-slate-300 truncate pr-2">${desc}</span> <span class="font-bold ${color}">${sinal} R$ ${amount}</span>`;
-    
-    list.prepend(div);
-  }
-};
-
-// ============================================================================
-// GRÁFICOS (CHART.JS)
-// ============================================================================
-const Charts = {
-  fluxo: null, desempenho: null, crescimento: null,
-  
-  init: () => {
-    Chart.defaults.color = '#94a3b8'; Chart.defaults.font.family = 'system-ui';
-    const dynamicLabels = TimeManager.getDynamicMonthLabels();
-    
-    if($("chartFluxo")) {
-        Charts.fluxo = new Chart($("chartFluxo"), {
-          type: 'doughnut',
-          data: { labels: ['Receitas', 'Despesas'], datasets: [{ data: [1, 1], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, animation: { animateScale: true } }
-        });
-    }
-
-    if($("chartDesempenho")) {
-        Charts.desempenho = new Chart($("chartDesempenho"), {
-          type: 'bar',
-          data: { labels: dynamicLabels, datasets: [
-            { label: 'Receitas', data: [0,0,0,0], backgroundColor: '#10b981', borderRadius: 4 },
-            { label: 'Despesas', data: [0,0,0,0], backgroundColor: '#f43f5e', borderRadius: 4 }
-          ]},
-          options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
-        });
-    }
-
-    if($("chartCrescimento")) {
-        Charts.crescimento = new Chart($("chartCrescimento"), {
-          type: 'line',
-          data: { labels: dynamicLabels, datasets: [{ label: 'Patrimônio', data: [0,0,0,0], borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] },
-          options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { color: '#334155' } } }, plugins: { legend: { display: false } }, elements: { point: { radius: 0 } } }
-        });
-    }
-  },
-
-  update: (inVal, outVal, invVal) => {
-    if(Charts.fluxo) { Charts.fluxo.data.datasets[0].data = [inVal || 1, outVal || 1]; Charts.fluxo.update(); }
-    if(Charts.desempenho) {
-        Charts.desempenho.data.datasets[0].data = [inVal*0.8, inVal*0.9, inVal*1.1, inVal];
-        Charts.desempenho.data.datasets[1].data = [outVal*1.1, outVal*0.8, outVal*0.9, outVal];
-        Charts.desempenho.update();
-    }
-    if(Charts.crescimento) {
-        Charts.crescimento.data.datasets[0].data = [invVal*0.5, invVal*0.7, invVal*0.85, invVal];
-        Charts.crescimento.update();
-    }
-  }
-};
+}
 
 // ============================================================================
 // API
 // ============================================================================
-const API = {
-  call: async (action, payload = {}) => {
-    if (!State.user || !State.user.email) throw new Error("Usuário não logado.");
-    const res = await fetch(CONFIG.SCRIPT_URL, {
-      method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
-    });
-    const json = await res.json();
-    if (json.status !== "success") throw new Error(json.message);
+const Api = {
+  async call(action, payload = {}) {
+    if (!State.user?.email) throw new Error("Sessão inválida. Faça login novamente.");
+
+    let res;
+    try {
+      res = await fetch(CONFIG.SCRIPT_URL, {
+        method: "POST",
+        // text/plain evita o preflight de CORS no Apps Script
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload }),
+      });
+    } catch {
+      throw new Error("Sem ligação com o servidor.");
+    }
+
+    let json;
+    try {
+      json = await res.json();
+    } catch {
+      throw new Error("Resposta inesperada do servidor.");
+    }
+
+    if (json.status !== "success") throw new Error(json.message || "Erro no servidor.");
     return json;
   },
-
-  syncDashboard: async () => {
-    try {
-      const data = await API.call("get_dashboard");
-      const { totalInvestido, totalSaidas, totalEntradas, saldoAtual } = data.data;
-
-      if($("saldo")) $("saldo").textContent = brl.format(saldoAtual);
-      if($("txt-in")) $("txt-in").textContent = brl.format(totalEntradas);
-      if($("txt-out")) $("txt-out").textContent = brl.format(totalSaidas);
-      if($("invest-total")) $("invest-total").textContent = brl.format(totalInvestido);
-      
-      Charts.update(totalEntradas, totalSaidas, totalInvestido);
-    } catch (e) {
-      console.log("Mantendo dados visuais locais.", e);
-    }
-  }
 };
 
 // ============================================================================
-// LÓGICA CORE DO APP COM TRATAMENTO DE ERROS BLINDADO
+// AUTENTICAÇÃO
 // ============================================================================
-const App = {
-  init: () => {
+const Auth = {
+  readSavedUser() {
     try {
-      initParticles();
-      TimeManager.startClock();
-      UI.setupColorSegments();
-      
-      const catSelect = $("category");
-      if(catSelect) {
-          CONFIG.CATEGORIES.forEach(c => catSelect.append(new Option(c, c)));
-      }
-      
-      if($("date")) {
-          State.datePicker = flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
-      }
-      
-      Charts.init();
-      App.bindEvents();
-      
-      if($("greeting-text")) $("greeting-text").textContent = UI.getGreeting();
-
-      const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
-      if(saved) { 
-        State.user = JSON.parse(saved);
-        State.prefName = localStorage.getItem("pv_pref_name_" + State.user.email) || (State.user.name ? State.user.name.split(" ")[0] : "Investidor");
-        App.startSession(); 
-      }
-      else { 
-          if($("view-auth")) {
-             $("view-auth").classList.remove("hidden");
-             $("view-auth").classList.add("flex");
-          }
-          if($("view-app")) $("view-app").classList.replace("flex", "hidden");
-          App.setupGoogleLogin(); 
-      }
-    } catch (error) {
-        console.error("Initialization error:", error);
+      const user = JSON.parse(localStorage.getItem(CONFIG.STORAGE_USER));
+      return user?.email ? user : null;
+    } catch {
+      localStorage.removeItem(CONFIG.STORAGE_USER);
+      return null;
     }
   },
 
-  setupGoogleLogin: () => {
-    if (!window.google) return setTimeout(App.setupGoogleLogin, 300);
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: CONFIG.CLIENT_ID, scope: "email profile",
-      callback: async (t) => {
-        if(t.error) return UI.toast("Erro no Login.", "error");
-        try {
-            const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
-            const p = await res.json();
-            State.user = { name: p.name, email: p.email, picture: p.picture };
-            State.prefName = p.given_name || (p.name ? p.name.split(" ")[0] : "Investidor");
-            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State.user));
-            App.startSession();
-        } catch (e) {
-            UI.toast("Erro ao processar dados de login.", "error");
-            console.error(e);
-        }
-      }
-    });
-    const btnGoogleLogin = $("btnGoogleLogin");
-    if(btnGoogleLogin) {
-        btnGoogleLogin.addEventListener("click", () => client.requestAccessToken({ prompt: "select_account" }));
+  waitForGoogle(attempts = 0) {
+    if (window.google?.accounts?.oauth2) {
+      State.tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CONFIG.GOOGLE_CLIENT_ID,
+        scope: "email profile",
+        callback: Auth.onToken,
+      });
+      return;
     }
+    if (attempts >= CONFIG.SDK_MAX_ATTEMPTS) {
+      toast("Não foi possível carregar o login do Google.", "error");
+      return;
+    }
+    setTimeout(() => Auth.waitForGoogle(attempts + 1), 200);
   },
 
-  startSession: async () => {
+  login() {
+    if (!State.tokenClient) return toast("A carregar o login do Google, tente novamente.", "error");
+    State.tokenClient.requestAccessToken({ prompt: "select_account" });
+  },
+
+  async onToken(resp) {
+    if (resp.error) return toast("Erro no login. Tente novamente.", "error");
+
     try {
-        if($("view-auth")) $("view-auth").classList.replace("flex", "hidden");
-        UI.setAvatar($("splash-avatar"), State.user);
-        if($("splash-name")) $("splash-name").textContent = State.prefName + "!";
-        
-        const splash = $("welcome-splash");
-        if(splash) {
-            splash.classList.remove("hidden", "hide-splash"); 
-            splash.classList.add("flex");
-        }
-        
-        try {
-          const savedUrl = localStorage.getItem(`pv_url_${State.user.email}`);
-          if (!savedUrl) {
-            const res = await API.call("init_user");
-            localStorage.setItem(`pv_url_${State.user.email}`, res.sheetUrl);
-          }
-          if($("splash-status")) $("splash-status").innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Segurança estabelecida!`; 
-        } catch (e) {
-          if($("splash-status")) $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Entrando no modo rápido...`; 
-          console.error("API call failed during session start:", e);
-        }
-        UI.refreshIcons();
+      const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: { Authorization: `Bearer ${resp.access_token}` },
+      });
+      if (!res.ok) throw new Error("userinfo");
+      const profile = await res.json();
 
-        setTimeout(() => {
-          if(splash) splash.classList.add("hide-splash");
-          setTimeout(() => { 
-              if(splash) {
-                  splash.classList.replace("flex", "hidden"); 
-              }
-              App.enter(); 
-          }, 600);
-        }, 1000);
-    } catch(e) {
-        console.error("Session start error:", e);
-        App.enter(); // Force entry if splash fails
+      const user = {
+        name: profile.name || profile.email,
+        email: String(profile.email || "").toLowerCase(),
+        picture: profile.picture || "",
+      };
+      localStorage.setItem(CONFIG.STORAGE_USER, JSON.stringify(user));
+      Auth.start(user);
+    } catch {
+      toast("Não foi possível obter os dados da conta.", "error");
     }
   },
 
-  enter: () => {
-    try {
-        if($("user-name")) $("user-name").textContent = State.prefName;
-        if($("pref-name")) $("pref-name").value = State.prefName;
-        if($("cfg-email")) $("cfg-email").textContent = State.user.email;
-        
-        UI.setAvatar($("avatar"), State.user);
-        UI.setAvatar($("cfg-avatar"), State.user);
-        
-        const url = localStorage.getItem(`pv_url_${State.user.email}`);
-        if(url) {
-          const btn = $("link-planilha");
-          if(btn) {
-              btn.href = url;
-              btn.classList.remove("pointer-events-none", "opacity-50");
-          }
-        }
-
-        if($("view-app")) {
-            $("view-app").classList.remove("hidden"); 
-            $("view-app").classList.add("flex");
-        }
-        if($("bottom-nav")) $("bottom-nav").classList.remove("hidden");
-        
-        App.nav("fluxo");
-        API.syncDashboard();
-    } catch(e) {
-        console.error("Enter app error:", e);
-    }
+  start(user) {
+    State.user = user;
+    State.prefName = localStorage.getItem(CONFIG.STORAGE_NAME_PREFIX + user.email) || firstName(user);
+    Session.start();
   },
 
-  nav: (view) => {
-    ["fluxo", "resumo", "investir", "config"].forEach((v, i) => {
-      const act = v === view;
-      const el = $("view-" + v);
-      if(el) el.classList.toggle("active", act);
-      
-      const b = document.querySelector(`.nav-btn[data-view="${v}"]`);
-      if(b) {
-          b.classList.toggle("text-white", act); 
-          b.classList.toggle("text-slate-400", !act);
-          if (act) {
-            if($("nav-pill")) $("nav-pill").style.transform = `translateX(${i * 100}%)`;
-            b.classList.remove("icon-pop"); void b.offsetWidth; b.classList.add("icon-pop");
-          }
-      }
-    });
-    window.scrollTo(0, 0); UI.refreshIcons();
-    
-    if(view !== 'fluxo') {
-        State.particleColor = "rgba(34,211,238,0.5)";
-    } else {
-        const activeSegBtn = document.querySelector('.seg-btn[aria-pressed="true"]');
-        if(activeSegBtn) activeSegBtn.click();
-    }
+  logout() {
+    localStorage.removeItem(CONFIG.STORAGE_USER);
+    location.reload();
   },
-
-  bindEvents: () => {
-    document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
-    
-    if($("btnLogout")) {
-        $("btnLogout").addEventListener("click", () => { 
-            localStorage.removeItem(CONFIG.STORAGE_KEY); 
-            location.reload(); 
-        });
-    }
-    
-    if($("btnRefreshHeader")) {
-        $("btnRefreshHeader").addEventListener("click", async () => {
-          $("btnRefreshHeader").classList.add("animate-spin");
-          await API.syncDashboard();
-          setTimeout(()=> $("btnRefreshHeader").classList.remove("animate-spin"), 500);
-        });
-    }
-
-    if($("pref-name")) {
-        $("pref-name").addEventListener("change", (e) => {
-          const novo = e.target.value.trim() || (State.user.name || "Usuário").split(" ")[0];
-          State.prefName = novo;
-          localStorage.setItem("pv_pref_name_" + State.user.email, novo);
-          if($("user-name")) $("user-name").textContent = novo;
-          UI.toast("Nome de preferência guardado!", "success");
-        });
-    }
-
-    const txForm = $("txForm");
-    if(txForm) {
-        txForm.addEventListener("submit", async e => {
-          e.preventDefault();
-          const btn = $("btnSave");
-          const originalHTML = btn ? btn.innerHTML : "Salvar";
-          if(btn) {
-              btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Guardando...`; 
-              btn.disabled = true;
-          }
-          UI.refreshIcons();
-
-          const activeSeg = document.querySelector('.seg-btn[aria-pressed="true"]');
-          const dataType = activeSeg ? activeSeg.dataset.type : 'out'; 
-          
-          let finalType = 'out', finalCat = $("category") ? $("category").value : "Outros";
-          if(dataType === 'in') { finalType = 'in'; finalCat = "Receita"; }
-          else if(dataType === 'invest') { finalType = 'out'; finalCat = "Investimento"; }
-
-          const dateVal = $("date") ? $("date").value : new Date().toISOString().split('T')[0];
-          const amountVal = $("amount") ? $("amount").value : "0";
-          const descVal = $("desc") ? $("desc").value.trim() : "";
-          const now = new Date();
-          const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-          const payload = {
-            desc: descVal, amount: parseFloat(amountVal), type: finalType, category: finalCat, 
-            date: dateVal, timestamp: `${dateVal} ${timeStr}`
-          };
-
-          try {
-            await API.call("add_transaction", payload);
-            UI.toast("Transação guardada na Nuvem!", "success");
-            UI.addLocalHistory(descVal, amountVal, dataType);
-            $("txForm").reset();
-            const redBtn = document.querySelector('.seg-btn[data-color="red"]');
-            if(redBtn) redBtn.click(); 
-            if(State.datePicker) State.datePicker.setDate("today");
-            API.syncDashboard();
-          } catch(err) { 
-            UI.toast(err.message || "Guardado localmente (Modo Offline).", "warning"); 
-          } 
-          finally { 
-            if(btn) {
-                btn.innerHTML = originalHTML; 
-                btn.disabled = false; 
-            }
-            UI.refreshIcons(); 
-          }
-        });
-    }
-  }
 };
 
-document.addEventListener("DOMContentLoaded", App.init);
+// ============================================================================
+// SESSÃO E SPLASH
+// ============================================================================
+const Splash = {
+  show(name) {
+    $("greeting-text").textContent = greeting();
+    $("splash-name").textContent = name;
+    $("splash-status").textContent = "Sincronizando a sua planilha...";
+    setAvatar($("splash-avatar"), State.user?.picture);
+    const node = $("welcome-splash");
+    node.classList.remove("hide-splash");
+    show(node, true);
+  },
+
+  status(text) {
+    $("splash-status").textContent = text;
+  },
+
+  hide() {
+    const node = $("welcome-splash");
+    node.classList.add("hide-splash");
+    setTimeout(() => show(node, false), 600);
+  },
+};
+
+const Session = {
+  async start() {
+    show($("view-auth"), false);
+    Splash.show(State.prefName + "!");
+
+    let online = true;
+    try {
+      // init_user é idempotente: cria a planilha na primeira vez e devolve o link nas seguintes
+      const res = await Api.call("init_user");
+      State.sheetUrl = res.sheetUrl;
+      Splash.status("Tudo pronto!");
+    } catch (err) {
+      online = false;
+      console.error(err);
+      Splash.status("Modo offline: alguns dados podem não carregar.");
+    }
+
+    setTimeout(() => {
+      Splash.hide();
+      Session.enter(online);
+    }, CONFIG.SPLASH_MS);
+  },
+
+  enter() {
+    $("user-name").textContent = State.prefName;
+    $("pref-name").value = State.prefName;
+    $("cfg-email").textContent = State.user.email;
+    setAvatar($("avatar"), State.user.picture);
+    setAvatar($("cfg-avatar"), State.user.picture);
+
+    const link = $("link-planilha");
+    link.href = State.sheetUrl || "#";
+    link.classList.toggle("pointer-events-none", !State.sheetUrl);
+    link.classList.toggle("opacity-50", !State.sheetUrl);
+
+    show($("view-app"), true);
+    $("bottom-nav").classList.remove("hidden");
+
+    Nav.go("fluxo");
+    Dashboard.sync();
+  },
+};
+
+// ============================================================================
+// NAVEGAÇÃO
+// ============================================================================
+const Nav = {
+  go(view) {
+    CONFIG.VIEWS.forEach((name, index) => {
+      const active = name === view;
+      $("view-" + name).classList.toggle("active", active);
+
+      const btn = document.querySelector(`.nav-btn[data-view="${name}"]`);
+      btn.classList.toggle("text-white", active);
+      btn.classList.toggle("text-slate-400", !active);
+      btn.setAttribute("aria-current", active ? "page" : "false");
+
+      if (active) {
+        $("nav-pill").style.transform = `translateX(${index * 100}%)`;
+        btn.classList.remove("icon-pop");
+        void btn.offsetWidth; // reinicia a animação
+        btn.classList.add("icon-pop");
+      }
+    });
+
+    State.particleRgb = view === "fluxo" ? TYPE_UI[$("type").value].rgb : DEFAULT_RGB;
+    window.scrollTo(0, 0);
+    icons();
+  },
+};
+
+// ============================================================================
+// PAINEL (KPIs e gráficos reais)
+// ============================================================================
+const Dashboard = {
+  async sync({ notify = false } = {}) {
+    const btn = $("btnRefreshHeader");
+    btn.disabled = true;
+    btn.classList.add("animate-spin");
+
+    try {
+      const { data } = await Api.call("get_dashboard");
+      Dashboard.render(data);
+      if (notify) toast("Dados atualizados.");
+    } catch (err) {
+      console.error(err);
+      toast(err.message || "Não foi possível atualizar os dados.", "error");
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove("animate-spin");
+    }
+  },
+
+  render(d) {
+    $("saldo").textContent = brl.format(d.saldoAtual);
+    $("txt-in").textContent = `Entradas ${brl.format(d.totalEntradas)}`;
+    $("txt-out").textContent = `Saídas ${brl.format(d.totalSaidas)}`;
+    $("invest-total").textContent = brl.format(d.totalInvestido);
+    Charts.update(d);
+  },
+};
+
+const Charts = {
+  init() {
+    Chart.defaults.color = "#94a3b8";
+    Chart.defaults.font.family = "system-ui, sans-serif";
+
+    State.charts.fluxo = new Chart($("chartFluxo"), {
+      type: "doughnut",
+      data: {
+        labels: ["Entradas", "Saídas"],
+        datasets: [{ data: [0, 0], backgroundColor: ["#10b981", "#f43f5e"], borderWidth: 0 }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "75%",
+        plugins: { legend: { display: false } },
+      },
+    });
+
+    State.charts.mensal = new Chart($("chartDesempenho"), {
+      type: "bar",
+      data: {
+        labels: [],
+        datasets: [
+          { label: "Entradas", data: [], backgroundColor: "#10b981", borderRadius: 4 },
+          { label: "Saídas", data: [], backgroundColor: "#f43f5e", borderRadius: 4 },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { grid: { display: false } },
+          y: { ticks: { callback: (v) => brl.format(v) } },
+        },
+        plugins: { legend: { position: "bottom" } },
+      },
+    });
+
+    State.charts.investido = new Chart($("chartCrescimento"), {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [{
+          label: "Investido acumulado",
+          data: [],
+          borderColor: "#a855f7",
+          backgroundColor: "rgba(168,85,247,.15)",
+          fill: true,
+          tension: 0.35,
+          borderWidth: 3,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { ticks: { callback: (v) => brl.format(v) } } },
+        plugins: { legend: { display: false } },
+      },
+    });
+  },
+
+  update({ totalEntradas, totalSaidas, mensal = [] }) {
+    const { fluxo, mensal: bar, investido } = State.charts;
+    const labels = mensal.map((m) => m.mes);
+
+    fluxo.data.datasets[0].data = [totalEntradas, totalSaidas];
+    fluxo.update();
+
+    bar.data.labels = labels;
+    bar.data.datasets[0].data = mensal.map((m) => m.entradas);
+    bar.data.datasets[1].data = mensal.map((m) => m.saidas);
+    bar.update();
+
+    let accumulated = 0;
+    investido.data.labels = labels;
+    investido.data.datasets[0].data = mensal.map((m) => (accumulated += m.investido));
+    investido.update();
+  },
+};
+
+// ============================================================================
+// FORMULÁRIO DE LANÇAMENTO
+// ============================================================================
+const History = {
+  add(desc, amount, type) {
+    $("empty-history")?.remove();
+
+    const row = document.createElement("div");
+    row.className = "slide-down flex justify-between items-center gap-2 bg-slate-900/50 p-2 rounded-lg border border-slate-700/50";
+
+    const name = document.createElement("span");
+    name.className = "text-slate-300 truncate";
+    name.textContent = desc;
+
+    const value = document.createElement("span");
+    value.className = `font-bold shrink-0 ${TYPE_UI[type].text}`;
+    value.textContent = `${type === "in" ? "+" : "-"} ${brl.format(amount)}`;
+
+    row.append(name, value);
+    const list = $("local-history");
+    list.prepend(row);
+    while (list.children.length > CONFIG.HISTORY_LIMIT) list.lastChild.remove();
+  },
+};
+
+const Form = {
+  bind() {
+    CONFIG.CATEGORIES.forEach((name) => $("category").append(new Option(name, name)));
+
+    document.querySelectorAll(".seg-btn").forEach((btn) =>
+      btn.addEventListener("click", () => Form.setType(btn.dataset.type))
+    );
+
+    document.querySelectorAll(".quick-chip").forEach((chip) =>
+      chip.addEventListener("click", () => { $("amount").value = chip.dataset.amount; })
+    );
+
+    $("txForm").addEventListener("submit", Form.submit);
+  },
+
+  setType(type) {
+    const ui = TYPE_UI[type];
+    if (!ui) return;
+
+    $("type").value = type;
+    document.querySelectorAll(".seg-btn").forEach((btn) =>
+      btn.setAttribute("aria-pressed", String(btn.dataset.type === type))
+    );
+
+    $("form-title").textContent = ui.title;
+    $("form-icon").innerHTML = `<i data-lucide="${ui.icon}" class="w-5 h-5 ${ui.text}"></i>`;
+    $("form-glow").style.background = `rgba(${ui.rgb}, .3)`;
+    $("btnSave").className = `btn-primary ${ui.btn} w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300`;
+    $("cat-container").classList.toggle("hidden", !ui.showCategory);
+
+    State.particleRgb = ui.rgb;
+    icons();
+  },
+
+  reset() {
+    $("txForm").reset();
+    Form.setType("out");
+    State.datePicker?.setDate(new Date(), false);
+  },
+
+  async submit(event) {
+    event.preventDefault();
+
+    const type = $("type").value;
+    const desc = $("desc").value.trim();
+    const amount = Math.round(Number($("amount").value) * 100) / 100;
+    const date = $("date").value;
+
+    if (!desc) return toast("Informe a descrição.", "error");
+    if (!Number.isFinite(amount) || amount <= 0) return toast("Informe um valor maior que zero.", "error");
+    if (!date) return toast("Escolha a data.", "error");
+
+    const category =
+      type === "in" ? CONFIG.INCOME_CATEGORY :
+      type === "invest" ? CONFIG.INVEST_CATEGORY :
+      $("category").value;
+
+    const payload = {
+      desc,
+      amount,
+      type: type === "in" ? "in" : "out", // "invest" é gravado como saída na categoria Investimento
+      category,
+      date,
+    };
+
+    try {
+      await withBusy($("btnSave"), "Guardando...", () => Api.call("add_transaction", payload));
+      toast("Lançamento guardado na nuvem!");
+      History.add(desc, amount, type);
+      Form.reset();
+      Dashboard.sync();
+    } catch (err) {
+      // Os dados do formulário permanecem preenchidos para o utilizador tentar de novo
+      toast(err.message, "error");
+    }
+  },
+};
+
+// ============================================================================
+// PERFIL
+// ============================================================================
+function savePrefName(event) {
+  const name = event.target.value.trim().slice(0, 30) || firstName(State.user);
+  State.prefName = name;
+  event.target.value = name;
+  localStorage.setItem(CONFIG.STORAGE_NAME_PREFIX + State.user.email, name);
+  $("user-name").textContent = name;
+  toast("Nome de preferência guardado!");
+}
+
+// ============================================================================
+// ANÚNCIOS (só carregam se ADSENSE_CLIENT e ADSENSE_SLOT estiverem preenchidos)
+// ============================================================================
+const Ads = {
+  init() {
+    if (!CONFIG.ADSENSE_CLIENT || !CONFIG.ADSENSE_SLOT) return;
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(CONFIG.ADSENSE_CLIENT)}`;
+    document.head.append(script);
+
+    document.querySelectorAll("[data-ad]").forEach((block) => {
+      const ins = document.createElement("ins");
+      ins.className = "adsbygoogle";
+      ins.style.display = "block";
+      ins.dataset.adClient = CONFIG.ADSENSE_CLIENT;
+      ins.dataset.adSlot = CONFIG.ADSENSE_SLOT;
+      ins.dataset.adFormat = "auto";
+      ins.dataset.fullWidthResponsive = "true";
+      block.querySelector(".ad-slot").append(ins);
+      block.hidden = false;
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    });
+  },
+};
+
+// ============================================================================
+// INICIALIZAÇÃO
+// ============================================================================
+function initParticles() {
+  const canvas = $("bg");
+  const ctx = canvas.getContext("2d");
+  let points = [];
+
+  const resize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const count = Math.min(60, Math.floor((canvas.width * canvas.height) / 9000));
+    points = Array.from({ length: count }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.7,
+      vy: (Math.random() - 0.5) * 0.7,
+      r: Math.random() * 2 + 0.5,
+    }));
+  };
+
+  const frame = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const rgb = State.particleRgb;
+
+    for (let i = 0; i < points.length; i++) {
+      const p = points[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+      ctx.fillStyle = `rgba(${rgb}, .5)`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+
+      for (let j = i + 1; j < points.length; j++) {
+        const q = points[j];
+        const dist = Math.hypot(p.x - q.x, p.y - q.y);
+        if (dist < 100) {
+          ctx.strokeStyle = `rgba(${rgb}, ${0.3 * (1 - dist / 100)})`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(frame);
+  };
+
+  window.addEventListener("resize", resize);
+  resize();
+  frame();
+}
+
+function startClock() {
+  const tick = () => {
+    const now = new Date();
+    $("header-time").textContent = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  };
+  tick();
+  setInterval(tick, 30000);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Duplica os cards do carrossel para o loop contínuo
+  const track = $("carousel-track");
+  track.innerHTML += track.innerHTML;
+
+  initParticles();
+  startClock();
+  Ads.init();
+  Charts.init();
+  Form.bind();
+
+  State.datePicker = flatpickr("#date", {
+    locale: "pt",
+    dateFormat: "Y-m-d",
+    defaultDate: new Date(),
+    disableMobile: true,
+  });
+
+  document.querySelectorAll(".nav-btn").forEach((btn) =>
+    btn.addEventListener("click", () => Nav.go(btn.dataset.view))
+  );
+  $("btnRefreshHeader").addEventListener("click", () => Dashboard.sync({ notify: true }));
+  $("btnLogout").addEventListener("click", Auth.logout);
+  $("btnGoogleLogin").addEventListener("click", Auth.login);
+  $("pref-name").addEventListener("change", savePrefName);
+
+  icons();
+
+  const saved = Auth.readSavedUser();
+  if (saved) {
+    Auth.start(saved);
+  } else {
+    show($("view-auth"), true);
+    Auth.waitForGoogle();
+  }
+});
 </script>
 </body>
 </html>
