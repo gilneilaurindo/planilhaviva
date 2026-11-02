@@ -9,12 +9,6 @@
 <meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
 <meta name="description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets.">
 
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://planilhaviva-31ys.vercel.app/">
-<meta property="og:title" content="PlanilhaViva Pro | Inteligência Financeira">
-<meta property="og:description" content="Controlo financeiro e gestão de investimentos integrados ao Google Sheets.">
-<meta property="og:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
-
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
@@ -25,8 +19,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
-
-<!-- CORREÇÃO 1: Script do Google corrigido -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
@@ -110,7 +102,6 @@
   </div>
   <h2 class="text-3xl font-black text-white mt-8 tracking-tight z-10">Bem-vindo(a),</h2>
   <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1 z-10 drop-shadow-[0_0_10px_rgba(34,211,238,0.4)]"></h2>
-  
   <p id="splash-status" class="text-slate-400 text-xs mt-4 animate-pulse z-10 flex items-center gap-2">
     <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A preparar a sua planilha...
   </p>
@@ -135,27 +126,17 @@
       </div>
       
       <div class="flex flex-col items-center justify-center pt-4 gap-4">
-        <!-- CORREÇÃO 2: ID ajustado para btnCustomGoogle -->
-        <button id="btnCustomGoogle" class="btn--custom hover:bg-slate-800">
+        <button id="btnCustom" class="btn--custom hover:bg-slate-800">
           <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
-          <!-- CORREÇÃO 3: Texto do botão completo -->
           <span>Continuar com o Google</span>
-        </button>
-
-        <button id="btnInstallLogin" class="ghost-btn w-full max-w-[280px] py-3 rounded-full flex items-center justify-center gap-2 hidden hover:border-cyan-400 hover:text-cyan-400 transition-colors">
-          <i data-lucide="download" class="w-4 h-4 animate-bounce"></i> Instalar Aplicativo Oficial
         </button>
       </div>
     </div>
-    
-    <footer class="mt-8 text-center text-[10px] text-slate-500 space-y-1.5 z-10 font-medium">
-      <p>© Direitos reservados <span class="text-cyan-400 font-bold tracking-wider">PlanilhaViva Pro</span>.</p>
-    </footer>
   </section>
 
   <section id="view-app" class="hidden flex-1 flex-col pb-32">
@@ -170,14 +151,16 @@
         </div>
       </div>
       <span id="sync-status" class="text-[9px] px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 flex items-center gap-1.5 font-bold border border-emerald-500/30 uppercase tracking-wider">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_5px_#10b981]"></span> Planilha OK
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_5px_#10b981]"></span> Nuvem OK
       </span>
     </header>
 
     <div class="px-5 pt-5 space-y-5">
+      
+      <!-- ABA 1: FLUXO (CAIXA DIÁRIO) -->
       <div id="view-fluxo" class="view active space-y-5">
         <div class="glass glass-neon rounded-3xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="plus-circle" class="w-5 h-5 text-cyan-400 drop-shadow-md"></i> Novo Lançamento</h3>
+          <h3 class="section-title"><i data-lucide="plus-circle" class="w-5 h-5 text-cyan-400 drop-shadow-md"></i> Lançamento Único</h3>
           <form id="txForm" class="space-y-4">
             <div>
               <label class="label">Descrição</label>
@@ -189,14 +172,14 @@
                 <input id="amount" type="number" class="input font-bold text-cyan-100" step="0.01" min="0.01" placeholder="0,00" required>
               </div>
               <div>
-                <label class="label">Data</label>
+                <label class="label">Data exata</label>
                 <input id="date" type="text" class="input font-bold text-center" placeholder="Data" required>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="label">Natureza</label>
-                <div class="seg" role="group">
+                <div class="seg" role="group" id="seg-normal">
                   <button type="button" class="seg-btn" data-type="in" aria-pressed="true">Entrada</button>
                   <button type="button" class="seg-btn" data-type="out" aria-pressed="false">Saída</button>
                 </div>
@@ -214,13 +197,17 @@
         </div>
       </div>
 
+      <!-- ABA 2: RESUMO -->
       <div id="view-resumo" class="view space-y-5">
         <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center border border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,0.15)]">
           <div class="glow"></div>
           <p class="text-[10px] uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2">
-            <i data-lucide="wallet" class="w-3 h-3"></i> <span id="label-saldo">Saldo Projetado</span>
+            <i data-lucide="wallet" class="w-3 h-3"></i> <span id="label-saldo">Saldo Consolidado</span>
           </p>
           <p id="saldo" class="text-4xl font-black mt-1 tabular-nums drop-shadow-md text-white">R$ 0,00</p>
+          <button onclick="carregarResumo()" class="absolute top-4 right-4 text-cyan-400 hover:text-white transition-colors">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          </button>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-3">
@@ -240,6 +227,7 @@
         </div>
       </div>
 
+      <!-- ABA 3: INVESTIMENTOS -->
       <div id="view-investir" class="view space-y-5">
         <div class="glass rounded-3xl p-6 relative overflow-hidden flex flex-col items-center">
           <div class="glow"></div>
@@ -251,23 +239,58 @@
               <span id="invest-total" class="text-xl font-black text-white drop-shadow-md transition-all">R$ 0,00</span>
             </div>
           </div>
-          <p class="text-xs text-slate-400 text-center">Os lançamentos categorizados como <b>"Investimento"</b> somam o seu património aqui.</p>
+          <p class="text-xs text-slate-400 text-center">Tudo o que lança como <b>"Investimento"</b> acumula aqui através da planilha.</p>
         </div>
       </div>
 
+      <!-- ABA 4: CONFIGURAÇÕES E CUSTOS FIXOS -->
       <div id="view-config" class="view space-y-5">
-        <div class="glass rounded-3xl p-8 flex flex-col items-center text-center gap-3 border border-cyan-500/40 shadow-[0_0_30px_rgba(34,211,238,0.2)] relative overflow-hidden">
-          <div class="glow"></div>
-          <div id="cfg-avatar" class="w-28 h-28 shrink-0 rounded-full bg-slate-800 border-4 border-cyan-400 overflow-hidden flex items-center justify-center z-10"></div>
+        
+        <!-- ABRIR PLANILHA (BOTÃO GIGANTE) -->
+        <div class="glass rounded-3xl p-8 flex flex-col items-center text-center gap-3 border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.2)] relative overflow-hidden">
+          <div class="glow" style="background:rgba(16,185,129,.25);"></div>
+          <div id="cfg-avatar" class="w-20 h-20 shrink-0 rounded-full bg-slate-800 border-4 border-emerald-400 overflow-hidden flex items-center justify-center z-10"></div>
           <div class="z-10 mt-2">
-            <p id="cfg-name" class="font-black text-white text-3xl tracking-tight drop-shadow-md">Utilizador</p>
-            <p id="cfg-email" class="text-xs text-slate-400 font-mono mb-4">email@gmail.com</p>
+            <p class="text-xs text-slate-400 font-mono mb-4">Sua área de inteligência</p>
           </div>
           
-          <a id="link-planilha" href="#" target="_blank" class="relative z-10 mt-4 btn--custom !border-emerald-500/50 !shadow-[0_8px_25px_-8px_rgba(16,185,129,0.4)] hover:bg-emerald-500/10 hidden">
-            <i data-lucide="table" class="w-5 h-5 text-emerald-400"></i>
-            <span class="text-emerald-100">Abrir Planilha Pessoal</span>
+          <a id="link-planilha" href="#" target="_blank" class="relative z-10 mt-2 btn-primary !bg-emerald-500 !from-emerald-400 !to-emerald-600 w-full py-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-[0_10px_25px_-5px_rgba(16,185,129,0.5)]">
+            <i data-lucide="table" class="w-5 h-5 text-white"></i>
+            <span class="text-white font-black">Abrir Planilha Completa</span>
           </a>
+        </div>
+
+        <!-- FORMULÁRIO CUSTOS FIXOS (PREVISIBILIDADE) -->
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title text-purple-400"><i data-lucide="repeat" class="w-4 h-4"></i> Contas Fixas (Previsibilidade)</h3>
+          <p class="text-[10px] text-slate-400 mb-2">Lança uma vez e o sistema projeta até o final do ano. Ex: Netflix, Internet, Salário.</p>
+          
+          <form id="fixedForm" class="space-y-4">
+            <div>
+              <input id="f-desc" class="input font-medium text-sm" placeholder="Nome da conta fixa" required>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <input id="f-amount" type="number" class="input font-bold text-purple-100" step="0.01" placeholder="Valor (R$)" required>
+              <select id="f-startMonth" class="input font-medium text-xs">
+                <option value="10">A partir de Outubro</option>
+                <option value="11">A partir de Novembro</option>
+                <option value="12">A partir de Dezembro</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <div class="seg" role="group" id="seg-fixed">
+                  <button type="button" class="seg-btn" data-type="in" aria-pressed="false">Receita</button>
+                  <button type="button" class="seg-btn" data-type="out" aria-pressed="true">Despesa</button>
+                </div>
+              </div>
+              <input id="f-day" type="number" class="input text-center text-xs" min="1" max="31" placeholder="Dia Vencimento" required>
+            </div>
+            <input type="hidden" id="f-type" value="out">
+            <button id="btnSaveFixed" type="submit" class="btn-primary !from-purple-500 !to-pink-600 w-full py-3 rounded-xl flex items-center justify-center gap-2 mt-2 text-xs">
+              <i data-lucide="calendar-clock" class="w-4 h-4"></i> Projetar para o Ano
+            </button>
+          </form>
         </div>
 
         <button id="btnLogout" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
@@ -289,6 +312,7 @@
 </nav>
 
 <script>
+// SUAS CHAVES REAIS AQUI
 const _CLIENT_ID = "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4K85p_OpuCLbi-t_6URDUY8sgQfvxsxs7KW7f0nNLyH3gzYacRs8yck9bxViRu30txg/exec"; 
 
@@ -296,7 +320,6 @@ const CATEGORIES = ["Receita","Dízimo","Fixos","Pessoal","Saúde","Dívidas","I
 const brl = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
 const $ = id => document.getElementById(id);
 const state = { user: null };
-let totalInvestidoLocal = 0;
 
 function initParticles() {
   const canvas = $("bg"); if (!canvas) return; const ctx = canvas.getContext("2d"); let particles = [];
@@ -347,7 +370,6 @@ async function api(action, payload = {}) {
   return await res.json();
 }
 
-// CORREÇÃO 5: Lógica de Resumo Baseada no Backend
 async function carregarResumo() {
   try {
     const r = await api("get_summary");
@@ -360,11 +382,9 @@ async function carregarResumo() {
     $("bar-in").style.width = `${(r.entrada / total) * 100}%`;
     $("bar-out").style.width = `${(r.saida / total) * 100}%`;
     
-    totalInvestidoLocal = r.investido || 0;
-    $("invest-total").textContent = brl.format(totalInvestidoLocal);
+    $("invest-total").textContent = brl.format(r.investido || 0);
   } catch (e) {
     console.error("Erro ao carregar resumo", e);
-    toast("Aviso: Falha ao carregar os dados financeiros.", "error");
   }
 }
 
@@ -387,7 +407,7 @@ async function iniciarContaNaNuvem(user) {
     }
     $("splash-status").innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Tudo pronto!`; icons();
   } catch (erro) {
-    $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i> Erro ao sincronizar...`; icons();
+    $("splash-status").innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i> Carregando local...`; icons();
   }
 
   setTimeout(() => {
@@ -409,13 +429,13 @@ function setupGooglePopup() {
       iniciarContaNaNuvem(state.user);
     }
   });
-  $("btnCustomGoogle").addEventListener("click", () => tokenClient.requestAccessToken({ prompt: "select_account" }));
+  $("btnCustom").addEventListener("click", () => tokenClient.requestAccessToken({ prompt: "select_account" }));
 }
 
 function enterApp() {
   const u = state.user;
   $("user-name").textContent = u.name.split(" ")[0]; setAvatar($("avatar"), u);
-  $("cfg-name").textContent = u.name; $("cfg-email").textContent = u.email; setAvatar($("cfg-avatar"), u);
+  setAvatar($("cfg-avatar"), u);
   
   const urlPlanilha = localStorage.getItem(`pv_sheet_url_${u.email}`);
   if(urlPlanilha) {
@@ -445,7 +465,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initParticles(); 
   CATEGORIES.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; $("category").append(o); });
   
-  // CORREÇÃO 4: flatpickr disableMobile é booleano (sem aspas)
   flatpickr("#date", { locale: "pt", dateFormat: "Y-m-d", defaultDate: "today", disableMobile: true });
   icons();
 
@@ -459,9 +478,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
   
-  document.querySelectorAll("#txForm .seg-btn").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll("#seg-normal .seg-btn").forEach(b => b.addEventListener("click", () => {
     $("type").value = b.dataset.type; 
-    document.querySelectorAll("#txForm .seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
+    document.querySelectorAll("#seg-normal .seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
+  }));
+
+  document.querySelectorAll("#seg-fixed .seg-btn").forEach(b => b.addEventListener("click", () => {
+    $("f-type").value = b.dataset.type; 
+    document.querySelectorAll("#seg-fixed .seg-btn").forEach(btn => btn.setAttribute("aria-pressed", String(btn === b)));
   }));
 
   $("btnLogout").addEventListener("click", () => { 
@@ -469,6 +493,7 @@ document.addEventListener("DOMContentLoaded", () => {
     location.reload(); 
   });
   
+  // SUBMIT LANÇAMENTO DIÁRIO
   $("txForm").addEventListener("submit", async e => { 
     e.preventDefault(); 
     const payload = {
@@ -481,17 +506,40 @@ document.addEventListener("DOMContentLoaded", () => {
     
     try {
       await api("add_transaction", payload); 
-      toast("Enviado para a planilha com sucesso!", "success"); 
+      toast("Lançado com sucesso!", "success"); 
       $("txForm").reset(); 
-      // CORREÇÃO 4: Atualiza a data em vez de criar outra instância
       if ($("date")._flatpickr) $("date")._flatpickr.setDate("today");
-      
-      // Atualiza os dados instantaneamente após gravar
       carregarResumo();
     } catch(err) {
-      toast("Erro ao ligar ao Google Sheets.", "error");
+      toast("Erro de ligação.", "error");
     } finally {
       btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Enviar para Nuvem`; icons();
+    }
+  });
+
+  // SUBMIT CONTAS FIXAS
+  $("fixedForm").addEventListener("submit", async e => { 
+    e.preventDefault(); 
+    const payload = {
+      desc: $("f-desc").value.trim(), 
+      amount: parseFloat($("f-amount").value), 
+      type: $("f-type").value, 
+      startMonth: $("f-startMonth").value, 
+      fixedDay: $("f-day").value 
+    };
+    
+    const btn = $("btnSaveFixed");
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Projetando...`; icons();
+    
+    try {
+      await api("add_fixed_transaction", payload); 
+      toast("Conta fixa projetada até ao fim do ano!", "success"); 
+      $("fixedForm").reset(); 
+      carregarResumo();
+    } catch(err) {
+      toast("Erro ao projetar conta fixa.", "error");
+    } finally {
+      btn.innerHTML = `<i data-lucide="calendar-clock" class="w-4 h-4"></i> Projetar para o Ano`; icons();
     }
   });
 });
