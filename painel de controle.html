@@ -49,6 +49,10 @@
 
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* SKELETON LOADING */
+  .skeleton { background: linear-gradient(90px, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 37%, rgba(255,255,255,0.05) 63%); background-size: 400% 100%; animation: skeleton-loading 1.4s ease infinite; border-radius: 4px; color: transparent !important; }
+  @keyframes skeleton-loading { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
 </style>
 </head>
 <body class="text-slate-100 min-h-screen pb-24">
@@ -106,106 +110,63 @@
       <!-- ABA 1: INTELIGÊNCIA & INDICADORES (KPIs) -->
       <div id="view-dashboard" class="view active space-y-5">
         
-        <!-- Matriz de Indicadores -->
+        <!-- Matriz de Indicadores Reais -->
         <div class="grid grid-cols-2 gap-3">
           <div class="glass p-4 rounded-2xl border border-emerald-500/30">
             <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-bold mb-1">Receita MRR</p>
-            <p class="text-xl font-black text-white">R$ 2.450</p>
+            <p class="text-xl font-black text-white skeleton w-24 h-7 inline-block" id="kpi-mrr">R$ 0,00</p>
           </div>
           <div class="glass p-4 rounded-2xl border border-blue-500/30">
             <p class="text-[9px] uppercase tracking-widest text-blue-400 font-bold mb-1">Base Ativa</p>
-            <p class="text-xl font-black text-white">82 <span class="text-[10px] text-slate-400 font-medium">usuários</span></p>
-          </div>
-          <div class="glass p-4 rounded-2xl border border-purple-500/30">
-            <p class="text-[8px] uppercase tracking-widest text-purple-400 font-bold mb-1" title="Life Time Value">LTV (MÉDIO)</p>
-            <p class="text-xl font-black text-white">R$ 380</p>
+            <p class="text-xl font-black text-white skeleton w-16 h-7 inline-block" id="kpi-ativos">0</p>
           </div>
           <div class="glass p-4 rounded-2xl border border-rose-500/30">
-            <p class="text-[9px] uppercase tracking-widest text-rose-400 font-bold mb-1">Taxa Churn</p>
-            <p class="text-xl font-black text-white">8.5% <span class="text-[10px] text-rose-400 font-medium">▼ Risco</span></p>
+            <p class="text-[9px] uppercase tracking-widest text-rose-400 font-bold mb-1">Base Inativa (Churn)</p>
+            <p class="text-xl font-black text-white skeleton w-16 h-7 inline-block" id="kpi-inativos">0</p>
           </div>
-        </div>
-
-        <!-- Engajamento de Usuários (Heavy Users) -->
-        <div class="glass rounded-2xl p-5 border border-amber-500/20 relative overflow-hidden">
-          <div class="glow-amber absolute -right-10 -top-10 opacity-50"></div>
-          <h3 class="text-xs font-black uppercase text-amber-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="award" class="w-4 h-4"></i> Top Engajamento da Base</h3>
-          
-          <div class="space-y-2 relative z-10">
-            <div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-700">
-              <div>
-                <p class="text-[11px] font-bold text-white">Gilnei C.</p>
-                <p class="text-[9px] text-slate-400 mt-0.5">Média: 14 min/sessão | 42 acessos/mês</p>
-              </div>
-              <span class="text-[9px] bg-emerald-900/40 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded font-bold">Tier 1</span>
-            </div>
-            
-            <div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-700">
-              <div>
-                <p class="text-[11px] font-bold text-white">Samuel D.</p>
-                <p class="text-[9px] text-slate-400 mt-0.5">Média: 11 min/sessão | 38 acessos/mês</p>
-              </div>
-              <span class="text-[9px] bg-emerald-900/40 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded font-bold">Tier 1</span>
-            </div>
+          <div class="glass p-4 rounded-2xl border border-amber-500/30">
+            <p class="text-[9px] uppercase tracking-widest text-amber-400 font-bold mb-1">Total Usuários</p>
+            <p class="text-xl font-black text-white skeleton w-16 h-7 inline-block" id="kpi-total">0</p>
           </div>
         </div>
 
         <div class="glass rounded-2xl p-5 border border-blue-500/20">
-          <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4"><i data-lucide="activity" class="w-4 h-4"></i> Histórico de Acessos Diários</h3>
-          <div class="w-full h-[180px]"><canvas id="chartUsage"></canvas></div>
+          <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4"><i data-lucide="activity" class="w-4 h-4"></i> Saúde da Base</h3>
+          <div class="w-full h-[180px] relative">
+            <div id="chart-loader" class="absolute inset-0 flex items-center justify-center text-slate-500 text-xs font-bold animate-pulse">Buscando dados da planilha...</div>
+            <canvas id="chartUsage"></canvas>
+          </div>
         </div>
       </div>
 
-      <!-- ABA 2: CRM & BLOQUEIOS -->
+      <!-- ABA 2: CRM & BLOQUEIOS (DADOS REAIS) -->
       <div id="view-crm" class="view space-y-5">
         <div class="glass rounded-2xl p-5 border border-blue-500/30 relative overflow-hidden">
           <div class="glow-blue absolute right-0 bottom-0"></div>
           <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="users" class="w-4 h-4"></i> Gestão de Clientes</h3>
           
           <div class="relative z-10 mb-4">
-            <input type="text" class="input text-xs h-10" placeholder="Buscar e-mail ou nome (Auditoria)...">
+            <input type="text" class="input text-xs h-10" id="search-user" placeholder="Buscar e-mail ou nome..." onkeyup="Admin.filterUsers()">
           </div>
 
-          <div class="space-y-3">
-            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10">
-              <div class="flex justify-between items-start">
-                <div>
-                  <p class="text-xs font-bold text-white">Gilnei C.</p>
-                  <p class="text-[10px] text-slate-400 font-mono">gilneycriative@gmail.com</p>
+          <div class="space-y-3 relative z-10" id="real-user-list">
+            <!-- Esqueleto de Carregamento -->
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full skeleton"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-3 w-1/2 skeleton"></div>
+                  <div class="h-2 w-3/4 skeleton"></div>
                 </div>
-                <span class="bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Ativo</span>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Uso: <span class="text-white font-bold">Intenso</span></div>
-                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'gilneycriative@gmail.com')">Forçar Bloqueio</button>
               </div>
             </div>
-
-            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10">
-              <div class="flex justify-between items-start">
-                <div>
-                  <p class="text-xs font-bold text-white">Samuel Danilo</p>
-                  <p class="text-[10px] text-slate-400 font-mono">samueldanilo11@gmail.com</p>
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full skeleton"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-3 w-1/2 skeleton"></div>
+                  <div class="h-2 w-3/4 skeleton"></div>
                 </div>
-                <span class="bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Ativo</span>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Uso: <span class="text-white font-bold">Intenso</span></div>
-                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'samueldanilo11@gmail.com')">Forçar Bloqueio</button>
-              </div>
-            </div>
-            
-            <div class="bg-slate-900/80 p-4 rounded-xl border border-rose-900/50 flex flex-col gap-3 relative z-10">
-              <div class="flex justify-between items-start">
-                <div>
-                  <p class="text-xs font-bold text-slate-300">Cliente Exemplo (Inativo)</p>
-                  <p class="text-[10px] text-slate-500 font-mono">exemplo@inativo.com</p>
-                </div>
-                <span class="bg-rose-900/40 text-rose-400 border border-rose-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Vencido</span>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Inativo 14 dias</div>
-                <button class="bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition" onclick="Admin.toggleUserStatus(this, 'exemplo@inativo.com', true)">Liberar Acesso</button>
               </div>
             </div>
           </div>
@@ -223,9 +184,8 @@
               <label class="label text-purple-400">Direcionamento de Público</label>
               <select id="msg-target" class="input text-xs border-purple-500/30">
                 <option value="all">Base Completa (Massivo)</option>
-                <option value="vencimento">Notificação de Vencimento Próximo</option>
-                <option value="inativos">Reengajamento (Recuperar Churn)</option>
-                <option value="promo">Promoção (Upsell / Descontos)</option>
+                <option value="ativos">Apenas Adimplentes (Upsell)</option>
+                <option value="inativos">Apenas Inativos (Recuperar Churn)</option>
               </select>
             </div>
             <div>
@@ -236,7 +196,7 @@
               <label class="label">Mensagem Interativa</label>
               <textarea id="msg-body" class="input h-24 resize-none text-xs" placeholder="Conteúdo que irá aparecer no modal do usuário..." required></textarea>
             </div>
-            <button type="submit" class="btn-admin bg-purple-600 shadow-[0_10px_30px_rgba(168,85,247,0.4)] border-none" style="background: linear-gradient(135deg,#a855f7,#7e22ce); color: #fff;">
+            <button type="submit" class="btn-admin bg-purple-600 shadow-[0_10px_30px_rgba(168,85,247,0.4)] border-none" style="background: linear-gradient(135deg,#a855f7,#7e22ce); color: #fff;" id="btn-disparar">
               <i data-lucide="send" class="w-4 h-4"></i> Lançar ao Servidor
             </button>
           </form>
@@ -265,9 +225,12 @@
 </nav>
 
 <script>
+// ============================================================================
+// CONFIGURAÇÕES GLOBAIS
+// ============================================================================
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  // MATRIZ DE E-MAILS LÍDERES PERMITIDOS ATUALIZADA
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxtC-RVuqs-n7CUNG150hwcXOS-M4T9bvgkVxySolIrAI-BJy7aUfTfRrhmRE9ml3qQJQ/exec", // <--- INSIRA SUA URL AQUI
   ADMIN_EMAILS: [
     "gilneycriative@gmail.com", 
     "samueldanilo11@gmail.com",
@@ -275,10 +238,13 @@ const CONFIG = {
   ]
 };
 
+const State = { user: null };
 const $ = id => document.getElementById(id);
 let chartInstance = null;
 
-// UI & Particulas
+// ============================================================================
+// UI & EFEITOS
+// ============================================================================
 function initParticles() {
   const canvas = $("bg"); if(!canvas) return;
   const ctx = canvas.getContext("2d"); let p = [];
@@ -303,7 +269,7 @@ const UI = {
   refreshIcons: () => { if (window.lucide) lucide.createIcons(); },
   toast: (msg, type = "success") => {
     const icon = type === "error" ? "alert-triangle" : "check-circle";
-    const color = type === "error" ? "text-rose-400" : "text-amber-400";
+    const color = type === "error" ? "text-rose-400" : "text-emerald-400";
     const t = document.createElement("div");
     t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-slate-700 z-[9999]";
     t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 shrink-0 ${color}"></i><span>${msg}</span>`;
@@ -313,53 +279,191 @@ const UI = {
   }
 };
 
-// Funções Estratégicas do Admin
-const Admin = {
-  initCharts: () => {
-    if(chartInstance) chartInstance.destroy();
-    Chart.defaults.color = '#64748b'; Chart.defaults.font.family = 'system-ui';
-    chartInstance = new Chart($("chartUsage"), {
-      type: 'line',
-      data: { 
-        labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'], 
-        datasets: [{ label: 'Acessos Totais', data: [45, 52, 38, 65, 82, 30, 20], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] 
-      },
-      options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } }, elements: { point: { radius: 0 } } }
-    });
-  },
-  
-  sendMessage: () => {
-    const target = $("msg-target").options[$("msg-target").selectedIndex].text;
-    UI.toast(`Campanha programada com sucesso para: ${target}`, "success");
-    $("msg-title").value = ""; $("msg-body").value = "";
-  },
-
-  toggleUserStatus: (btnElement, email, isReactivating = false) => {
-    if(isReactivating) {
-      UI.toast(`Acesso restaurado para ${email}.`, "success");
-      btnElement.textContent = "Forçar Bloqueio";
-      btnElement.className = "bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition";
-      btnElement.onclick = () => Admin.toggleUserStatus(btnElement, email, false);
-      const span = btnElement.closest('div.flex-col').querySelector('span.uppercase');
-      span.className = "bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase";
-      span.textContent = "Ativo";
-    } else {
-      UI.toast(`Acesso bloqueado e notificação enviada para ${email}.`, "success");
-      btnElement.textContent = "Liberar Acesso";
-      btnElement.className = "bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition";
-      btnElement.onclick = () => Admin.toggleUserStatus(btnElement, email, true);
-      const span = btnElement.closest('div.flex-col').querySelector('span.uppercase');
-      span.className = "bg-rose-900/40 text-rose-400 border border-rose-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase";
-      span.textContent = "Bloqueado";
+// ============================================================================
+// CONEXÃO DE DADOS (API)
+// ============================================================================
+const API = {
+  call: async (action, payload = {}) => {
+    if (!State.user || !State.user.email) throw new Error("Acesso não validado.");
+    
+    // Fallback de segurança caso a URL não tenha sido preenchida pelo dev
+    if (CONFIG.SCRIPT_URL.includes("COLOQUE_AQUI")) {
+      throw new Error("URL do App Script não configurada no código HTML.");
     }
-  },
-  
-  syncData: () => {
-    UI.toast("Cruzando dados com o Google Sheets...", "success");
+
+    const res = await fetch(CONFIG.SCRIPT_URL, {
+      method: "POST", 
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
+    });
+    
+    const json = await res.json();
+    if (json.status !== "success") throw new Error(json.message);
+    return json;
   }
 };
 
-// Navegação e Login OAuth2
+// ============================================================================
+// FUNÇÕES ESTRATÉGICAS DO ADMIN (DADOS REAIS)
+// ============================================================================
+const Admin = {
+  syncData: async () => {
+    try {
+      UI.toast("Buscando dados reais da Planilha...", "success");
+      
+      const response = await API.call("get_admin_data");
+      const { kpis, usuarios } = response.data;
+
+      // 1. Remove classe Skeleton e preenche KPIs
+      const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+      
+      const mrrEl = $("kpi-mrr");
+      mrrEl.classList.remove("skeleton");
+      mrrEl.innerHTML = `${brl.format(kpis.mrr)}`;
+
+      const ativosEl = $("kpi-ativos");
+      ativosEl.classList.remove("skeleton");
+      ativosEl.innerHTML = `${kpis.ativos} <span class="text-[10px] text-slate-400 font-medium">clientes</span>`;
+
+      const inativosEl = $("kpi-inativos");
+      inativosEl.classList.remove("skeleton");
+      inativosEl.innerHTML = `${kpis.inativos} <span class="text-[10px] text-slate-400 font-medium">clientes</span>`;
+
+      const totalEl = $("kpi-total");
+      totalEl.classList.remove("skeleton");
+      totalEl.innerHTML = `${kpis.totalBase}`;
+
+      // 2. Renderizar Gráficos Reais
+      $("chart-loader").classList.add("hidden");
+      Admin.renderCharts(kpis);
+
+      // 3. Renderizar Lista Real de Usuários
+      const userList = $("real-user-list");
+      userList.innerHTML = ""; 
+      
+      if (usuarios.length === 0) {
+        userList.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum cliente cadastrado na planilha ainda.</p>`;
+      } else {
+        usuarios.forEach(u => {
+          const isAtivo = u.status === "Ativo";
+          const corBadge = isAtivo ? "bg-emerald-900/40 text-emerald-400 border-emerald-500/50" : "bg-rose-900/40 text-rose-400 border-rose-500/50";
+          const textBadge = isAtivo ? "Ativo" : "Inativo";
+          const iniciais = u.nome ? u.nome.substring(0,2).toUpperCase() : "US";
+          const dataAcesso = u.ultimoAcesso ? new Date(u.ultimoAcesso).toLocaleDateString() : "Sem registro";
+          
+          userList.innerHTML += `
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10 user-card" data-search="${u.nome.toLowerCase()} ${u.email.toLowerCase()}">
+              <div class="flex justify-between items-start">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 font-bold text-[10px] border border-slate-600">${iniciais}</div>
+                  <div>
+                    <p class="text-xs font-bold text-white">${u.nome || "Usuário"}</p>
+                    <p class="text-[10px] text-slate-400 font-mono">${u.email}</p>
+                  </div>
+                </div>
+                <span class="border px-2 py-0.5 rounded text-[9px] font-bold uppercase status-badge ${corBadge}">${textBadge}</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center truncate">Visto: ${dataAcesso}</div>
+                <button class="border py-1.5 rounded text-[10px] font-bold transition ${isAtivo ? 'bg-rose-900/30 text-rose-400 border-rose-500/50 hover:bg-rose-900/50' : 'bg-emerald-900/30 text-emerald-400 border-emerald-500/50 hover:bg-emerald-900/50'}" onclick="Admin.toggleUserStatus(this, '${u.email}', ${!isAtivo})">
+                  ${isAtivo ? 'Forçar Bloqueio' : 'Liberar Acesso'}
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      }
+      UI.refreshIcons();
+    } catch (e) {
+      console.error(e);
+      UI.toast(e.message === "URL do App Script não configurada no código HTML." ? e.message : "Erro ao ler dados da planilha mestre.", "error");
+    }
+  },
+
+  renderCharts: (kpis) => {
+    if(chartInstance) chartInstance.destroy();
+    Chart.defaults.color = '#64748b'; Chart.defaults.font.family = 'system-ui';
+    
+    chartInstance = new Chart($("chartUsage"), {
+      type: 'doughnut',
+      data: { 
+        labels: ['Adimplentes', 'Inadimplentes (Churn)'], 
+        datasets: [{ data: [kpis.ativos, kpis.inativos], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0, cutout: '75%' }] 
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+  },
+
+  filterUsers: () => {
+    const term = $("search-user").value.toLowerCase();
+    const cards = document.querySelectorAll(".user-card");
+    cards.forEach(c => {
+      c.style.display = c.dataset.search.includes(term) ? "flex" : "none";
+    });
+  },
+
+  toggleUserStatus: async (btnElement, userEmail, isReactivating) => {
+    try {
+      const originalText = btnElement.textContent;
+      btnElement.textContent = "...";
+      
+      // Chamada para a API salvar a mudança no Google Sheets
+      await API.call("toggle_user_status", { targetEmail: userEmail, status: isReactivating ? "Ativo" : "Inativo" });
+      
+      UI.toast(isReactivating ? `Acesso restaurado para ${userEmail}.` : `Acesso bloqueado para ${userEmail}.`, "success");
+      
+      // Atualiza estética localmente sem precisar recarregar toda a lista
+      if(isReactivating) {
+        btnElement.textContent = "Forçar Bloqueio";
+        btnElement.className = "bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition";
+        btnElement.onclick = () => Admin.toggleUserStatus(btnElement, userEmail, false);
+        const span = btnElement.closest('.user-card').querySelector('.status-badge');
+        span.className = "border px-2 py-0.5 rounded text-[9px] font-bold uppercase status-badge bg-emerald-900/40 text-emerald-400 border-emerald-500/50";
+        span.textContent = "Ativo";
+      } else {
+        btnElement.textContent = "Liberar Acesso";
+        btnElement.className = "bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition";
+        btnElement.onclick = () => Admin.toggleUserStatus(btnElement, userEmail, true);
+        const span = btnElement.closest('.user-card').querySelector('.status-badge');
+        span.className = "border px-2 py-0.5 rounded text-[9px] font-bold uppercase status-badge bg-rose-900/40 text-rose-400 border-rose-500/50";
+        span.textContent = "Inativo";
+      }
+    } catch (e) {
+      UI.toast("Erro ao alterar o status do usuário na planilha.", "error");
+    }
+  },
+  
+  sendMessage: async () => {
+    const target = $("msg-target").value;
+    const title = $("msg-title").value;
+    const body = $("msg-body").value;
+
+    if(!title.trim() || !body.trim()) return UI.toast("Preencha título e mensagem.", "error");
+
+    try {
+      const btn = $("btn-disparar");
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Disparando...`;
+      
+      const res = await API.call("send_message", {
+        target: target,
+        messageData: { title: title, body: body, type: target === 'promo' ? 'promo' : 'alert', btnText: "Ok, Entendi" }
+      });
+
+      UI.toast(`Notificação enviada para ${res.data.disparosRealizados} usuários.`, "success");
+      $("msg-title").value = ""; $("msg-body").value = "";
+      btn.innerHTML = originalText;
+      UI.refreshIcons();
+    } catch(e) {
+      UI.toast("Erro ao disparar mensagem para a planilha.", "error");
+      $("btn-disparar").innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Lançar ao Servidor`;
+    }
+  }
+};
+
+// ============================================================================
+// NAVEGAÇÃO E LOGIN OAUTH2
+// ============================================================================
 const App = {
   init: () => {
     initParticles(); UI.refreshIcons();
@@ -378,15 +482,14 @@ const App = {
         
         const authenticatedEmail = p.email.toLowerCase();
         
-        // VERIFICAÇÃO DE SEGURANÇA MÁXIMA
         if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === authenticatedEmail)) {
-            return UI.toast(`Email negado: ${authenticatedEmail}. Contate o Suporte.`, "error");
+            return UI.toast(`Acesso Negado: ${authenticatedEmail} não possui credenciais de líder.`, "error");
         }
         
         $("admin-name").textContent = p.given_name || p.name.split(" ")[0];
-        if(p.picture) {
-            $("avatar").innerHTML = `<img src="${p.picture}" class="w-full h-full object-cover">`;
-        }
+        if(p.picture) $("avatar").innerHTML = `<img src="${p.picture}" class="w-full h-full object-cover">`;
+        
+        State.user = { name: p.name, email: p.email, picture: p.picture };
         
         $("view-auth").classList.replace("flex", "hidden");
         const splash = $("welcome-splash");
@@ -405,6 +508,7 @@ const App = {
     $("view-app").classList.remove("hidden"); $("view-app").classList.add("flex");
     $("bottom-nav").classList.remove("hidden");
     App.nav("dashboard");
+    Admin.syncData(); // Gatilho automático para buscar dados da planilha
   },
 
   nav: (view) => {
@@ -419,7 +523,6 @@ const App = {
       }
     });
     window.scrollTo(0, 0); UI.refreshIcons();
-    if(view === 'dashboard') Admin.initCharts();
   }
 };
 
