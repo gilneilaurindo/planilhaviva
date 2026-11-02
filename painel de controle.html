@@ -8,7 +8,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://accounts..com/gsi/client" async defer></script>
 
 <style>
   :root { color-scheme: dark; }
@@ -54,7 +54,7 @@
       <div class="glow-amber"></div>
       <h1 class="text-3xl font-black text-white">Controle <span class="text-amber-400">Pro</span></h1>
       <button id="btnLogin" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-amber-400/50 rounded-full font-bold hover:bg-slate-700 transition cursor-pointer text-sm">
-        <i data-lucide="key" class="w-5 h-5 text-amber-400"></i> Acesso Restrito ao Google
+        <i data-lucide="key" class="w-5 h-5 text-amber-400"></i> Acesso Restrito ao 
       </button>
     </div>
   </section>
@@ -147,11 +147,11 @@
 
 <script>
 const CONFIG = {
-  CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
+  CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.usercontent.com",
   
   // ⚠️ ATENÇÃO: COLOQUE AQUI A SUA URL DA NOVA IMPLEMENTAÇÃO
   // Substitua este link pelo gerado no "Passo 1"
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzb_v2DGG3LyCiKq6qdhRuesFd0b349fAj4_CfZ6z4Kl9nEtt8deT1MZVq85c3ytB1GeQ/exec",
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycby6HR6dFuayOcH73xukm0o49K3vkA5kbvZtu-dTiLWa7wSK_slHpC4jjmkvFA5a4nrCzw/exec",
   
   ADMIN_EMAILS: ["gilneycriative@gmail.com", "samueldanilo11@gmail.com", "gilneilaurindo@gmail.com"]
 };
@@ -192,13 +192,13 @@ const API = {
         body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload })
       });
     } catch(networkError) {
-      throw new Error("Erro de ligação. Verifique se autorizou o script no Google (Novo Deploy) e se copiou o URL certo.");
+      throw new Error("Erro de ligação. Verifique se autorizou o script no  (Novo Deploy) e se copiou o URL certo.");
     }
     
     try {
       json = await res.json();
     } catch(parseError) {
-      throw new Error("Resposta inválida do servidor. O Google pode estar a bloquear o script devido a permissões em falta.");
+      throw new Error("Resposta inválida do servidor. O  pode estar a bloquear o script devido a permissões em falta.");
     }
 
     if (json.status !== "success") throw new Error(json.message || "Erro desconhecido do Servidor.");
@@ -300,17 +300,17 @@ const App = {
 
     const savedUser = localStorage.getItem("planilhaviva_admin_auth");
     if (savedUser) { State.user = JSON.parse(savedUser); App.startSession(); }
-    else App.setupGoogleLogin();
+    else App.setupLogin();
   },
 
-  setupGoogleLogin: () => {
-    if (!window.google) return setTimeout(App.setupGoogleLogin, 300);
-    const client = google.accounts.oauth2.initTokenClient({
+  setupLogin: () => {
+    if (!window.) return setTimeout(App.setupLogin, 300);
+    const client = .accounts.oauth2.initTokenClient({
       client_id: CONFIG.CLIENT_ID, scope: "email profile",
       callback: async (t) => {
-        if (t.error) return UI.toast("Falha no login Google.", "error");
+        if (t.error) return UI.toast("Falha no login .", "error");
         try {
-          const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
+          const res = await fetch("https://www.apis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
           const p = await res.json();
           if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === p.email.toLowerCase())) return UI.toast("Acesso Negado à Área de Administração.", "error");
           State.user = { name: p.name, email: p.email, picture: p.picture };
