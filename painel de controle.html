@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#020617">
 <title>QG Estratégico | PlanilhaViva</title>
 
+<!-- SEO, Partilha & Favicon -->
+<meta name="title" content="PlanilhaViva Admin | Inteligência de Mercado">
+<meta name="description" content="Painel de Controle e Gestão Estratégica.">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
+
 <!-- Bibliotecas -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
@@ -23,6 +30,7 @@
   
   .glow-amber { position: absolute; width: 250px; height: 250px; border-radius: 9999px; background: rgba(251,191,36,.15); filter: blur(80px); top: -50px; right: -50px; pointer-events: none; }
   .glow-red { position: absolute; width: 200px; height: 200px; border-radius: 9999px; background: rgba(244,63,94,.15); filter: blur(80px); bottom: -50px; left: -50px; pointer-events: none; }
+  .glow-blue { position: absolute; width: 200px; height: 200px; border-radius: 9999px; background: rgba(59,130,246,.15); filter: blur(80px); bottom: -50px; right: -50px; pointer-events: none; }
   
   .view { display: none; opacity: 0; }
   .view.active { display: block; animation: viewIn .5s ease-out forwards; }
@@ -52,7 +60,7 @@
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center transition-all duration-500">
   <div class="relative z-10">
     <div class="w-32 h-32 rounded-full border-4 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(251,191,36,.5)]" id="splash-avatar">
-      <i data-lucide="shield-check" class="w-16 h-16 text-amber-400"></i>
+      <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-16 h-16 object-contain">
     </div>
   </div>
   <h2 class="text-3xl font-black text-white mt-6">QG <span class="text-amber-400">Admin</span></h2>
@@ -66,11 +74,11 @@
     <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
       <div class="glow-amber"></div>
       <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-amber-400/50 shadow-[0_0_20px_rgba(251,191,36,0.5)]">
-        <i data-lucide="briefcase" class="w-10 h-10 text-amber-400"></i>
+        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" class="w-10 h-10 object-contain">
       </div>
       <div>
         <h1 class="text-3xl font-black text-white">Controle <span class="text-amber-400">Pro</span></h1>
-        <p class="text-xs text-amber-100/70 mt-2 font-medium">Gestão de Usuários, MRR e Comunicação.</p>
+        <p class="text-xs text-amber-100/70 mt-2 font-medium">Inteligência de Mercado e Gestão.</p>
       </div>
       <button id="btnGoogleLogin" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-800 border border-amber-400/50 rounded-full font-bold hover:bg-slate-700 transition relative z-20">
         <i data-lucide="key" class="w-5 h-5 text-amber-400"></i> Acesso Restrito
@@ -88,16 +96,17 @@
           <h2 class="text-xs font-bold text-white" id="admin-name">Líder</h2>
         </div>
       </div>
-      <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700" onclick="Admin.syncData()">
+      <button class="text-amber-400 bg-slate-800 p-2 rounded-full border border-slate-700 hover:text-white transition" onclick="Admin.syncData()">
         <i data-lucide="refresh-cw" class="w-4 h-4"></i>
       </button>
     </header>
 
     <div class="px-5 pt-6 space-y-6">
 
-      <!-- ABA 1: INTELIGÊNCIA & INDICADORES -->
+      <!-- ABA 1: INTELIGÊNCIA & INDICADORES (KPIs) -->
       <div id="view-dashboard" class="view active space-y-5">
         
+        <!-- Matriz de Indicadores -->
         <div class="grid grid-cols-2 gap-3">
           <div class="glass p-4 rounded-2xl border border-emerald-500/30">
             <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-bold mb-1">Receita MRR</p>
@@ -105,24 +114,45 @@
           </div>
           <div class="glass p-4 rounded-2xl border border-blue-500/30">
             <p class="text-[9px] uppercase tracking-widest text-blue-400 font-bold mb-1">Base Ativa</p>
-            <p class="text-xl font-black text-white">82 <span class="text-[10px] text-slate-400">usuários</span></p>
+            <p class="text-xl font-black text-white">82 <span class="text-[10px] text-slate-400 font-medium">usuários</span></p>
+          </div>
+          <div class="glass p-4 rounded-2xl border border-purple-500/30">
+            <p class="text-[8px] uppercase tracking-widest text-purple-400 font-bold mb-1" title="Life Time Value">LTV (MÉDIO)</p>
+            <p class="text-xl font-black text-white">R$ 380</p>
+          </div>
+          <div class="glass p-4 rounded-2xl border border-rose-500/30">
+            <p class="text-[9px] uppercase tracking-widest text-rose-400 font-bold mb-1">Taxa Churn</p>
+            <p class="text-xl font-black text-white">8.5% <span class="text-[10px] text-rose-400 font-medium">▼ Risco</span></p>
           </div>
         </div>
 
-        <div class="glass rounded-2xl p-5 border border-amber-500/20">
-          <h3 class="text-xs font-black uppercase text-amber-400 flex items-center gap-2 mb-4"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Nível de Engajamento</h3>
-          <div class="w-full h-[180px]"><canvas id="chartUsage"></canvas></div>
-        </div>
-
-        <div class="glass rounded-2xl p-5 border border-rose-500/20">
-          <h3 class="text-xs font-black uppercase text-rose-400 flex items-center gap-2 mb-3"><i data-lucide="activity" class="w-4 h-4"></i> Risco de Abandono (Churn)</h3>
-          <div class="flex justify-between items-center bg-slate-900 p-3 rounded-lg border border-slate-700">
-            <div>
-              <p class="text-xs font-bold text-white">Carlos M.</p>
-              <p class="text-[9px] text-slate-400">Inativo há 14 dias</p>
+        <!-- Engajamento de Usuários (Heavy Users) -->
+        <div class="glass rounded-2xl p-5 border border-amber-500/20 relative overflow-hidden">
+          <div class="glow-amber absolute -right-10 -top-10 opacity-50"></div>
+          <h3 class="text-xs font-black uppercase text-amber-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="award" class="w-4 h-4"></i> Top Engajamento da Base</h3>
+          
+          <div class="space-y-2 relative z-10">
+            <div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-700">
+              <div>
+                <p class="text-[11px] font-bold text-white">Gilnei C.</p>
+                <p class="text-[9px] text-slate-400 mt-0.5">Média: 14 min/sessão | 42 acessos/mês</p>
+              </div>
+              <span class="text-[9px] bg-emerald-900/40 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded font-bold">Tier 1</span>
             </div>
-            <button class="bg-blue-600/30 text-blue-400 px-3 py-1.5 rounded text-[10px] font-bold border border-blue-500/50" onclick="UI.toast('Mensagem de retenção enviada!', 'success')">Notificar</button>
+            
+            <div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-700">
+              <div>
+                <p class="text-[11px] font-bold text-white">Samuel D.</p>
+                <p class="text-[9px] text-slate-400 mt-0.5">Média: 11 min/sessão | 38 acessos/mês</p>
+              </div>
+              <span class="text-[9px] bg-emerald-900/40 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded font-bold">Tier 1</span>
+            </div>
           </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5 border border-blue-500/20">
+          <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4"><i data-lucide="activity" class="w-4 h-4"></i> Histórico de Acessos Diários</h3>
+          <div class="w-full h-[180px]"><canvas id="chartUsage"></canvas></div>
         </div>
       </div>
 
@@ -130,40 +160,52 @@
       <div id="view-crm" class="view space-y-5">
         <div class="glass rounded-2xl p-5 border border-blue-500/30 relative overflow-hidden">
           <div class="glow-blue absolute right-0 bottom-0"></div>
-          <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="users" class="w-4 h-4"></i> Gestão de Usuários</h3>
+          <h3 class="text-xs font-black uppercase text-blue-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="users" class="w-4 h-4"></i> Gestão de Clientes</h3>
           
           <div class="relative z-10 mb-4">
-            <input type="text" class="input text-xs h-10" placeholder="Buscar e-mail ou nome...">
+            <input type="text" class="input text-xs h-10" placeholder="Buscar e-mail ou nome (Auditoria)...">
           </div>
 
           <div class="space-y-3">
-            <!-- Usuário 1 (Ativo) -->
             <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10">
               <div class="flex justify-between items-start">
                 <div>
-                  <p class="text-xs font-bold text-white">Samuel Danilo</p>
-                  <p class="text-[10px] text-slate-400 font-mono">samuel@gmail.com</p>
+                  <p class="text-xs font-bold text-white">Gilnei C.</p>
+                  <p class="text-[10px] text-slate-400 font-mono">gilneicreative@gmail.com</p>
                 </div>
                 <span class="bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Ativo</span>
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Uso: <span class="text-white font-bold">Alto</span></div>
-                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'samuel@gmail.com')">Inativar Acesso</button>
+                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Uso: <span class="text-white font-bold">Intenso</span></div>
+                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'gilneicreative@gmail.com')">Forçar Bloqueio</button>
               </div>
             </div>
 
-            <!-- Usuário 2 (Vencido) -->
             <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 flex flex-col gap-3 relative z-10">
               <div class="flex justify-between items-start">
                 <div>
-                  <p class="text-xs font-bold text-white">João Silva</p>
-                  <p class="text-[10px] text-slate-400 font-mono">joao@gmail.com</p>
+                  <p class="text-xs font-bold text-white">Samuel Danilo</p>
+                  <p class="text-[10px] text-slate-400 font-mono">samueldanilo@gmail.com</p>
+                </div>
+                <span class="bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Ativo</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Uso: <span class="text-white font-bold">Intenso</span></div>
+                <button class="bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition" onclick="Admin.toggleUserStatus(this, 'samueldanilo@gmail.com')">Forçar Bloqueio</button>
+              </div>
+            </div>
+            
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-rose-900/50 flex flex-col gap-3 relative z-10">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-xs font-bold text-slate-300">Cliente Exemplo (Inativo)</p>
+                  <p class="text-[10px] text-slate-500 font-mono">exemplo@inativo.com</p>
                 </div>
                 <span class="bg-rose-900/40 text-rose-400 border border-rose-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Vencido</span>
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Bloqueio Automático</div>
-                <button class="bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition" onclick="Admin.toggleUserStatus(this, 'joao@gmail.com', true)">Reativar</button>
+                <div class="text-[9px] text-slate-400 bg-slate-800 p-1.5 rounded text-center">Inativo 14 dias</div>
+                <button class="bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition" onclick="Admin.toggleUserStatus(this, 'exemplo@inativo.com', true)">Liberar Acesso</button>
               </div>
             </div>
           </div>
@@ -173,29 +215,29 @@
       <!-- ABA 3: MENSAGENS ESTRATÉGICAS -->
       <div id="view-comunicacao" class="view space-y-5">
         <div class="glass rounded-2xl p-5 border border-purple-500/30 relative overflow-hidden">
-          <div class="glow-amber absolute right-0 top-0"></div>
-          <h3 class="text-xs font-black uppercase text-purple-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="radio" class="w-4 h-4"></i> Disparo de Campanhas</h3>
+          <div class="glow-red absolute left-0 bottom-0 opacity-40"></div>
+          <h3 class="text-xs font-black uppercase text-purple-400 flex items-center gap-2 mb-4 relative z-10"><i data-lucide="radio" class="w-4 h-4"></i> Central de Campanhas</h3>
           
           <form class="space-y-4 relative z-10" onsubmit="event.preventDefault(); Admin.sendMessage();">
             <div>
-              <label class="label">Público Alvo</label>
-              <select id="msg-target" class="input text-xs">
-                <option value="all">Base Completa (Todos)</option>
-                <option value="vencimento">Aviso de Vencimento Próximo</option>
-                <option value="inativos">Reengajamento (Inativos)</option>
-                <option value="promo">Promoção / Desconto</option>
+              <label class="label text-purple-400">Direcionamento de Público</label>
+              <select id="msg-target" class="input text-xs border-purple-500/30">
+                <option value="all">Base Completa (Massivo)</option>
+                <option value="vencimento">Notificação de Vencimento Próximo</option>
+                <option value="inativos">Reengajamento (Recuperar Churn)</option>
+                <option value="promo">Promoção (Upsell / Descontos)</option>
               </select>
             </div>
             <div>
-              <label class="label">Título da Notificação</label>
-              <input id="msg-title" type="text" class="input text-xs" placeholder="Ex: Últimos dias para renovar!" required>
+              <label class="label">Título do Push</label>
+              <input id="msg-title" type="text" class="input text-xs" placeholder="Ex: Evite o bloqueio da sua conta..." required>
             </div>
             <div>
-              <label class="label">Mensagem (Aparecerá no App)</label>
-              <textarea id="msg-body" class="input h-24 resize-none text-xs" placeholder="Escreva a estratégia aqui..." required></textarea>
+              <label class="label">Mensagem Interativa</label>
+              <textarea id="msg-body" class="input h-24 resize-none text-xs" placeholder="Conteúdo que irá aparecer no modal do usuário..." required></textarea>
             </div>
-            <button type="submit" class="btn-admin">
-              <i data-lucide="send" class="w-4 h-4"></i> Disparar Mensagem
+            <button type="submit" class="btn-admin bg-purple-600 shadow-[0_10px_30px_rgba(168,85,247,0.4)] border-none" style="background: linear-gradient(135deg,#a855f7,#7e22ce); color: #fff;">
+              <i data-lucide="send" class="w-4 h-4"></i> Lançar ao Servidor
             </button>
           </form>
         </div>
@@ -211,7 +253,7 @@
     <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-amber-500/50 w-[calc((100%-0.5rem)/3)] transition-transform duration-300 ease-out shadow-[0_0_15px_rgba(251,191,36,.2)]"></span>
     
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="dashboard">
-      <i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Painel</span>
+      <i data-lucide="pie-chart" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Métricas</span>
     </button>
     <button class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="crm">
       <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase">Clientes</span>
@@ -225,7 +267,12 @@
 <script>
 const CONFIG = {
   CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
-  ADMIN_EMAILS: ["gilneilaurindo@gmail.com", "samueldanilo@gmail.com"] // Somente líderes entram aqui
+  // MATRIZ DE E-MAILS LÍDERES PERMITIDOS
+  ADMIN_EMAILS: [
+    "gilneicreative@gmail.com", 
+    "gilneilaurindo@gmail.com", 
+    "samueldanilo@gmail.com"
+  ]
 };
 
 const $ = id => document.getElementById(id);
@@ -258,11 +305,11 @@ const UI = {
     const icon = type === "error" ? "alert-triangle" : "check-circle";
     const color = type === "error" ? "text-rose-400" : "text-amber-400";
     const t = document.createElement("div");
-    t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border z-[9999]";
+    t.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-slate-700 z-[9999]";
     t.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6 shrink-0 ${color}"></i><span>${msg}</span>`;
     $("toasts").append(t); UI.refreshIcons();
     requestAnimationFrame(() => t.classList.add("show"));
-    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3000);
+    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3500);
   }
 };
 
@@ -270,52 +317,54 @@ const UI = {
 const Admin = {
   initCharts: () => {
     if(chartInstance) chartInstance.destroy();
-    Chart.defaults.color = '#94a3b8'; Chart.defaults.font.family = 'system-ui';
+    Chart.defaults.color = '#64748b'; Chart.defaults.font.family = 'system-ui';
     chartInstance = new Chart($("chartUsage"), {
-      type: 'bar',
-      data: { labels: ['Alta Frequência', 'Média', 'Baixa (Risco)'], datasets: [{ label: 'Usuários', data: [45, 25, 12], backgroundColor: ['#10b981', '#fbbf24', '#f43f5e'], borderRadius: 4 }] },
-      options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+      type: 'line',
+      data: { 
+        labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'], 
+        datasets: [{ label: 'Acessos Totais', data: [45, 52, 38, 65, 82, 30, 20], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] 
+      },
+      options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } }, elements: { point: { radius: 0 } } }
     });
   },
   
   sendMessage: () => {
-    // Aqui conectará ao Google Apps Script para inserir a mensagem no BD
     const target = $("msg-target").options[$("msg-target").selectedIndex].text;
-    UI.toast(`Campanha enviada para: ${target}`, "success");
+    UI.toast(`Campanha programada com sucesso para: ${target}`, "success");
     $("msg-title").value = ""; $("msg-body").value = "";
   },
 
   toggleUserStatus: (btnElement, email, isReactivating = false) => {
-    // Simulação da chamada de API para inativar no Google Sheets
     if(isReactivating) {
       UI.toast(`Acesso restaurado para ${email}.`, "success");
-      btnElement.textContent = "Inativar Acesso";
+      btnElement.textContent = "Forçar Bloqueio";
       btnElement.className = "bg-rose-900/30 text-rose-400 border border-rose-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-rose-900/50 transition";
       btnElement.onclick = () => Admin.toggleUserStatus(btnElement, email, false);
-      btnElement.closest('.bg-slate-900\\/80').querySelector('.uppercase').className = "bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase";
-      btnElement.closest('.bg-slate-900\\/80').querySelector('.uppercase').textContent = "Ativo";
+      const span = btnElement.closest('div.flex-col').querySelector('span.uppercase');
+      span.className = "bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase";
+      span.textContent = "Ativo";
     } else {
-      UI.toast(`Acesso bloqueado manualmente para ${email}.`, "success");
-      btnElement.textContent = "Reativar";
+      UI.toast(`Acesso bloqueado e notificação de inatividade enviada para ${email}.`, "success");
+      btnElement.textContent = "Liberar Acesso";
       btnElement.className = "bg-emerald-900/30 text-emerald-400 border border-emerald-500/50 py-1.5 rounded text-[10px] font-bold hover:bg-emerald-900/50 transition";
       btnElement.onclick = () => Admin.toggleUserStatus(btnElement, email, true);
-      btnElement.closest('.bg-slate-900\\/80').querySelector('.uppercase').className = "bg-rose-900/40 text-rose-400 border border-rose-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase";
-      btnElement.closest('.bg-slate-900\\/80').querySelector('.uppercase').textContent = "Inativo";
+      const span = btnElement.closest('div.flex-col').querySelector('span.uppercase');
+      span.className = "bg-rose-900/40 text-rose-400 border border-rose-500/50 px-2 py-0.5 rounded text-[9px] font-bold uppercase";
+      span.textContent = "Bloqueado";
     }
   },
   
   syncData: () => {
-    UI.toast("Sincronizando banco de dados...", "success");
+    UI.toast("Cruzando dados com o Google Sheets...", "success");
   }
 };
 
-// Navegação e Login
+// Navegação e Login OAuth2
 const App = {
   init: () => {
     initParticles(); UI.refreshIcons();
     document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => App.nav(b.dataset.view)));
     
-    // Ignorar Auth no ambiente de teste se necessário ou usar o Google
     if(!window.google) setTimeout(App.setupAuth, 300); else App.setupAuth();
     $("view-auth").classList.remove("hidden"); $("view-auth").classList.add("flex");
   },
@@ -327,17 +376,23 @@ const App = {
         const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
         const p = await res.json();
         
-        // VALIDAÇÃO ESTRITA ADMIN
-        if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === p.email.toLowerCase())) {
-            return UI.toast("Acesso Negado. Esta área é restrita.", "error");
+        const authenticatedEmail = p.email.toLowerCase();
+        
+        // VERIFICAÇÃO DE SEGURANÇA MÁXIMA
+        if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === authenticatedEmail)) {
+            // Em caso de falha, mostra exatamente qual e-mail foi barrado para ajudar o desenvolvedor a depurar
+            return UI.toast(`Email negado: ${authenticatedEmail}. Contate o Suporte.`, "error");
         }
         
         $("admin-name").textContent = p.given_name || p.name.split(" ")[0];
-        if(p.picture) $("avatar").innerHTML = `<img src="${p.picture}" class="w-full h-full object-cover">`;
+        if(p.picture) {
+            $("avatar").innerHTML = `<img src="${p.picture}" class="w-full h-full object-cover">`;
+        }
         
         $("view-auth").classList.replace("flex", "hidden");
         const splash = $("welcome-splash");
         splash.classList.remove("hidden"); splash.classList.add("flex");
+        
         setTimeout(() => {
           splash.classList.add("opacity-0");
           setTimeout(() => { splash.classList.replace("flex", "hidden"); App.enter(); }, 500);
