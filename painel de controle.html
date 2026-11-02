@@ -150,7 +150,7 @@ const CONFIG = {
   GOOGLE_CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
   
   // ⚠️ ATENÇÃO: COLOQUE AQUI A SUA URL DA NOVA IMPLEMENTAÇÃO DO PASSO 1
-  SCRIPT_URL: "COLE_AQUI_A_NOVA_URL_DO_PASSO_1",
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwebrxiPxJTaoDVLzr_RwNPaJXDnQlsASVtem8N9qcp6JYkoLhu8S1o0ZscgNTDARQvEA/exec",
   
   ADMIN_EMAILS: ["gilneycriative@gmail.com", "samueldanilo11@gmail.com", "gilneilaurindo@gmail.com"]
 };
@@ -299,17 +299,17 @@ const App = {
 
     const savedUser = localStorage.getItem("planilhaviva_admin_auth");
     if (savedUser) { State.user = JSON.parse(savedUser); App.startSession(); }
-    else App.setupGoogleLogin();
+    else App.setupLogin();
   },
 
-  setupGoogleLogin: () => {
-    if (!window.google) return setTimeout(App.setupGoogleLogin, 300);
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: CONFIG.GOOGLE_CLIENT_ID, scope: "email profile",
+  setupLogin: () => {
+    if (!window.) return setTimeout(App.setupLogin, 300);
+    const client = .accounts.oauth2.initTokenClient({
+      client_id: CONFIG._CLIENT_ID, scope: "email profile",
       callback: async (t) => {
-        if (t.error) return UI.toast("Falha no login Google.", "error");
+        if (t.error) return UI.toast("Falha no login .", "error");
         try {
-          const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
+          const res = await fetch("https://www.apis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${t.access_token}` }});
           const p = await res.json();
           if (!CONFIG.ADMIN_EMAILS.some(e => e.toLowerCase() === p.email.toLowerCase())) return UI.toast("Acesso Negado à Área de Administração.", "error");
           State.user = { name: p.name, email: p.email, picture: p.picture };
