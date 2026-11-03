@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
 <meta name="theme-color" content="#020617">
 <title>PlanilhaViva Pro</title>
 <meta name="title" content="PlanilhaViva Pro | Inteligência Financeira">
@@ -59,7 +59,7 @@
   #welcome-splash { transition: opacity .6s ease, transform .6s ease, filter .6s ease; backdrop-filter: blur(25px); }
   #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(15px); }
 
-  .carousel-wrapper { overflow: hidden; white-space: nowrap; position: relative; }
+  .carousel-wrapper { overflow: hidden; white-space: nowrap; position: relative; width: 100%; }
   .carousel-track { display: inline-flex; gap: 1rem; animation: marquee 30s linear infinite; }
   .carousel-wrapper:hover .carousel-track { animation-play-state: paused; }
   @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - .5rem)); } }
@@ -79,14 +79,14 @@
     color: #94a3b8; font-weight: 800; margin-bottom: .4rem;
   }
   .section-title {
-    font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+    font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
     color: #67e8f9; display: flex; align-items: center; gap: .4rem;
   }
 
   .quick-chip {
     padding: .35rem .7rem; border-radius: 9999px; background: rgba(30,41,59,.8);
-    border: 1px solid rgba(51,65,85,1); font-size: .7rem; font-weight: 700; color: #94a3b8;
-    cursor: pointer; transition: all .2s; white-space: nowrap;
+    border: 1px solid rgba(51,65,85,1); font-size: .75rem; font-weight: 700; color: #94a3b8;
+    cursor: pointer; transition: all .2s; white-space: nowrap; scroll-snap-align: start;
   }
   .quick-chip:hover, .quick-chip:focus-visible { background: #22d3ee; color: #020617; border-color: #22d3ee; outline: none; }
 
@@ -103,7 +103,7 @@
 
   .btn--custom {
     display: inline-flex; align-items: center; justify-content: center; gap: .75rem;
-    width: 100%; max-width: 280px; padding: 1rem 1.25rem;
+    width: 100%; max-width: 320px; padding: 1rem 1.25rem;
     background: rgba(15,23,42,.9); border: 1px solid rgba(34,211,238,.5); border-radius: 9999px;
     color: #f8fafc; font-size: .85rem; font-weight: 700;
     box-shadow: 0 8px 30px -8px rgba(34,211,238,.5); transition: all .2s; cursor: pointer;
@@ -128,7 +128,7 @@
   .ad-block:not([hidden]) {
     display: flex; flex-direction: column; align-items: center; gap: .25rem;
     background: rgba(15,23,42,.4); border: 1px dashed rgba(34,211,238,.3);
-    border-radius: 1rem; padding: .5rem; min-height: 80px;
+    border-radius: 1rem; padding: .5rem; min-height: 80px; width: 100%;
   }
   .ad-label { font-size: 8px; text-transform: uppercase; letter-spacing: .1em; color: #64748b; font-weight: 700; }
 
@@ -146,7 +146,7 @@
   }
 </style>
 </head>
-<body class="text-slate-100 min-h-screen pb-28">
+<body class="text-slate-100 min-h-screen pb-28 md:pb-32">
 
 <canvas id="bg" aria-hidden="true"></canvas>
 <div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none" aria-live="polite"></div>
@@ -155,69 +155,70 @@
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center">
   <div class="relative animate-float">
     <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full"></div>
-    <div id="splash-avatar" class="relative w-32 h-32 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
+    <div id="splash-avatar" class="relative w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
   </div>
-  <h2 id="greeting-text" class="text-3xl font-black text-white mt-8 tracking-tight"></h2>
-  <h2 id="splash-name" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1"></h2>
-  <p id="splash-status" class="text-cyan-200 text-xs mt-6 font-mono font-bold"></p>
+  <h2 id="greeting-text" class="text-3xl md:text-4xl font-black text-white mt-8 tracking-tight"></h2>
+  <h2 id="splash-name" class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1"></h2>
+  <p id="splash-status" class="text-cyan-200 text-xs md:text-sm mt-6 font-mono font-bold"></p>
 </div>
 
-<main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
+<!-- CONTAINER PRINCIPAL ADAPTÁVEL (Mobile até Desktop) -->
+<main class="relative z-10 w-full max-w-[500px] md:max-w-[700px] mx-auto flex flex-col min-h-screen">
 
   <!-- LOGIN -->
-  <section id="view-auth" class="flex-1 flex flex-col justify-center px-4 py-8">
-    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden mb-8">
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-4 sm:px-8 py-8 w-full">
+    <div class="glass glass-neon rounded-3xl p-8 md:p-10 text-center space-y-6 relative overflow-hidden mb-8 w-full">
       <div class="glow"></div>
       <div class="glow-purple"></div>
 
       <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-cyan-400/50 animate-float shadow-[0_0_40px_rgba(34,211,238,.4)]">
-        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="Logo PlanilhaViva" class="w-20 h-20 object-contain">
+        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="Logo PlanilhaViva" class="w-20 h-20 md:w-24 md:h-24 object-contain">
       </div>
 
       <div>
-        <h1 class="text-3xl font-black tracking-tight text-white">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
-        <p class="text-xs text-cyan-100/70 mt-2 font-medium leading-relaxed">O seu banco de dados financeiro, guardado na sua própria conta .</p>
+        <h1 class="text-3xl md:text-4xl font-black tracking-tight text-white">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
+        <p class="text-xs md:text-sm text-cyan-100/70 mt-2 font-medium leading-relaxed max-w-[80%] mx-auto">O seu banco de dados financeiro, guardado na sua própria conta Google.</p>
       </div>
 
-      <div class="pt-4 flex flex-col items-center gap-4 relative z-20">
-        <button id="btnGoogleLogin" type="button" class="btn--custom">
-          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+      <div class="pt-4 flex flex-col items-center gap-4 relative z-20 w-full">
+        <button id="btnGoogleLogin" type="button" class="btn--custom w-full">
+          <svg class="w-5 h-5 md:w-6 md:h-6 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
-          <span class="font-bold">Acessar com o Google</span>
+          <span class="font-bold text-base">Acessar com o Google</span>
         </button>
       </div>
     </div>
 
     <!-- CARROSSEL DE DEPOIMENTOS -->
-    <div class="text-left w-full relative z-20">
-      <h3 class="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-3 px-2 flex items-center gap-2">
-        <i data-lucide="message-square-heart" class="w-3 h-3"></i> O que dizem os utilizadores
+    <div class="text-left w-full relative z-20 overflow-hidden">
+      <h3 class="text-[10px] md:text-xs text-cyan-400 font-bold uppercase tracking-widest mb-3 px-2 flex items-center gap-2">
+        <i data-lucide="message-square-heart" class="w-3 h-3 md:w-4 md:h-4"></i> O que dizem os utilizadores
       </h3>
-      <div class="carousel-wrapper py-2">
+      <div class="carousel-wrapper py-2 w-full">
         <div id="testimonials-track" class="carousel-track carousel-track-reverse">
-          <div class="w-72 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-cyan-500/30">
-            <img src="https://i.pravatar.cc/150?img=32" class="w-10 h-10 rounded-full border border-cyan-400 object-cover shrink-0" alt="Avatar">
+          <div class="w-72 md:w-80 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-cyan-500/30">
+            <img src="https://i.pravatar.cc/150?img=32" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-cyan-400 object-cover shrink-0" alt="Avatar">
             <div>
-              <p class="text-xs font-bold text-white flex justify-between">Mariana S. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
-              <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">"Mudou a forma como vejo meu dinheiro! Muito fácil de usar e os gráficos atualizam na hora pelo Google Sheets."</p>
+              <p class="text-xs md:text-sm font-bold text-white flex justify-between">Mariana S. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+              <p class="text-[11px] md:text-xs text-slate-300 mt-1 leading-relaxed">"Mudou a forma como vejo meu dinheiro! Muito fácil de usar e os gráficos atualizam na hora pelo Google Sheets."</p>
             </div>
           </div>
-          <div class="w-72 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-purple-500/30">
-            <img src="https://i.pravatar.cc/150?img=11" class="w-10 h-10 rounded-full border border-purple-400 object-cover shrink-0" alt="Avatar">
+          <div class="w-72 md:w-80 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-purple-500/30">
+            <img src="https://i.pravatar.cc/150?img=11" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-purple-400 object-cover shrink-0" alt="Avatar">
             <div>
-              <p class="text-xs font-bold text-white flex justify-between">Carlos E. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
-              <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">"Finalmente abandonei as dezenas de apps pagos. Ter a inteligência no Sheets e essa interface no celular é perfeito."</p>
+              <p class="text-xs md:text-sm font-bold text-white flex justify-between">Carlos E. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+              <p class="text-[11px] md:text-xs text-slate-300 mt-1 leading-relaxed">"Finalmente abandonei as dezenas de apps pagos. Ter a inteligência no Sheets e essa interface no celular é perfeito."</p>
             </div>
           </div>
-          <div class="w-72 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-emerald-500/30">
-            <img src="https://i.pravatar.cc/150?img=47" class="w-10 h-10 rounded-full border border-emerald-400 object-cover shrink-0" alt="Avatar">
+          <div class="w-72 md:w-80 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-emerald-500/30">
+            <img src="https://i.pravatar.cc/150?img=47" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-emerald-400 object-cover shrink-0" alt="Avatar">
             <div>
-              <p class="text-xs font-bold text-white flex justify-between">Fernanda L. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
-              <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">"Intuitivo demais! Com dois cliques eu lanço minhas despesas de supermercado. Recomendo para toda a família."</p>
+              <p class="text-xs md:text-sm font-bold text-white flex justify-between">Fernanda L. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+              <p class="text-[11px] md:text-xs text-slate-300 mt-1 leading-relaxed">"Intuitivo demais! Com dois cliques eu lanço minhas despesas de supermercado. Recomendo para toda a família."</p>
             </div>
           </div>
         </div>
@@ -225,242 +226,243 @@
     </div>
 
     <!-- PUBLICIDADE LOGIN -->
-    <div class="ad-block mt-8" hidden data-ad>
+    <div class="ad-block mt-8 w-full" hidden data-ad>
       <span class="ad-label">Publicidade</span>
       <div class="ad-slot w-full"></div>
     </div>
 
-    <footer class="mt-8 text-center text-[10px] text-slate-500 space-y-1.5 font-medium tracking-wide">
+    <footer class="mt-8 text-center text-[10px] md:text-xs text-slate-500 space-y-1.5 font-medium tracking-wide w-full">
       <p>© Direitos reservados <span class="text-cyan-400 font-bold">PlanilhaViva Pro</span>.</p>
       <p>Programador: <span class="text-slate-300 font-bold">Gilnei Laurindo</span></p>
       <p>Ideias e dedicatória: <span class="text-slate-400 font-bold">Samuel Danilo</span></p>
     </footer>
   </section>
 
-  <!-- APP -->
+  <!-- APP INTERNO -->
   <section id="view-app" class="hidden flex-1 flex-col w-full">
-    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 py-3 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
+    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 sm:px-8 py-3 md:py-4 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
       <div class="flex items-center gap-3 min-w-0">
-        <div id="avatar" class="w-10 h-10 shrink-0 rounded-full border-2 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800"></div>
+        <div id="avatar" class="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-full border-2 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800"></div>
         <div class="flex flex-col min-w-0">
-          <span class="text-[9px] text-cyan-400 font-black uppercase flex items-center gap-1">
-            <i data-lucide="clock" class="w-3 h-3"></i> <span id="header-time">--:--</span>
+          <span class="text-[9px] md:text-[10px] text-cyan-400 font-black uppercase flex items-center gap-1">
+            <i data-lucide="clock" class="w-3 h-3 md:w-4 md:h-4"></i> <span id="header-time">--:--</span>
           </span>
-          <h2 id="user-name" class="text-xs font-bold text-white truncate"></h2>
+          <h2 id="user-name" class="text-xs md:text-sm font-bold text-white truncate"></h2>
         </div>
       </div>
-      <button id="btnRefreshHeader" type="button" class="text-cyan-400 hover:text-white bg-slate-800 p-2 rounded-full border border-slate-700 transition-colors" aria-label="Atualizar dados">
-        <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
+      <button id="btnRefreshHeader" type="button" class="text-cyan-400 hover:text-white bg-slate-800 p-2 md:p-3 rounded-full border border-slate-700 transition-colors" aria-label="Atualizar dados">
+        <i data-lucide="refresh-ccw" class="w-4 h-4 md:w-5 md:h-5"></i>
       </button>
     </header>
 
-    <div class="px-5 pt-6 space-y-6">
+    <div class="px-5 sm:px-8 pt-6 space-y-6 w-full">
 
       <!-- LANÇAR -->
-      <div id="view-fluxo" class="view active space-y-5">
+      <div id="view-fluxo" class="view active space-y-5 md:space-y-8">
 
-        <div class="ad-block" hidden data-ad>
+        <div class="ad-block w-full" hidden data-ad>
           <span class="ad-label">Publicidade</span>
           <div class="ad-slot w-full"></div>
         </div>
 
-        <div class="glass glass-neon rounded-3xl p-6 relative overflow-hidden">
+        <div class="glass glass-neon rounded-3xl p-6 md:p-8 relative overflow-hidden w-full">
           <div class="glow" id="form-glow"></div>
 
-          <h3 class="section-title mb-5 text-white" id="form-title-wrap">
+          <h3 class="section-title mb-5 md:mb-6 text-white text-sm md:text-base" id="form-title-wrap">
             <span id="form-icon"></span> <span id="form-title">Lançar despesa</span>
           </h3>
 
-          <div class="seg-container mb-6" role="group" aria-label="Tipo de lançamento">
-            <button type="button" class="seg-btn" data-type="in" data-color="green" aria-pressed="false">Receita</button>
-            <button type="button" class="seg-btn" data-type="out" data-color="red" aria-pressed="true">Despesa</button>
-            <button type="button" class="seg-btn" data-type="invest" data-color="purple" aria-pressed="false">Investir</button>
+          <div class="seg-container mb-6 md:mb-8" role="group" aria-label="Tipo de lançamento">
+            <button type="button" class="seg-btn md:text-sm md:py-3" data-type="in" data-color="green" aria-pressed="false">Receita</button>
+            <button type="button" class="seg-btn md:text-sm md:py-3" data-type="out" data-color="red" aria-pressed="true">Despesa</button>
+            <button type="button" class="seg-btn md:text-sm md:py-3" data-type="invest" data-color="purple" aria-pressed="false">Investir</button>
           </div>
 
-          <form id="txForm" class="space-y-4 relative z-10">
+          <form id="txForm" class="space-y-4 md:space-y-6 relative z-10 w-full">
             <input type="hidden" id="type" value="out">
 
             <div>
-              <label class="label" for="desc">Descrição do Lançamento</label>
-              <input id="desc" class="input" maxlength="60" placeholder="Ex.: Supermercado, Luz, Salário..." required>
-              <!-- Atalhos rápidos para descrição (Nomes dos gastos) -->
-              <div class="flex gap-2 mt-2 overflow-x-auto no-scrollbar py-1">
-                <button type="button" class="quick-chip quick-chip-desc" data-desc="Mercado"><i data-lucide="shopping-cart" class="w-3 h-3 inline mr-1"></i>Mercado</button>
-                <button type="button" class="quick-chip quick-chip-desc" data-desc="Combustível"><i data-lucide="fuel" class="w-3 h-3 inline mr-1"></i>Gasolina</button>
-                <button type="button" class="quick-chip quick-chip-desc" data-desc="Energia Elétrica"><i data-lucide="zap" class="w-3 h-3 inline mr-1"></i>Energia</button>
-                <button type="button" class="quick-chip quick-chip-desc" data-desc="Internet"><i data-lucide="wifi" class="w-3 h-3 inline mr-1"></i>Internet</button>
-                <button type="button" class="quick-chip quick-chip-desc" data-desc="Lazer / Jantar"><i data-lucide="utensils" class="w-3 h-3 inline mr-1"></i>Lazer</button>
+              <label class="label md:text-[11px]" for="desc">Descrição do Lançamento</label>
+              <input id="desc" class="input md:text-base md:p-4" maxlength="60" placeholder="Ex.: Supermercado, Luz, Salário..." required>
+              <!-- Atalhos rápidos para descrição -->
+              <div class="flex gap-2 md:gap-3 mt-2 md:mt-3 overflow-x-auto no-scrollbar py-1 snap-x scroll-smooth">
+                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Mercado"><i data-lucide="shopping-cart" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Mercado</button>
+                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Combustível"><i data-lucide="fuel" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Gasolina</button>
+                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Energia Elétrica"><i data-lucide="zap" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Energia</button>
+                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Internet"><i data-lucide="wifi" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Internet</button>
+                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Lazer / Jantar"><i data-lucide="utensils" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Lazer</button>
               </div>
             </div>
 
             <div>
-              <label class="label" for="amount">Valor (R$)</label>
-              <input id="amount" type="number" step="0.01" min="0.01" class="input font-bold text-lg" placeholder="0,00" required>
-              <div class="flex gap-2 mt-2 overflow-x-auto no-scrollbar py-1">
-                <button type="button" class="quick-chip quick-chip-val" data-amount="10">R$ 10</button>
-                <button type="button" class="quick-chip quick-chip-val" data-amount="50">R$ 50</button>
-                <button type="button" class="quick-chip quick-chip-val" data-amount="100">R$ 100</button>
-                <button type="button" class="quick-chip quick-chip-val" data-amount="500">R$ 500</button>
+              <label class="label md:text-[11px]" for="amount">Valor (R$)</label>
+              <input id="amount" type="number" step="0.01" min="0.01" class="input font-bold text-lg md:text-xl md:p-4" placeholder="0,00" required>
+              <div class="flex gap-2 md:gap-3 mt-2 md:mt-3 overflow-x-auto no-scrollbar py-1 snap-x scroll-smooth">
+                <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="10">R$ 10</button>
+                <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="50">R$ 50</button>
+                <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="100">R$ 100</button>
+                <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="500">R$ 500</button>
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5">
               <div>
-                <label class="label" for="date">Data</label>
-                <input id="date" type="text" class="input font-bold text-center" placeholder="Data" required>
+                <label class="label md:text-[11px]" for="date">Data</label>
+                <input id="date" type="text" class="input font-bold text-center md:text-base md:p-4" placeholder="Data" required>
               </div>
               <div id="cat-container">
-                <label class="label" for="category">Categoria</label>
-                <select id="category" class="input font-medium text-xs h-[42px]"></select>
+                <label class="label md:text-[11px]" for="category">Categoria</label>
+                <select id="category" class="input font-medium text-xs md:text-base h-[42px] md:h-[58px]"></select>
               </div>
             </div>
 
-            <button id="btnSave" type="submit" class="btn-primary btn-red w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300">
-              <i data-lucide="send" class="w-5 h-5"></i> <span data-label>Confirmar lançamento</span>
+            <button id="btnSave" type="submit" class="btn-primary btn-red w-full py-4 md:py-5 rounded-xl flex items-center justify-center gap-2 mt-4 md:mt-6 text-sm md:text-base transition-all duration-300 shadow-xl">
+              <i data-lucide="send" class="w-5 h-5 md:w-6 md:h-6"></i> <span data-label>Confirmar lançamento</span>
             </button>
           </form>
         </div>
 
-        <div class="glass rounded-2xl p-4 border border-cyan-500/20">
-          <h3 class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
-            <i data-lucide="history" class="w-3 h-3"></i> Lançados nesta sessão
+        <div class="glass rounded-2xl p-4 md:p-6 border border-cyan-500/20 w-full">
+          <h3 class="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
+            <i data-lucide="history" class="w-3 h-3 md:w-4 md:h-4"></i> Lançados nesta sessão
           </h3>
-          <div id="local-history" class="space-y-2 text-xs">
-            <p id="empty-history" class="text-slate-500 text-center py-2 italic">Nenhum lançamento nesta sessão.</p>
+          <div id="local-history" class="space-y-2 text-xs md:text-sm">
+            <p id="empty-history" class="text-slate-500 text-center py-2 md:py-4 italic">Nenhum lançamento nesta sessão.</p>
           </div>
         </div>
       </div>
 
       <!-- RESUMO -->
-      <div id="view-resumo" class="view space-y-5">
-        <div class="glass rounded-3xl p-6 relative overflow-hidden border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)]">
+      <div id="view-resumo" class="view space-y-5 md:space-y-8 w-full">
+        <div class="glass rounded-3xl p-6 md:p-10 relative overflow-hidden border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)]">
           <div class="glow"></div>
-          <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2 mb-1 relative z-10">
-            <i data-lucide="wallet" class="w-4 h-4"></i> Saldo consolidado
+          <p class="text-xs md:text-sm uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2 mb-1 relative z-10">
+            <i data-lucide="wallet" class="w-4 h-4 md:w-5 md:h-5"></i> Saldo consolidado
           </p>
-          <p id="saldo" class="text-4xl font-black tabular-nums text-white skeleton w-48 h-10 mt-1 relative z-10">R$ 0,00</p>
-          <p class="text-[10px] font-mono text-cyan-200/70 mt-2 relative z-10">Entradas − saídas − investimentos · Out a Dez</p>
+          <p id="saldo" class="text-4xl md:text-5xl font-black tabular-nums text-white skeleton w-48 h-10 md:w-64 md:h-14 mt-1 relative z-10">R$ 0,00</p>
+          <p class="text-[10px] md:text-xs font-mono text-cyan-200/70 mt-2 md:mt-3 relative z-10">Entradas − saídas − investimentos · Out a Dez</p>
         </div>
 
-        <!-- NOVOS INDICADORES ESTRATÉGICOS -->
-        <div class="grid grid-cols-2 gap-3">
-          <div class="glass p-4 rounded-2xl border border-emerald-500/30 flex flex-col justify-center">
-            <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="piggy-bank" class="w-3 h-3"></i> Taxa Poupança</p>
-            <p class="text-xl font-black text-white skeleton w-16 h-7" id="kpi-poupanca">0%</p>
+        <!-- INDICADORES ESTRATÉGICOS -->
+        <div class="grid grid-cols-2 gap-3 md:gap-6">
+          <div class="glass p-4 md:p-6 rounded-2xl border border-emerald-500/30 flex flex-col justify-center">
+            <p class="text-[9px] md:text-[11px] uppercase tracking-widest text-emerald-400 font-bold mb-1 md:mb-2 flex items-center gap-1"><i data-lucide="piggy-bank" class="w-3 h-3 md:w-4 md:h-4"></i> Taxa Poupança</p>
+            <p class="text-xl md:text-3xl font-black text-white skeleton w-16 h-7 md:h-10" id="kpi-poupanca">0%</p>
           </div>
-          <div class="glass p-4 rounded-2xl border border-rose-500/30 flex flex-col justify-center">
-            <p class="text-[9px] uppercase tracking-widest text-rose-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="calendar-off" class="w-3 h-3"></i> Média Saídas/mês</p>
-            <p class="text-xl font-black text-white skeleton w-20 h-7" id="kpi-media-saidas">R$ 0</p>
-          </div>
-        </div>
-
-        <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Fluxo do período</h3>
-          <div class="relative h-56"><canvas id="chartFluxo"></canvas></div>
-          <div class="flex justify-between text-xs font-bold font-mono">
-            <span class="text-emerald-400" id="txt-in">Entradas R$ 0,00</span>
-            <span class="text-rose-400" id="txt-out">Saídas R$ 0,00</span>
+          <div class="glass p-4 md:p-6 rounded-2xl border border-rose-500/30 flex flex-col justify-center">
+            <p class="text-[9px] md:text-[11px] uppercase tracking-widest text-rose-400 font-bold mb-1 md:mb-2 flex items-center gap-1"><i data-lucide="calendar-off" class="w-3 h-3 md:w-4 md:h-4"></i> Média Saídas/mês</p>
+            <p class="text-xl md:text-3xl font-black text-white skeleton w-20 h-7 md:h-10" id="kpi-media-saidas">R$ 0</p>
           </div>
         </div>
-        
-        <!-- NOVO GRÁFICO: DISTRIBUIÇÃO GERAL -->
-        <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="donut" class="w-4 h-4 text-cyan-400"></i> Distribuição Geral</h3>
-          <div class="relative h-56"><canvas id="chartDistribuicao"></canvas></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6 w-full">
+          <div class="glass rounded-2xl p-5 md:p-7 space-y-4">
+            <h3 class="section-title md:text-sm"><i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Fluxo do período</h3>
+            <div class="relative h-56 md:h-64"><canvas id="chartFluxo"></canvas></div>
+            <div class="flex justify-between text-xs md:text-sm font-bold font-mono">
+              <span class="text-emerald-400" id="txt-in">Entradas R$ 0,00</span>
+              <span class="text-rose-400" id="txt-out">Saídas R$ 0,00</span>
+            </div>
+          </div>
+          
+          <div class="glass rounded-2xl p-5 md:p-7 space-y-4">
+            <h3 class="section-title md:text-sm"><i data-lucide="donut" class="w-4 h-4 text-cyan-400"></i> Distribuição Geral</h3>
+            <div class="relative h-56 md:h-64"><canvas id="chartDistribuicao"></canvas></div>
+          </div>
         </div>
 
-        <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title"><i data-lucide="bar-chart" class="w-4 h-4 text-cyan-400"></i> Por mês</h3>
-          <div class="relative h-52"><canvas id="chartDesempenho"></canvas></div>
+        <div class="glass rounded-2xl p-5 md:p-7 space-y-4 w-full">
+          <h3 class="section-title md:text-sm"><i data-lucide="bar-chart" class="w-4 h-4 text-cyan-400"></i> Por mês</h3>
+          <div class="relative h-52 md:h-72"><canvas id="chartDesempenho"></canvas></div>
         </div>
 
-        <div class="ad-block" hidden data-ad>
+        <div class="ad-block w-full" hidden data-ad>
           <span class="ad-label">Publicidade</span>
           <div class="ad-slot w-full"></div>
         </div>
       </div>
 
       <!-- INVESTIR -->
-      <div id="view-investir" class="view space-y-5">
-        <div class="glass rounded-3xl p-6 relative overflow-hidden text-center border border-purple-500/50 shadow-[0_0_40px_rgba(168,85,247,.2)]">
+      <div id="view-investir" class="view space-y-5 md:space-y-8 w-full">
+        <div class="glass rounded-3xl p-6 md:p-10 relative overflow-hidden text-center border border-purple-500/50 shadow-[0_0_40px_rgba(168,85,247,.2)]">
           <div class="glow glow-purple"></div>
-          <h3 class="text-xs uppercase tracking-widest text-purple-300 font-bold mb-2 flex items-center justify-center gap-2 relative z-10">
-            <i data-lucide="shield" class="w-4 h-4"></i> Total investido no ano
+          <h3 class="text-xs md:text-sm uppercase tracking-widest text-purple-300 font-bold mb-2 md:mb-4 flex items-center justify-center gap-2 relative z-10">
+            <i data-lucide="shield" class="w-4 h-4 md:w-5 md:h-5"></i> Total investido no ano
           </h3>
-          <p id="invest-total" class="text-4xl font-black text-white tabular-nums skeleton w-40 h-10 mx-auto relative z-10">R$ 0,00</p>
+          <p id="invest-total" class="text-4xl md:text-5xl font-black text-white tabular-nums skeleton w-40 h-10 md:h-14 mx-auto relative z-10">R$ 0,00</p>
         </div>
 
-        <div class="glass rounded-2xl p-5 space-y-4">
-          <h3 class="section-title text-purple-400"><i data-lucide="trending-up" class="w-4 h-4"></i> Evolução acumulada</h3>
-          <div class="relative h-56"><canvas id="chartCrescimento"></canvas></div>
+        <div class="glass rounded-2xl p-5 md:p-8 space-y-4 w-full">
+          <h3 class="section-title text-purple-400 md:text-sm"><i data-lucide="trending-up" class="w-4 h-4 md:w-5 md:h-5"></i> Evolução acumulada</h3>
+          <div class="relative h-56 md:h-80"><canvas id="chartCrescimento"></canvas></div>
         </div>
 
-        <div class="ad-block" hidden data-ad>
+        <div class="ad-block w-full" hidden data-ad>
           <span class="ad-label">Publicidade</span>
           <div class="ad-slot w-full"></div>
         </div>
       </div>
 
       <!-- PERFIL -->
-      <div id="view-config" class="view space-y-5">
-        <div class="glass rounded-3xl p-6 text-center relative overflow-hidden border border-cyan-500/30">
-          <div id="cfg-avatar" class="w-20 h-20 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3 flex items-center justify-center bg-slate-800 relative z-10"></div>
-          <label for="pref-name" class="text-[10px] text-cyan-200 uppercase font-bold tracking-widest block mb-1 relative z-10">Como quer ser chamado?</label>
-          <input id="pref-name" type="text" maxlength="30" class="relative z-10 bg-transparent text-2xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1 transition-colors" placeholder="Seu nome">
-          <p id="cfg-email" class="text-xs text-slate-500 font-mono mt-2 break-all relative z-10"></p>
+      <div id="view-config" class="view space-y-5 md:space-y-8 w-full">
+        <div class="glass rounded-3xl p-6 md:p-10 text-center relative overflow-hidden border border-cyan-500/30">
+          <div id="cfg-avatar" class="w-20 h-20 md:w-28 md:h-28 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3 md:mb-5 flex items-center justify-center bg-slate-800 relative z-10"></div>
+          <label for="pref-name" class="text-[10px] md:text-xs text-cyan-200 uppercase font-bold tracking-widest block mb-1 md:mb-2 relative z-10">Como quer ser chamado?</label>
+          <input id="pref-name" type="text" maxlength="30" class="relative z-10 bg-transparent text-2xl md:text-4xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1 transition-colors" placeholder="Seu nome">
+          <p id="cfg-email" class="text-xs md:text-sm text-slate-500 font-mono mt-2 md:mt-4 break-all relative z-10"></p>
         </div>
 
         <a id="link-planilha" href="#" target="_blank" rel="noopener"
-           class="glass bg-emerald-900/40 border border-emerald-500/50 p-6 rounded-3xl flex flex-col items-center justify-center gap-3 shadow-[0_10px_30px_rgba(16,185,129,.2)] hover:bg-emerald-900/60 transition-colors group">
-          <div class="w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(16,185,129,.6)]">
-            <i data-lucide="database" class="w-6 h-6 text-white"></i>
+           class="glass bg-emerald-900/40 border border-emerald-500/50 p-6 md:p-8 rounded-3xl flex flex-col items-center justify-center gap-3 shadow-[0_10px_30px_rgba(16,185,129,.2)] hover:bg-emerald-900/60 transition-colors group">
+          <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(16,185,129,.6)]">
+            <i data-lucide="database" class="w-6 h-6 md:w-8 md:h-8 text-white"></i>
           </div>
           <div class="text-center">
-            <h3 class="font-black text-emerald-400 text-lg uppercase tracking-wide">Meu banco de dados</h3>
-            <p class="text-[11px] text-slate-300 mt-1">Abrir a sua planilha privada no Google Sheets</p>
+            <h3 class="font-black text-emerald-400 text-lg md:text-xl uppercase tracking-wide">Meu banco de dados</h3>
+            <p class="text-[11px] md:text-sm text-slate-300 mt-1 md:mt-2">Abrir a sua planilha privada no Google Sheets</p>
           </div>
         </a>
 
-        <div class="space-y-3">
-          <h3 class="section-title text-yellow-400"><i data-lucide="sparkles" class="w-4 h-4"></i> Recursos</h3>
-          <div class="carousel-wrapper py-2">
+        <div class="space-y-3 md:space-y-5 w-full">
+          <h3 class="section-title text-yellow-400 md:text-sm"><i data-lucide="sparkles" class="w-4 h-4 md:w-5 md:h-5"></i> Recursos</h3>
+          <div class="carousel-wrapper py-2 w-full">
             <div id="carousel-track" class="carousel-track">
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-cyan-500/30">
-                <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400 mb-2"></i>
-                <p class="text-xs font-bold text-white">Dados na sua conta</p>
-                <p class="text-[11px] text-slate-400 mt-1">Cada conta tem a sua planilha, com acesso privado.</p>
+              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-cyan-500/30">
+                <i data-lucide="shield-check" class="w-5 h-5 md:w-6 md:h-6 text-cyan-400 mb-2 md:mb-3"></i>
+                <p class="text-xs md:text-sm font-bold text-white">Dados na sua conta</p>
+                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Cada conta tem a sua planilha, com acesso privado.</p>
               </div>
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-emerald-500/30">
-                <i data-lucide="cloud" class="w-5 h-5 text-emerald-400 mb-2"></i>
-                <p class="text-xs font-bold text-white">Sincronização na nuvem</p>
-                <p class="text-[11px] text-slate-400 mt-1">Lance pelo celular e veja os totais atualizados.</p>
+              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-emerald-500/30">
+                <i data-lucide="cloud" class="w-5 h-5 md:w-6 md:h-6 text-emerald-400 mb-2 md:mb-3"></i>
+                <p class="text-xs md:text-sm font-bold text-white">Sincronização na nuvem</p>
+                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Lance pelo celular e veja os totais atualizados.</p>
               </div>
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-purple-500/30">
-                <i data-lucide="repeat" class="w-5 h-5 text-purple-400 mb-2"></i>
-                <p class="text-xs font-bold text-white">Contas fixas</p>
-                <p class="text-[11px] text-slate-400 mt-1">Projete mensalidades e salários até dezembro.</p>
+              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-purple-500/30">
+                <i data-lucide="repeat" class="w-5 h-5 md:w-6 md:h-6 text-purple-400 mb-2 md:mb-3"></i>
+                <p class="text-xs md:text-sm font-bold text-white">Contas fixas</p>
+                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Projete mensalidades e salários até dezembro.</p>
               </div>
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-rose-500/30">
-                <i data-lucide="pie-chart" class="w-5 h-5 text-rose-400 mb-2"></i>
-                <p class="text-xs font-bold text-white">Gráficos automáticos</p>
-                <p class="text-[11px] text-slate-400 mt-1">Entradas, saídas e aportes resumidos por mês.</p>
+              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-rose-500/30">
+                <i data-lucide="pie-chart" class="w-5 h-5 md:w-6 md:h-6 text-rose-400 mb-2 md:mb-3"></i>
+                <p class="text-xs md:text-sm font-bold text-white">Gráficos automáticos</p>
+                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Entradas, saídas e aportes resumidos por mês.</p>
               </div>
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-amber-500/30">
-                <i data-lucide="tag" class="w-5 h-5 text-amber-400 mb-2"></i>
-                <p class="text-xs font-bold text-white">Categorias prontas</p>
-                <p class="text-[11px] text-slate-400 mt-1">Organize dízimo, saúde, dívidas e outros gastos.</p>
+              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-amber-500/30">
+                <i data-lucide="tag" class="w-5 h-5 md:w-6 md:h-6 text-amber-400 mb-2 md:mb-3"></i>
+                <p class="text-xs md:text-sm font-bold text-white">Categorias prontas</p>
+                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Organize dízimo, saúde, dívidas e outros gastos.</p>
               </div>
             </div>
           </div>
         </div>
         
-        <div class="ad-block" hidden data-ad>
+        <div class="ad-block w-full" hidden data-ad>
           <span class="ad-label">Publicidade</span>
           <div class="ad-slot w-full"></div>
         </div>
 
-        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
-          <i data-lucide="log-out" class="w-4 h-4"></i> Encerrar sessão
+        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 md:py-5 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors md:text-base">
+          <i data-lucide="log-out" class="w-4 h-4 md:w-5 md:h-5"></i> Encerrar sessão
         </button>
       </div>
     </div>
@@ -468,20 +470,20 @@
 </main>
 
 <!-- NAVEGAÇÃO -->
-<nav id="bottom-nav" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-40">
+<nav id="bottom-nav" class="hidden fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-[500px] md:max-w-[600px] z-40">
   <div class="glass rounded-2xl relative grid grid-cols-4 p-1 shadow-[0_20px_40px_rgba(0,0,0,.9)] border border-slate-700">
     <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-slate-600 w-[calc((100%-0.5rem)/4)] transition-transform duration-300 ease-out shadow-lg"></span>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-white" data-view="fluxo">
-      <i data-lucide="plus-square" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Lançar</span>
+    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 md:py-4 text-white" data-view="fluxo">
+      <i data-lucide="plus-square" class="w-5 h-5 md:w-6 md:h-6"></i><span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider">Lançar</span>
     </button>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="resumo">
-      <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Resumo</span>
+    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 md:py-4 text-slate-400" data-view="resumo">
+      <i data-lucide="layout-dashboard" class="w-5 h-5 md:w-6 md:h-6"></i><span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider">Resumo</span>
     </button>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="investir">
-      <i data-lucide="trending-up" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Investir</span>
+    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 md:py-4 text-slate-400" data-view="investir">
+      <i data-lucide="trending-up" class="w-5 h-5 md:w-6 md:h-6"></i><span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider">Investir</span>
     </button>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 text-slate-400" data-view="config">
-      <i data-lucide="user" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wider">Perfil</span>
+    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 md:py-4 text-slate-400" data-view="config">
+      <i data-lucide="user" class="w-5 h-5 md:w-6 md:h-6"></i><span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider">Perfil</span>
     </button>
   </div>
 </nav>
@@ -948,7 +950,7 @@ const History = {
     $("empty-history")?.remove();
 
     const row = document.createElement("div");
-    row.className = "slide-down flex justify-between items-center gap-2 bg-slate-900/50 p-2 rounded-lg border border-slate-700/50";
+    row.className = "slide-down flex justify-between items-center gap-2 bg-slate-900/50 p-2 md:p-3 rounded-lg border border-slate-700/50";
 
     const name = document.createElement("span");
     name.className = "text-slate-300 truncate";
@@ -995,9 +997,9 @@ const Form = {
     );
 
     $("form-title").textContent = ui.title;
-    $("form-icon").innerHTML = `<i data-lucide="${ui.icon}" class="w-5 h-5 ${ui.text}"></i>`;
+    $("form-icon").innerHTML = `<i data-lucide="${ui.icon}" class="w-5 h-5 md:w-6 md:h-6 ${ui.text}"></i>`;
     $("form-glow").style.background = `rgba(${ui.rgb}, .3)`;
-    $("btnSave").className = `btn-primary ${ui.btn} w-full py-4 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm transition-all duration-300`;
+    $("btnSave").className = `btn-primary ${ui.btn} w-full py-4 md:py-5 rounded-xl flex items-center justify-center gap-2 mt-4 md:mt-6 text-sm md:text-base transition-all duration-300 shadow-xl`;
     $("cat-container").classList.toggle("hidden", !ui.showCategory);
 
     State.particleRgb = ui.rgb;
