@@ -9,6 +9,7 @@
 <meta name="description" content="A sua central financeira pessoal ligada ao Google Sheets.">
 <meta property="og:image" content="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 
+<!-- LINKS VITAIS PARA INSTALAÇÃO (PWA) -->
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png">
@@ -162,7 +163,7 @@
   <p id="splash-status" class="text-cyan-200 text-xs md:text-sm mt-6 font-mono font-bold"></p>
 </div>
 
-<!-- CONTAINER PRINCIPAL ADAPTÁVEL (Mobile até Desktop) -->
+<!-- CONTAINER PRINCIPAL ADAPTÁVEL -->
 <main class="relative z-10 w-full max-w-[500px] md:max-w-[700px] mx-auto flex flex-col min-h-screen">
 
   <!-- LOGIN -->
@@ -245,7 +246,7 @@
         <div id="avatar" class="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-full border-2 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800"></div>
         <div class="flex flex-col min-w-0">
           <span class="text-[9px] md:text-[10px] text-cyan-400 font-black uppercase flex items-center gap-1">
-            <i data-lucide="clock" class="w-3 h-3 md:w-4 md:h-4"></i> <span id="header-time">--:--</span>
+            <i data-lucide="calendar-clock" class="w-3 h-3 md:w-4 md:h-4"></i> <span id="header-time">--/--/--, --:--</span>
           </span>
           <h2 id="user-name" class="text-xs md:text-sm font-bold text-white truncate"></h2>
         </div>
@@ -259,7 +260,6 @@
 
       <!-- LANÇAR -->
       <div id="view-fluxo" class="view active space-y-5 md:space-y-8">
-
         <div class="ad-block w-full" hidden data-ad>
           <span class="ad-label">Publicidade</span>
           <div class="ad-slot w-full"></div>
@@ -284,7 +284,6 @@
             <div>
               <label class="label md:text-[11px]" for="desc">Descrição do Lançamento</label>
               <input id="desc" class="input md:text-base md:p-4" maxlength="60" placeholder="Ex.: Supermercado, Luz, Salário..." required>
-              <!-- Atalhos rápidos para descrição -->
               <div class="flex gap-2 md:gap-3 mt-2 md:mt-3 overflow-x-auto no-scrollbar py-1 snap-x scroll-smooth">
                 <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Mercado"><i data-lucide="shopping-cart" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Mercado</button>
                 <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Combustível"><i data-lucide="fuel" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Gasolina</button>
@@ -296,7 +295,8 @@
 
             <div>
               <label class="label md:text-[11px]" for="amount">Valor (R$)</label>
-              <input id="amount" type="number" step="0.01" min="0.01" class="input font-bold text-lg md:text-xl md:p-4" placeholder="0,00" required>
+              <!-- MÁSCARA APLICADA: TYPE TEXT COM INPUTMODE NUMERIC -->
+              <input id="amount" type="text" inputmode="numeric" class="input font-bold text-lg md:text-xl md:p-4" placeholder="0,00" required>
               <div class="flex gap-2 md:gap-3 mt-2 md:mt-3 overflow-x-auto no-scrollbar py-1 snap-x scroll-smooth">
                 <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="10">R$ 10</button>
                 <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="50">R$ 50</button>
@@ -308,6 +308,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5">
               <div>
                 <label class="label md:text-[11px]" for="date">Data</label>
+                <!-- O input real armazena Y-m-d, mas a UI mostra DD/MM/YYYY amigável através do flatpickr altInput -->
                 <input id="date" type="text" class="input font-bold text-center md:text-base md:p-4" placeholder="Data" required>
               </div>
               <div id="cat-container">
@@ -343,7 +344,6 @@
           <p class="text-[10px] md:text-xs font-mono text-cyan-200/70 mt-2 md:mt-3 relative z-10">Entradas − saídas − investimentos · Out a Dez</p>
         </div>
 
-        <!-- INDICADORES ESTRATÉGICOS -->
         <div class="grid grid-cols-2 gap-3 md:gap-6">
           <div class="glass p-4 md:p-6 rounded-2xl border border-emerald-500/30 flex flex-col justify-center">
             <p class="text-[9px] md:text-[11px] uppercase tracking-widest text-emerald-400 font-bold mb-1 md:mb-2 flex items-center gap-1"><i data-lucide="piggy-bank" class="w-3 h-3 md:w-4 md:h-4"></i> Taxa Poupança</p>
@@ -375,11 +375,6 @@
           <h3 class="section-title md:text-sm"><i data-lucide="bar-chart" class="w-4 h-4 text-cyan-400"></i> Por mês</h3>
           <div class="relative h-52 md:h-72"><canvas id="chartDesempenho"></canvas></div>
         </div>
-
-        <div class="ad-block w-full" hidden data-ad>
-          <span class="ad-label">Publicidade</span>
-          <div class="ad-slot w-full"></div>
-        </div>
       </div>
 
       <!-- INVESTIR -->
@@ -396,11 +391,6 @@
           <h3 class="section-title text-purple-400 md:text-sm"><i data-lucide="trending-up" class="w-4 h-4 md:w-5 md:h-5"></i> Evolução acumulada</h3>
           <div class="relative h-56 md:h-80"><canvas id="chartCrescimento"></canvas></div>
         </div>
-
-        <div class="ad-block w-full" hidden data-ad>
-          <span class="ad-label">Publicidade</span>
-          <div class="ad-slot w-full"></div>
-        </div>
       </div>
 
       <!-- PERFIL -->
@@ -411,6 +401,16 @@
           <input id="pref-name" type="text" maxlength="30" class="relative z-10 bg-transparent text-2xl md:text-4xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1 transition-colors" placeholder="Seu nome">
           <p id="cfg-email" class="text-xs md:text-sm text-slate-500 font-mono mt-2 md:mt-4 break-all relative z-10"></p>
         </div>
+
+        <button id="btnInstallApp" hidden class="glass bg-cyan-900/40 border border-cyan-500/50 p-4 md:p-5 rounded-2xl flex items-center justify-center gap-4 w-full shadow-[0_0_20px_rgba(34,211,238,.3)] hover:bg-cyan-900/60 transition-all transform hover:scale-[1.02]">
+          <div class="p-2 rounded-full bg-cyan-500/20">
+            <i data-lucide="download-cloud" class="w-6 h-6 md:w-7 md:h-7 text-cyan-400"></i>
+          </div>
+          <div class="text-left flex-1">
+            <h3 class="font-black text-white text-sm md:text-base uppercase tracking-wide">Instalar Aplicativo</h3>
+            <p class="text-[10px] md:text-[11px] text-cyan-200/70 mt-0.5">Adicionar atalho à tela inicial</p>
+          </div>
+        </button>
 
         <a id="link-planilha" href="#" target="_blank" rel="noopener"
            class="glass bg-emerald-900/40 border border-emerald-500/50 p-6 md:p-8 rounded-3xl flex flex-col items-center justify-center gap-3 shadow-[0_10px_30px_rgba(16,185,129,.2)] hover:bg-emerald-900/60 transition-colors group">
@@ -447,18 +447,8 @@
                 <p class="text-xs md:text-sm font-bold text-white">Gráficos automáticos</p>
                 <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Entradas, saídas e aportes resumidos por mês.</p>
               </div>
-              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-amber-500/30">
-                <i data-lucide="tag" class="w-5 h-5 md:w-6 md:h-6 text-amber-400 mb-2 md:mb-3"></i>
-                <p class="text-xs md:text-sm font-bold text-white">Categorias prontas</p>
-                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Organize dízimo, saúde, dívidas e outros gastos.</p>
-              </div>
             </div>
           </div>
-        </div>
-        
-        <div class="ad-block w-full" hidden data-ad>
-          <span class="ad-label">Publicidade</span>
-          <div class="ad-slot w-full"></div>
         </div>
 
         <button id="btnLogout" type="button" class="ghost-btn w-full py-4 md:py-5 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors md:text-base">
@@ -495,7 +485,6 @@
 const CONFIG = Object.freeze({
   GOOGLE_CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzCJfyUM7VH4tshO5z5vwHh31ufnlN5ORsqWl2oC1MiD1-CTP4Hh-nQFgdMCRMZQbkphw/exec",
-  // Preencha com o ID real do AdSense quando estiver aprovado.
   ADSENSE_CLIENT: "",
   ADSENSE_SLOT: "",
   STORAGE_USER: "planilhaviva_user_v7",
@@ -510,7 +499,6 @@ const CONFIG = Object.freeze({
   SDK_MAX_ATTEMPTS: 50,
 });
 
-// Configuração visual de cada tipo de lançamento
 const TYPE_UI = Object.freeze({
   in:     { title: "Lançar receita",   icon: "arrow-down-circle", text: "text-emerald-400", btn: "btn-green",  rgb: "16, 185, 129",  showCategory: false },
   out:    { title: "Lançar despesa",    icon: "arrow-up-circle",   text: "text-rose-400",    btn: "btn-red",    rgb: "244, 63, 94",   showCategory: true  },
@@ -529,7 +517,30 @@ const State = {
   tokenClient: null,
   charts: { fluxo: null, distribuicao: null, mensal: null, investido: null },
   particleRgb: DEFAULT_RGB,
+  deferredInstallPrompt: null
 };
+
+// ============================================================================
+// PWA E INSTALAÇÃO
+// ============================================================================
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  State.deferredInstallPrompt = e;
+  const btnInstall = $("btnInstallApp");
+  if(btnInstall) {
+    btnInstall.hidden = false;
+    btnInstall.addEventListener('click', async () => {
+      State.deferredInstallPrompt.prompt();
+      const { outcome } = await State.deferredInstallPrompt.userChoice;
+      if (outcome === 'accepted') btnInstall.hidden = true;
+      State.deferredInstallPrompt = null;
+    });
+  }
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(console.error); });
+}
 
 // ============================================================================
 // UTILITÁRIOS
@@ -552,10 +563,7 @@ function setAvatar(container, picture) {
   container.textContent = "";
   if (picture) {
     const img = document.createElement("img");
-    img.src = picture;
-    img.alt = "";
-    img.referrerPolicy = "no-referrer";
-    img.className = "w-full h-full object-cover";
+    img.src = picture; img.alt = ""; img.referrerPolicy = "no-referrer"; img.className = "w-full h-full object-cover";
     container.append(img);
   } else {
     container.innerHTML = '<i data-lucide="user" class="w-1/2 h-1/2 text-slate-400"></i>';
@@ -566,36 +574,20 @@ function setAvatar(container, picture) {
 function toast(message, type = "success") {
   const node = document.createElement("div");
   node.className = "toast glass rounded-2xl px-6 py-4 flex items-center justify-center gap-3 text-sm font-bold text-white shadow-2xl border border-cyan-400/50";
-
   const icon = document.createElement("i");
   icon.dataset.lucide = type === "error" ? "alert-triangle" : type === "warning" ? "alert-circle" : "check-circle";
   icon.className = `w-6 h-6 shrink-0 ${type === "error" ? "text-rose-400" : type === "warning" ? "text-amber-400" : "text-cyan-400"}`;
-
-  const text = document.createElement("span");
-  text.textContent = message;
-
-  node.append(icon, text);
-  $("toasts").append(node);
-  icons();
+  const text = document.createElement("span"); text.textContent = message;
+  node.append(icon, text); $("toasts").append(node); icons();
   requestAnimationFrame(() => node.classList.add("show"));
-  setTimeout(() => {
-    node.classList.remove("show");
-    setTimeout(() => node.remove(), 400);
-  }, CONFIG.TOAST_MS);
+  setTimeout(() => { node.classList.remove("show"); setTimeout(() => node.remove(), 400); }, CONFIG.TOAST_MS);
 }
 
-/** Desativa o botão e mostra um texto de carregamento enquanto a operação roda. */
 async function withBusy(button, label, operation) {
   const text = button.querySelector("[data-label]");
   const original = text.textContent;
-  button.disabled = true;
-  text.textContent = label;
-  try {
-    return await operation();
-  } finally {
-    button.disabled = false;
-    text.textContent = original;
-  }
+  button.disabled = true; text.textContent = label;
+  try { return await operation(); } finally { button.disabled = false; text.textContent = original; }
 }
 
 // ============================================================================
@@ -604,57 +596,36 @@ async function withBusy(button, label, operation) {
 const Api = {
   async call(action, payload = {}) {
     if (!State.user?.email) throw new Error("Sessão inválida. Faça login novamente.");
-
-    let res;
+    let res, json;
     try {
       res = await fetch(CONFIG.SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload }),
       });
-    } catch {
-      throw new Error("Sem ligação com o servidor.");
-    }
-
-    let json;
-    try {
-      json = await res.json();
-    } catch {
-      throw new Error("Resposta inesperada do servidor.");
-    }
-
+    } catch { throw new Error("Sem ligação com o servidor."); }
+    try { json = await res.json(); } catch { throw new Error("Resposta inesperada do servidor."); }
     if (json.status !== "success") throw new Error(json.message || "Erro no servidor.");
     return json;
   }
 };
 
 // ============================================================================
-// AUTENTICAÇÃO
+// AUTENTICAÇÃO E SESSÃO
 // ============================================================================
 const Auth = {
   readSavedUser() {
     try {
       const user = JSON.parse(localStorage.getItem(CONFIG.STORAGE_USER));
       return user?.email ? user : null;
-    } catch {
-      localStorage.removeItem(CONFIG.STORAGE_USER);
-      return null;
-    }
+    } catch { localStorage.removeItem(CONFIG.STORAGE_USER); return null; }
   },
 
   waitForGoogle(attempts = 0) {
     if (window.google?.accounts?.oauth2) {
-      State.tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CONFIG.GOOGLE_CLIENT_ID,
-        scope: "email profile",
-        callback: Auth.onToken,
-      });
+      State.tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CONFIG.GOOGLE_CLIENT_ID, scope: "email profile", callback: Auth.onToken });
       return;
     }
-    if (attempts >= CONFIG.SDK_MAX_ATTEMPTS) {
-      toast("Não foi possível carregar o login do Google.", "error");
-      return;
-    }
+    if (attempts >= CONFIG.SDK_MAX_ATTEMPTS) { return toast("Não foi possível carregar o login do Google.", "error"); }
     setTimeout(() => Auth.waitForGoogle(attempts + 1), 200);
   },
 
@@ -665,24 +636,13 @@ const Auth = {
 
   async onToken(resp) {
     if (resp.error) return toast("Erro no login. Tente novamente.", "error");
-
     try {
-      const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-        headers: { Authorization: `Bearer ${resp.access_token}` },
-      });
+      const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${resp.access_token}` } });
       if (!res.ok) throw new Error("userinfo");
       const profile = await res.json();
-
-      const user = {
-        name: profile.name || profile.email,
-        email: String(profile.email || "").toLowerCase(),
-        picture: profile.picture || "",
-      };
-      localStorage.setItem(CONFIG.STORAGE_USER, JSON.stringify(user));
-      Auth.start(user);
-    } catch {
-      toast("Não foi possível obter os dados da conta.", "error");
-    }
+      const user = { name: profile.name || profile.email, email: String(profile.email || "").toLowerCase(), picture: profile.picture || "" };
+      localStorage.setItem(CONFIG.STORAGE_USER, JSON.stringify(user)); Auth.start(user);
+    } catch { toast("Não foi possível obter os dados da conta.", "error"); }
   },
 
   start(user) {
@@ -691,509 +651,258 @@ const Auth = {
     Session.start();
   },
 
-  logout() {
-    localStorage.removeItem(CONFIG.STORAGE_USER);
-    location.reload();
-  },
+  logout() { localStorage.removeItem(CONFIG.STORAGE_USER); location.reload(); },
 };
 
-// ============================================================================
-// SESSÃO E SPLASH
-// ============================================================================
 const Splash = {
   show(name) {
-    $("greeting-text").textContent = greeting();
-    $("splash-name").textContent = name;
+    $("greeting-text").textContent = greeting(); $("splash-name").textContent = name;
     $("splash-status").textContent = "Sincronizando a sua planilha...";
     setAvatar($("splash-avatar"), State.user?.picture);
-    const node = $("welcome-splash");
-    node.classList.remove("hide-splash");
-    show(node, true);
+    const node = $("welcome-splash"); node.classList.remove("hide-splash"); show(node, true);
   },
-
-  status(text) {
-    $("splash-status").textContent = text;
-  },
-
-  hide() {
-    const node = $("welcome-splash");
-    node.classList.add("hide-splash");
-    setTimeout(() => show(node, false), 600);
-  },
+  status(text) { $("splash-status").textContent = text; },
+  hide() { const node = $("welcome-splash"); node.classList.add("hide-splash"); setTimeout(() => show(node, false), 600); },
 };
 
 const Session = {
   async start() {
-    show($("view-auth"), false);
-    Splash.show(State.prefName + "!");
-
+    show($("view-auth"), false); Splash.show(State.prefName + "!");
     let online = true;
     try {
-      const res = await Api.call("init_user");
-      State.sheetUrl = res.sheetUrl;
-      Splash.status("Tudo pronto!");
-    } catch (err) {
-      online = false;
-      console.error(err);
-      Splash.status("Modo offline: alguns dados podem não carregar.");
-    }
-
-    setTimeout(() => {
-      Splash.hide();
-      Session.enter(online);
-    }, CONFIG.SPLASH_MS);
+      const res = await Api.call("init_user"); State.sheetUrl = res.sheetUrl; Splash.status("Tudo pronto!");
+    } catch (err) { online = false; Splash.status("Modo offline: alguns dados podem não carregar."); }
+    setTimeout(() => { Splash.hide(); Session.enter(online); }, CONFIG.SPLASH_MS);
   },
 
   enter() {
-    $("user-name").textContent = State.prefName;
-    $("pref-name").value = State.prefName;
-    $("cfg-email").textContent = State.user.email;
-    setAvatar($("avatar"), State.user.picture);
-    setAvatar($("cfg-avatar"), State.user.picture);
-
-    const link = $("link-planilha");
-    link.href = State.sheetUrl || "#";
-    link.classList.toggle("pointer-events-none", !State.sheetUrl);
-    link.classList.toggle("opacity-50", !State.sheetUrl);
-
-    show($("view-app"), true);
-    $("bottom-nav").classList.remove("hidden");
-
-    Nav.go("fluxo");
-    Dashboard.sync();
+    $("user-name").textContent = State.prefName; $("pref-name").value = State.prefName; $("cfg-email").textContent = State.user.email;
+    setAvatar($("avatar"), State.user.picture); setAvatar($("cfg-avatar"), State.user.picture);
+    const link = $("link-planilha"); link.href = State.sheetUrl || "#"; link.classList.toggle("pointer-events-none", !State.sheetUrl); link.classList.toggle("opacity-50", !State.sheetUrl);
+    show($("view-app"), true); $("bottom-nav").classList.remove("hidden");
+    Nav.go("fluxo"); Dashboard.sync();
   },
 };
 
 // ============================================================================
-// NAVEGAÇÃO
+// NAVEGAÇÃO E GRÁFICOS
 // ============================================================================
 const Nav = {
   go(view) {
     CONFIG.VIEWS.forEach((name, index) => {
-      const active = name === view;
-      $("view-" + name).classList.toggle("active", active);
-
+      const active = name === view; $("view-" + name).classList.toggle("active", active);
       const btn = document.querySelector(`.nav-btn[data-view="${name}"]`);
-      btn.classList.toggle("text-white", active);
-      btn.classList.toggle("text-slate-400", !active);
-      btn.setAttribute("aria-current", active ? "page" : "false");
-
-      if (active) {
-        $("nav-pill").style.transform = `translateX(${index * 100}%)`;
-        btn.classList.remove("icon-pop");
-        void btn.offsetWidth;
-        btn.classList.add("icon-pop");
-      }
+      btn.classList.toggle("text-white", active); btn.classList.toggle("text-slate-400", !active); btn.setAttribute("aria-current", active ? "page" : "false");
+      if (active) { $("nav-pill").style.transform = `translateX(${index * 100}%)`; btn.classList.remove("icon-pop"); void btn.offsetWidth; btn.classList.add("icon-pop"); }
     });
-
-    State.particleRgb = view === "fluxo" ? TYPE_UI[$("type").value].rgb : DEFAULT_RGB;
-    window.scrollTo(0, 0);
-    icons();
+    State.particleRgb = view === "fluxo" ? TYPE_UI[$("type").value].rgb : DEFAULT_RGB; window.scrollTo(0, 0); icons();
   },
 };
 
-// ============================================================================
-// PAINEL (KPIs e gráficos reais)
-// ============================================================================
 const Dashboard = {
   async sync({ notify = false } = {}) {
-    const btn = $("btnRefreshHeader");
-    btn.disabled = true;
-    btn.classList.add("animate-spin");
-
+    const btn = $("btnRefreshHeader"); btn.disabled = true; btn.classList.add("animate-spin");
     try {
-      const { data } = await Api.call("get_dashboard");
-      Dashboard.render(data);
-      if (notify) toast("Dados atualizados.");
+      const { data } = await Api.call("get_dashboard"); Dashboard.render(data); if (notify) toast("Dados atualizados.");
     } catch (err) {
-      console.error(err);
       toast(err.message || "Não foi possível atualizar os dados.", "error");
-      ["saldo", "kpi-poupanca", "kpi-media-saidas", "invest-total"].forEach(id => {
-         $(id).classList.remove("skeleton");
-      });
-    } finally {
-      btn.disabled = false;
-      btn.classList.remove("animate-spin");
-    }
+      ["saldo", "kpi-poupanca", "kpi-media-saidas", "invest-total"].forEach(id => { $(id).classList.remove("skeleton"); });
+    } finally { btn.disabled = false; btn.classList.remove("animate-spin"); }
   },
 
   render(d) {
-    $("saldo").classList.remove("skeleton"); 
-    $("saldo").textContent = brl.format(d.saldoAtual);
+    $("saldo").classList.remove("skeleton"); $("saldo").textContent = brl.format(d.saldoAtual);
+    $("txt-in").textContent = `Entradas ${brl.format(d.totalEntradas)}`; $("txt-out").textContent = `Saídas ${brl.format(d.totalSaidas)}`;
+    $("invest-total").classList.remove("skeleton"); $("invest-total").textContent = brl.format(d.totalInvestido);
     
-    $("txt-in").textContent = `Entradas ${brl.format(d.totalEntradas)}`;
-    $("txt-out").textContent = `Saídas ${brl.format(d.totalSaidas)}`;
-    
-    $("invest-total").classList.remove("skeleton"); 
-    $("invest-total").textContent = brl.format(d.totalInvestido);
-
-    // KPI: Taxa de Poupança (Investimentos em relação às Entradas)
     $("kpi-poupanca").classList.remove("skeleton");
     const taxaPoupanca = d.totalEntradas > 0 ? ((d.totalInvestido / d.totalEntradas) * 100).toFixed(1) : "0.0";
     $("kpi-poupanca").textContent = taxaPoupanca + "%";
-
-    // KPI: Média Mensal de Saídas
+    
     $("kpi-media-saidas").classList.remove("skeleton");
     const mesesComDados = d.mensal ? d.mensal.length : 1;
-    const mediaSaidas = mesesComDados > 0 ? (d.totalSaidas / mesesComDados) : 0;
-    $("kpi-media-saidas").textContent = brl.format(mediaSaidas);
-
+    $("kpi-media-saidas").textContent = brl.format(mesesComDados > 0 ? (d.totalSaidas / mesesComDados) : 0);
     Charts.update(d);
   },
 };
 
 const Charts = {
   init() {
-    Chart.defaults.color = "#94a3b8";
-    Chart.defaults.font.family = "system-ui, sans-serif";
-
-    State.charts.fluxo = new Chart($("chartFluxo"), {
-      type: "doughnut",
-      data: {
-        labels: ["Entradas", "Saídas"],
-        datasets: [{ data: [0, 0], backgroundColor: ["#10b981", "#f43f5e"], borderWidth: 0 }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "75%",
-        plugins: { legend: { display: false } },
-      },
-    });
-    
-    // Novo Gráfico: Distribuição Geral (Entradas Restantes, Saídas, Investimentos)
-    State.charts.distribuicao = new Chart($("chartDistribuicao"), {
-      type: "doughnut",
-      data: {
-        labels: ["Saldo", "Saídas", "Investido"],
-        datasets: [{ data: [0, 0, 0], backgroundColor: ["#38bdf8", "#f43f5e", "#a855f7"], borderWidth: 0 }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "65%",
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
-      }
-    });
-
-    State.charts.mensal = new Chart($("chartDesempenho"), {
-      type: "bar",
-      data: {
-        labels: [],
-        datasets: [
-          { label: "Entradas", data: [], backgroundColor: "#10b981", borderRadius: 4 },
-          { label: "Saídas", data: [], backgroundColor: "#f43f5e", borderRadius: 4 },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { grid: { display: false } },
-          y: { ticks: { callback: (v) => brl.format(v) } },
-        },
-        plugins: { legend: { position: "bottom", labels: { boxWidth: 12 } } },
-      },
-    });
-
-    State.charts.investido = new Chart($("chartCrescimento"), {
-      type: "line",
-      data: {
-        labels: [],
-        datasets: [{
-          label: "Investido acumulado",
-          data: [],
-          borderColor: "#a855f7",
-          backgroundColor: "rgba(168,85,247,.15)",
-          fill: true,
-          tension: 0.35,
-          borderWidth: 3,
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: { y: { ticks: { callback: (v) => brl.format(v) } } },
-        plugins: { legend: { display: false } },
-      },
-    });
+    Chart.defaults.color = "#94a3b8"; Chart.defaults.font.family = "system-ui, sans-serif";
+    State.charts.fluxo = new Chart($("chartFluxo"), { type: "doughnut", data: { labels: ["Entradas", "Saídas"], datasets: [{ data: [0, 0], backgroundColor: ["#10b981", "#f43f5e"], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: "75%", plugins: { legend: { display: false } } } });
+    State.charts.distribuicao = new Chart($("chartDistribuicao"), { type: "doughnut", data: { labels: ["Saldo", "Saídas", "Investido"], datasets: [{ data: [0, 0, 0], backgroundColor: ["#38bdf8", "#f43f5e", "#a855f7"], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: "65%", plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } } });
+    State.charts.mensal = new Chart($("chartDesempenho"), { type: "bar", data: { labels: [], datasets: [{ label: "Entradas", data: [], backgroundColor: "#10b981", borderRadius: 4 }, { label: "Saídas", data: [], backgroundColor: "#f43f5e", borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { ticks: { callback: (v) => brl.format(v) } } }, plugins: { legend: { position: "bottom", labels: { boxWidth: 12 } } } } });
+    State.charts.investido = new Chart($("chartCrescimento"), { type: "line", data: { labels: [], datasets: [{ label: "Investido acumulado", data: [], borderColor: "#a855f7", backgroundColor: "rgba(168,85,247,.15)", fill: true, tension: 0.35, borderWidth: 3 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { ticks: { callback: (v) => brl.format(v) } } }, plugins: { legend: { display: false } } } });
   },
-
   update({ totalEntradas, totalSaidas, totalInvestido, mensal = [] }) {
-    const { fluxo, distribuicao, mensal: bar, investido } = State.charts;
-    const labels = mensal.map((m) => m.mes);
-
-    fluxo.data.datasets[0].data = [totalEntradas, totalSaidas];
-    fluxo.update();
-    
+    const { fluxo, distribuicao, mensal: bar, investido } = State.charts; const labels = mensal.map((m) => m.mes);
+    fluxo.data.datasets[0].data = [totalEntradas, totalSaidas]; fluxo.update();
     const saldoRestante = totalEntradas - totalSaidas - totalInvestido;
-    distribuicao.data.datasets[0].data = [saldoRestante > 0 ? saldoRestante : 0, totalSaidas, totalInvestido];
-    distribuicao.update();
-
-    bar.data.labels = labels;
-    bar.data.datasets[0].data = mensal.map((m) => m.entradas);
-    bar.data.datasets[1].data = mensal.map((m) => m.saidas);
-    bar.update();
-
-    let accumulated = 0;
-    investido.data.labels = labels;
-    investido.data.datasets[0].data = mensal.map((m) => (accumulated += m.investido));
-    investido.update();
+    distribuicao.data.datasets[0].data = [saldoRestante > 0 ? saldoRestante : 0, totalSaidas, totalInvestido]; distribuicao.update();
+    bar.data.labels = labels; bar.data.datasets[0].data = mensal.map((m) => m.entradas); bar.data.datasets[1].data = mensal.map((m) => m.saidas); bar.update();
+    let acc = 0; investido.data.labels = labels; investido.data.datasets[0].data = mensal.map((m) => (acc += m.investido)); investido.update();
   },
 };
 
 // ============================================================================
-// FORMULÁRIO DE LANÇAMENTO
+// FORMULÁRIO E MÁSCARA
 // ============================================================================
 const History = {
   add(desc, amount, type) {
     $("empty-history")?.remove();
-
-    const row = document.createElement("div");
-    row.className = "slide-down flex justify-between items-center gap-2 bg-slate-900/50 p-2 md:p-3 rounded-lg border border-slate-700/50";
-
-    const name = document.createElement("span");
-    name.className = "text-slate-300 truncate";
-    name.textContent = desc;
-
-    const value = document.createElement("span");
-    value.className = `font-bold shrink-0 ${TYPE_UI[type].text}`;
-    value.textContent = `${type === "in" ? "+" : "-"} ${brl.format(amount)}`;
-
+    const row = document.createElement("div"); row.className = "slide-down flex justify-between items-center gap-2 bg-slate-900/50 p-2 md:p-3 rounded-lg border border-slate-700/50";
+    const name = document.createElement("span"); name.className = "text-slate-300 truncate"; name.textContent = desc;
+    const value = document.createElement("span"); value.className = `font-bold shrink-0 ${TYPE_UI[type].text}`; value.textContent = `${type === "in" ? "+" : "-"} ${brl.format(amount)}`;
     row.append(name, value);
-    const list = $("local-history");
-    list.prepend(row);
+    const list = $("local-history"); list.prepend(row);
     while (list.children.length > CONFIG.HISTORY_LIMIT) list.lastChild.remove();
   },
 };
 
+function applyCurrencyMask(input) {
+  let value = input.value.replace(/\D/g, "");
+  if (value === "") { input.value = ""; return; }
+  input.value = (parseInt(value, 10) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 const Form = {
   bind() {
     CONFIG.CATEGORIES.forEach((name) => $("category").append(new Option(name, name)));
-
-    document.querySelectorAll(".seg-btn").forEach((btn) =>
-      btn.addEventListener("click", () => Form.setType(btn.dataset.type))
-    );
-
-    document.querySelectorAll(".quick-chip-val").forEach((chip) =>
-      chip.addEventListener("click", () => { $("amount").value = chip.dataset.amount; })
-    );
+    document.querySelectorAll(".seg-btn").forEach((btn) => btn.addEventListener("click", () => Form.setType(btn.dataset.type)));
     
-    // Quick chips para descrições de gastos
-    document.querySelectorAll(".quick-chip-desc").forEach((chip) =>
-      chip.addEventListener("click", () => { $("desc").value = chip.dataset.desc; })
-    );
-
+    // Máscara de Moeda (Anti-Erro)
+    const amountInput = $("amount");
+    amountInput.addEventListener("input", (e) => applyCurrencyMask(e.target));
+    
+    document.querySelectorAll(".quick-chip-val").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const val = parseInt(chip.dataset.amount, 10);
+        amountInput.value = val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      });
+    });
+    
+    document.querySelectorAll(".quick-chip-desc").forEach((chip) => chip.addEventListener("click", () => { $("desc").value = chip.dataset.desc; }));
     $("txForm").addEventListener("submit", Form.submit);
   },
 
   setType(type) {
-    const ui = TYPE_UI[type];
-    if (!ui) return;
-
+    const ui = TYPE_UI[type]; if (!ui) return;
     $("type").value = type;
-    document.querySelectorAll(".seg-btn").forEach((btn) =>
-      btn.setAttribute("aria-pressed", String(btn.dataset.type === type))
-    );
-
-    $("form-title").textContent = ui.title;
-    $("form-icon").innerHTML = `<i data-lucide="${ui.icon}" class="w-5 h-5 md:w-6 md:h-6 ${ui.text}"></i>`;
-    $("form-glow").style.background = `rgba(${ui.rgb}, .3)`;
-    $("btnSave").className = `btn-primary ${ui.btn} w-full py-4 md:py-5 rounded-xl flex items-center justify-center gap-2 mt-4 md:mt-6 text-sm md:text-base transition-all duration-300 shadow-xl`;
-    $("cat-container").classList.toggle("hidden", !ui.showCategory);
-
-    State.particleRgb = ui.rgb;
-    icons();
+    document.querySelectorAll(".seg-btn").forEach((btn) => btn.setAttribute("aria-pressed", String(btn.dataset.type === type)));
+    $("form-title").textContent = ui.title; $("form-icon").innerHTML = `<i data-lucide="${ui.icon}" class="w-5 h-5 md:w-6 md:h-6 ${ui.text}"></i>`;
+    $("form-glow").style.background = `rgba(${ui.rgb}, .3)`; $("btnSave").className = `btn-primary ${ui.btn} w-full py-4 md:py-5 rounded-xl flex items-center justify-center gap-2 mt-4 md:mt-6 text-sm md:text-base transition-all duration-300 shadow-xl`;
+    $("cat-container").classList.toggle("hidden", !ui.showCategory); State.particleRgb = ui.rgb; icons();
   },
 
   reset() {
-    $("txForm").reset();
-    Form.setType("out");
-    State.datePicker?.setDate(new Date(), false);
+    $("txForm").reset(); Form.setType("out"); State.datePicker?.setDate(new Date(), false);
   },
 
   async submit(event) {
     event.preventDefault();
-
     const type = $("type").value;
     const desc = $("desc").value.trim();
-    const amount = Math.round(Number($("amount").value) * 100) / 100;
+    // Conversão segura do valor com máscara
+    const amountStr = $("amount").value.replace(/\./g, "").replace(",", ".");
+    const amount = Math.round(Number(amountStr) * 100) / 100;
     const date = $("date").value;
-
+    
     if (!desc) return toast("Informe a descrição.", "error");
     if (!Number.isFinite(amount) || amount <= 0) return toast("Informe um valor maior que zero.", "error");
     if (!date) return toast("Escolha a data.", "error");
 
-    const category =
-      type === "in" ? CONFIG.INCOME_CATEGORY :
-      type === "invest" ? CONFIG.INVEST_CATEGORY :
-      $("category").value;
-
-    const payload = {
-      desc,
-      amount,
-      type: type === "in" ? "in" : "out",
-      category,
-      date,
-    };
+    const category = type === "in" ? CONFIG.INCOME_CATEGORY : type === "invest" ? CONFIG.INVEST_CATEGORY : $("category").value;
+    const payload = { desc, amount, type: type === "in" ? "in" : "out", category, date };
 
     try {
       await withBusy($("btnSave"), "Guardando...", () => Api.call("add_transaction", payload));
-      toast("Lançamento guardado na nuvem!");
-      History.add(desc, amount, type);
-      Form.reset();
-      Dashboard.sync();
-    } catch (err) {
-      toast(err.message, "error");
-    }
+      toast("Lançamento guardado na nuvem!"); History.add(desc, amount, type); Form.reset(); Dashboard.sync();
+    } catch (err) { toast(err.message, "error"); }
   },
 };
 
-// ============================================================================
-// PERFIL
-// ============================================================================
 function savePrefName(event) {
   const name = event.target.value.trim().slice(0, 30) || firstName(State.user);
-  State.prefName = name;
-  event.target.value = name;
-  localStorage.setItem(CONFIG.STORAGE_NAME_PREFIX + State.user.email, name);
-  $("user-name").textContent = name;
-  toast("Nome de preferência guardado!");
+  State.prefName = name; event.target.value = name; localStorage.setItem(CONFIG.STORAGE_NAME_PREFIX + State.user.email, name);
+  $("user-name").textContent = name; toast("Nome de preferência guardado!");
 }
 
-// ============================================================================
-// ANÚNCIOS
-// ============================================================================
 const Ads = {
   init() {
     if (!CONFIG.ADSENSE_CLIENT || !CONFIG.ADSENSE_SLOT) return;
-
-    const script = document.createElement("script");
-    script.async = true;
-    script.crossOrigin = "anonymous";
+    const script = document.createElement("script"); script.async = true; script.crossOrigin = "anonymous";
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(CONFIG.ADSENSE_CLIENT)}`;
     document.head.append(script);
-
     document.querySelectorAll("[data-ad]").forEach((block) => {
-      const ins = document.createElement("ins");
-      ins.className = "adsbygoogle";
-      ins.style.display = "block";
-      ins.dataset.adClient = CONFIG.ADSENSE_CLIENT;
-      ins.dataset.adSlot = CONFIG.ADSENSE_SLOT;
-      ins.dataset.adFormat = "auto";
-      ins.dataset.fullWidthResponsive = "true";
-      block.querySelector(".ad-slot").append(ins);
-      block.hidden = false;
+      const ins = document.createElement("ins"); ins.className = "adsbygoogle"; ins.style.display = "block";
+      ins.dataset.adClient = CONFIG.ADSENSE_CLIENT; ins.dataset.adSlot = CONFIG.ADSENSE_SLOT; ins.dataset.adFormat = "auto"; ins.dataset.fullWidthResponsive = "true";
+      block.querySelector(".ad-slot").append(ins); block.hidden = false;
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     });
   },
 };
 
 // ============================================================================
-// INICIALIZAÇÃO
+// PARTÍCULAS E RELÓGIO ATUALIZADO
 // ============================================================================
 function initParticles() {
-  const canvas = $("bg");
-  const ctx = canvas.getContext("2d");
-  let points = [];
-
+  const canvas = $("bg"); const ctx = canvas.getContext("2d"); let points = [];
   const resize = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
     const count = Math.min(60, Math.floor((canvas.width * canvas.height) / 9000));
-    points = Array.from({ length: count }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.7,
-      vy: (Math.random() - 0.5) * 0.7,
-      r: Math.random() * 2 + 0.5,
-    }));
+    points = Array.from({ length: count }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.7, vy: (Math.random() - 0.5) * 0.7, r: Math.random() * 2 + 0.5 }));
   };
-
   const frame = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const rgb = State.particleRgb;
-
+    ctx.clearRect(0, 0, canvas.width, canvas.height); const rgb = State.particleRgb;
     for (let i = 0; i < points.length; i++) {
-      const p = points[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-      ctx.fillStyle = `rgba(${rgb}, .5)`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
-
+      const p = points[i]; p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1; if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+      ctx.fillStyle = `rgba(${rgb}, .5)`; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
       for (let j = i + 1; j < points.length; j++) {
-        const q = points[j];
-        const dist = Math.hypot(p.x - q.x, p.y - q.y);
-        if (dist < 100) {
-          ctx.strokeStyle = `rgba(${rgb}, ${0.3 * (1 - dist / 100)})`;
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(q.x, q.y);
-          ctx.stroke();
-        }
+        const q = points[j]; const dist = Math.hypot(p.x - q.x, p.y - q.y);
+        if (dist < 100) { ctx.strokeStyle = `rgba(${rgb}, ${0.3 * (1 - dist / 100)})`; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
       }
     }
     requestAnimationFrame(frame);
   };
-
-  window.addEventListener("resize", resize);
-  resize();
-  frame();
+  window.addEventListener("resize", resize); resize(); frame();
 }
 
 function startClock() {
   const tick = () => {
     const now = new Date();
-    $("header-time").textContent = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    const dateStr = now.toLocaleDateString("pt-BR", { day: '2-digit', month: 'short' });
+    const timeStr = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    $("header-time").textContent = `${dateStr}, ${timeStr}`; 
   };
-  tick();
+  tick(); 
   setInterval(tick, 30000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Duplica os cards dos carrosséis para o loop contínuo
-  const track = $("carousel-track");
-  track.innerHTML += track.innerHTML;
+  const track = $("carousel-track"); track.innerHTML += track.innerHTML;
+  const testTrack = $("testimonials-track"); if(testTrack) testTrack.innerHTML += testTrack.innerHTML;
+  initParticles(); startClock(); Ads.init(); Charts.init(); Form.bind();
   
-  const testTrack = $("testimonials-track");
-  if(testTrack) testTrack.innerHTML += testTrack.innerHTML;
-
-  initParticles();
-  startClock();
-  Ads.init();
-  Charts.init();
-  Form.bind();
-
-  State.datePicker = flatpickr("#date", {
-    locale: "pt",
-    dateFormat: "Y-m-d",
-    defaultDate: new Date(),
-    disableMobile: true,
+  // Data Inteligente (Visual em DD/MM/AAAA)
+  State.datePicker = flatpickr("#date", { 
+    locale: "pt", 
+    dateFormat: "Y-m-d", 
+    altInput: true, 
+    altFormat: "d/m/Y", // Visual amigável brasileiro
+    defaultDate: new Date(), 
+    disableMobile: false 
   });
-
-  document.querySelectorAll(".nav-btn").forEach((btn) =>
-    btn.addEventListener("click", () => Nav.go(btn.dataset.view))
-  );
+  
+  document.querySelectorAll(".nav-btn").forEach((btn) => btn.addEventListener("click", () => Nav.go(btn.dataset.view)));
   $("btnRefreshHeader").addEventListener("click", () => Dashboard.sync({ notify: true }));
   $("btnLogout").addEventListener("click", Auth.logout);
   $("btnGoogleLogin").addEventListener("click", Auth.login);
   $("pref-name").addEventListener("change", savePrefName);
-
   icons();
-
   const saved = Auth.readSavedUser();
-  if (saved) {
-    Auth.start(saved);
-  } else {
-    show($("view-auth"), true);
-    Auth.waitForGoogle();
-  }
+  if (saved) Auth.start(saved);
+  else { show($("view-auth"), true); Auth.waitForGoogle(); }
 });
 </script>
 </body>
