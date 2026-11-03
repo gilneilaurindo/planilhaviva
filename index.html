@@ -30,6 +30,7 @@
   }
   #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 
+  /* COMPONENTES BASE (GLASS) */
   .glass {
     background: rgba(15,23,42,.65); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
     border: 1px solid rgba(148,163,184,.15);
@@ -40,12 +41,16 @@
     box-shadow: 0 0 35px rgba(34,211,238,.15), inset 0 0 20px rgba(34,211,238,.08);
   }
   .glow {
-    position: absolute; width: 220px; height: 220px; border-radius: 9999px;
-    background: rgba(6,182,212,.25); filter: blur(80px);
-    top: -60px; right: -60px; pointer-events: none; transition: background .6s ease;
+    position: absolute; width: 250px; height: 250px; border-radius: 9999px;
+    background: rgba(6,182,212,.25); filter: blur(90px);
+    top: -80px; right: -80px; pointer-events: none; transition: background .6s ease;
   }
-  .glow-purple { background: rgba(168,85,247,.25); top: auto; bottom: -60px; left: -60px; right: auto; }
+  .glow-purple { background: rgba(168,85,247,.25); top: auto; bottom: -80px; left: -80px; right: auto; }
 
+  /* ANIMAÇÕES INTERATIVAS */
+  .hover-card { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease; }
+  .hover-card:hover { transform: translateY(-4px); box-shadow: 0 15px 35px -5px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.1); }
+  
   .animate-float { animation: float 6s ease-in-out infinite; }
   @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
   .icon-pop svg { animation: pop .5s cubic-bezier(.175,.885,.32,1.275) both; }
@@ -60,14 +65,21 @@
   #welcome-splash { transition: opacity .6s ease, transform .6s ease, filter .6s ease; backdrop-filter: blur(25px); }
   #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(15px); }
 
-  .carousel-wrapper { overflow: hidden; white-space: nowrap; position: relative; width: 100%; }
-  .carousel-track { display: inline-flex; gap: 1rem; animation: marquee 30s linear infinite; }
+  /* CARROSSEL COM FADE NAS BORDAS (DESIGN PREMIUM) */
+  .carousel-wrapper { 
+    overflow: hidden; white-space: nowrap; position: relative; width: 100%;
+    /* Máscara para desaparecer suavemente nas bordas */
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+  .carousel-track { display: inline-flex; gap: 1rem; animation: marquee 35s linear infinite; }
   .carousel-wrapper:hover .carousel-track { animation-play-state: paused; }
   @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - .5rem)); } }
   
-  .carousel-track-reverse { animation: marquee-reverse 35s linear infinite; }
+  .carousel-track-reverse { animation: marquee-reverse 40s linear infinite; }
   @keyframes marquee-reverse { 0% { transform: translateX(calc(-50% - .5rem)); } 100% { transform: translateX(0); } }
 
+  /* FORMULÁRIOS */
   .input {
     width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9);
     border-radius: .75rem; padding: .85rem 1rem; font-size: .9rem; color: #f8fafc;
@@ -84,12 +96,13 @@
     color: #67e8f9; display: flex; align-items: center; gap: .4rem;
   }
 
+  /* BOTÕES E CHIPS */
   .quick-chip {
     padding: .35rem .7rem; border-radius: 9999px; background: rgba(30,41,59,.8);
     border: 1px solid rgba(51,65,85,1); font-size: .75rem; font-weight: 700; color: #94a3b8;
     cursor: pointer; transition: all .2s; white-space: nowrap; scroll-snap-align: start;
   }
-  .quick-chip:hover, .quick-chip:focus-visible { background: #22d3ee; color: #020617; border-color: #22d3ee; outline: none; }
+  .quick-chip:hover, .quick-chip:focus-visible { background: #22d3ee; color: #020617; border-color: #22d3ee; transform: translateY(-2px); outline: none; }
 
   .btn-primary {
     background: linear-gradient(135deg,#06b6d4,#3b82f6); color: #020617; font-weight: 800;
@@ -111,7 +124,6 @@
   }
   .btn--custom:hover { background: rgba(30,41,59,.9); transform: translateY(-2px); }
   .btn--custom:active { transform: scale(.96); }
-
   .ghost-btn { border: 1px solid rgba(51,65,85,.9); font-weight: 600; font-size: .75rem; transition: background .2s, transform .15s; }
 
   .seg-container {
@@ -126,16 +138,17 @@
   .seg-btn[aria-pressed="true"][data-color="red"] { color: #fff; background: #f43f5e; box-shadow: 0 0 20px rgba(244,63,94,.7); }
   .seg-btn[aria-pressed="true"][data-color="purple"] { color: #fff; background: #a855f7; box-shadow: 0 0 20px rgba(168,85,247,.7); }
 
+  /* ANÚNCIOS */
   .ad-block:not([hidden]) {
-    display: flex; flex-direction: column; align-items: center; gap: .25rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .25rem;
     background: rgba(15,23,42,.4); border: 1px dashed rgba(34,211,238,.3);
-    border-radius: 1rem; padding: .5rem; min-height: 80px; width: 100%;
+    border-radius: 1rem; padding: .5rem; min-height: 90px; width: 100%;
   }
   .ad-label { font-size: 8px; text-transform: uppercase; letter-spacing: .1em; color: #64748b; font-weight: 700; }
 
+  /* TOAST & CALENDÁRIO */
   .toast { opacity: 0; transform: scale(.8); transition: all .4s cubic-bezier(.175,.885,.32,1.275); }
   .toast.show { opacity: 1; transform: scale(1); }
-
   .flatpickr-calendar {
     background: rgba(15,23,42,.95) !important; border: 1px solid rgba(34,211,238,.4) !important;
     box-shadow: 0 20px 50px -10px rgba(0,0,0,.9), 0 0 40px rgba(6,182,212,.3) !important;
@@ -147,7 +160,7 @@
   }
 </style>
 </head>
-<body class="text-slate-100 min-h-screen pb-28 md:pb-32">
+<body class="text-slate-100 min-h-screen pb-28 lg:pb-10">
 
 <canvas id="bg" aria-hidden="true"></canvas>
 <div id="toasts" class="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[9999] flex flex-col items-center gap-2 pointer-events-none" aria-live="polite"></div>
@@ -156,70 +169,87 @@
 <div id="welcome-splash" class="fixed inset-0 z-[100] bg-[#020617]/95 hidden flex-col items-center justify-center">
   <div class="relative animate-float">
     <div class="absolute inset-0 bg-cyan-500/40 blur-3xl rounded-full"></div>
-    <div id="splash-avatar" class="relative w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
+    <div id="splash-avatar" class="relative w-32 h-32 lg:w-40 lg:h-40 rounded-full border-4 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_60px_rgba(34,211,238,.6)]"></div>
   </div>
-  <h2 id="greeting-text" class="text-3xl md:text-4xl font-black text-white mt-8 tracking-tight"></h2>
-  <h2 id="splash-name" class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1"></h2>
-  <p id="splash-status" class="text-cyan-200 text-xs md:text-sm mt-6 font-mono font-bold"></p>
+  <h2 id="greeting-text" class="text-3xl lg:text-4xl font-black text-white mt-8 tracking-tight"></h2>
+  <h2 id="splash-name" class="text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-1"></h2>
+  <p id="splash-status" class="text-cyan-200 text-xs lg:text-sm mt-6 font-mono font-bold"></p>
 </div>
 
-<!-- CONTAINER PRINCIPAL ADAPTÁVEL -->
-<main class="relative z-10 w-full max-w-[500px] md:max-w-[700px] mx-auto flex flex-col min-h-screen">
+<!-- CONTAINER PRINCIPAL EXPANDIDO PARA DESKTOP -->
+<main class="relative z-10 w-full max-w-[500px] md:max-w-3xl lg:max-w-5xl mx-auto flex flex-col min-h-screen">
 
-  <!-- LOGIN -->
-  <section id="view-auth" class="flex-1 flex flex-col justify-center px-4 sm:px-8 py-8 w-full">
-    <div class="glass glass-neon rounded-3xl p-8 md:p-10 text-center space-y-6 relative overflow-hidden mb-8 w-full">
-      <div class="glow"></div>
-      <div class="glow-purple"></div>
+  <!-- ==================== TELA DE LOGIN ==================== -->
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-4 md:px-8 py-8 w-full">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
+      <!-- Lado Esquerdo (Botão e Logo) -->
+      <div class="glass glass-neon rounded-3xl p-8 lg:p-12 text-center space-y-8 relative overflow-hidden w-full hover-card">
+        <div class="glow"></div>
+        <div class="glow-purple"></div>
 
-      <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-cyan-400/50 animate-float shadow-[0_0_40px_rgba(34,211,238,.4)]">
-        <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="Logo PlanilhaViva" class="w-20 h-20 md:w-24 md:h-24 object-contain">
+        <div class="inline-flex p-4 rounded-3xl bg-slate-900 border border-cyan-400/50 animate-float shadow-[0_0_40px_rgba(34,211,238,.4)]">
+          <img src="https://raw.githubusercontent.com/gilneilaurindo/planilhaviva/main/logo.png" alt="Logo PlanilhaViva" class="w-20 h-20 lg:w-28 lg:h-28 object-contain">
+        </div>
+
+        <div>
+          <h1 class="text-3xl lg:text-5xl font-black tracking-tight text-white">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
+          <p class="text-xs lg:text-sm text-cyan-100/70 mt-3 font-medium leading-relaxed max-w-[90%] mx-auto">O seu banco de dados financeiro inteligente, guardado diretamente na sua própria conta Google.</p>
+        </div>
+
+        <div class="pt-2 flex flex-col items-center gap-4 relative z-20 w-full">
+          <button id="btnGoogleLogin" type="button" class="btn--custom w-full lg:text-lg lg:py-4">
+            <svg class="w-5 h-5 lg:w-7 lg:h-7 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span class="font-bold">Acessar com o Google</span>
+          </button>
+        </div>
       </div>
 
-      <div>
-        <h1 class="text-3xl md:text-4xl font-black tracking-tight text-white">PlanilhaViva <span class="text-cyan-400">Pro</span></h1>
-        <p class="text-xs md:text-sm text-cyan-100/70 mt-2 font-medium leading-relaxed max-w-[80%] mx-auto">O seu banco de dados financeiro, guardado na sua própria conta Google.</p>
-      </div>
-
-      <div class="pt-4 flex flex-col items-center gap-4 relative z-20 w-full">
-        <button id="btnGoogleLogin" type="button" class="btn--custom w-full">
-          <svg class="w-5 h-5 md:w-6 md:h-6 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-          </svg>
-          <span class="font-bold text-base">Acessar com o Google</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- CARROSSEL DE DEPOIMENTOS -->
-    <div class="text-left w-full relative z-20 overflow-hidden">
-      <h3 class="text-[10px] md:text-xs text-cyan-400 font-bold uppercase tracking-widest mb-3 px-2 flex items-center gap-2">
-        <i data-lucide="message-square-heart" class="w-3 h-3 md:w-4 md:h-4"></i> O que dizem os utilizadores
-      </h3>
-      <div class="carousel-wrapper py-2 w-full">
-        <div id="testimonials-track" class="carousel-track carousel-track-reverse">
-          <div class="w-72 md:w-80 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-cyan-500/30">
-            <img src="https://i.pravatar.cc/150?img=32" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-cyan-400 object-cover shrink-0" alt="Avatar">
-            <div>
-              <p class="text-xs md:text-sm font-bold text-white flex justify-between">Mariana S. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
-              <p class="text-[11px] md:text-xs text-slate-300 mt-1 leading-relaxed">"Mudou a forma como vejo meu dinheiro! Muito fácil de usar e os gráficos atualizam na hora pelo Google Sheets."</p>
+      <!-- Lado Direito (Depoimentos) -->
+      <div class="text-left w-full relative z-20 overflow-hidden flex flex-col justify-center">
+        <h3 class="text-[10px] lg:text-xs text-cyan-400 font-bold uppercase tracking-widest mb-4 px-2 flex items-center gap-2">
+          <i data-lucide="message-square-heart" class="w-3 h-3 lg:w-4 lg:h-4"></i> O que dizem os utilizadores
+        </h3>
+        <!-- Linha 1 do Carrossel -->
+        <div class="carousel-wrapper py-2 w-full">
+          <div id="testimonials-track" class="carousel-track">
+            <div class="w-72 lg:w-80 shrink-0 glass rounded-xl p-4 lg:p-5 flex gap-3 items-start whitespace-normal border-t border-cyan-500/30 hover-card">
+              <img src="https://i.pravatar.cc/150?img=32" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-cyan-400 object-cover shrink-0" alt="Avatar">
+              <div>
+                <p class="text-xs lg:text-sm font-bold text-white flex justify-between">Mariana S. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+                <p class="text-[11px] lg:text-xs text-slate-300 mt-1 leading-relaxed">"Mudou a forma como vejo meu dinheiro! Muito fácil de usar e os gráficos atualizam na hora pelo Google Sheets."</p>
+              </div>
+            </div>
+            <div class="w-72 lg:w-80 shrink-0 glass rounded-xl p-4 lg:p-5 flex gap-3 items-start whitespace-normal border-t border-purple-500/30 hover-card">
+              <img src="https://i.pravatar.cc/150?img=11" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-purple-400 object-cover shrink-0" alt="Avatar">
+              <div>
+                <p class="text-xs lg:text-sm font-bold text-white flex justify-between">Carlos E. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+                <p class="text-[11px] lg:text-xs text-slate-300 mt-1 leading-relaxed">"Finalmente abandonei as dezenas de apps pagos. Ter a inteligência no Sheets e essa interface no celular é perfeito."</p>
+              </div>
             </div>
           </div>
-          <div class="w-72 md:w-80 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-purple-500/30">
-            <img src="https://i.pravatar.cc/150?img=11" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-purple-400 object-cover shrink-0" alt="Avatar">
-            <div>
-              <p class="text-xs md:text-sm font-bold text-white flex justify-between">Carlos E. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
-              <p class="text-[11px] md:text-xs text-slate-300 mt-1 leading-relaxed">"Finalmente abandonei as dezenas de apps pagos. Ter a inteligência no Sheets e essa interface no celular é perfeito."</p>
+        </div>
+        <!-- Linha 2 do Carrossel (Reverso) -->
+        <div class="carousel-wrapper py-2 w-full mt-2">
+          <div id="testimonials-track-2" class="carousel-track carousel-track-reverse">
+            <div class="w-72 lg:w-80 shrink-0 glass rounded-xl p-4 lg:p-5 flex gap-3 items-start whitespace-normal border-t border-emerald-500/30 hover-card">
+              <img src="https://i.pravatar.cc/150?img=47" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-emerald-400 object-cover shrink-0" alt="Avatar">
+              <div>
+                <p class="text-xs lg:text-sm font-bold text-white flex justify-between">Fernanda L. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+                <p class="text-[11px] lg:text-xs text-slate-300 mt-1 leading-relaxed">"Intuitivo demais! Com dois cliques eu lanço minhas despesas de supermercado. Recomendo para toda a família."</p>
+              </div>
             </div>
-          </div>
-          <div class="w-72 md:w-80 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-emerald-500/30">
-            <img src="https://i.pravatar.cc/150?img=47" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-emerald-400 object-cover shrink-0" alt="Avatar">
-            <div>
-              <p class="text-xs md:text-sm font-bold text-white flex justify-between">Fernanda L. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
-              <p class="text-[11px] md:text-xs text-slate-300 mt-1 leading-relaxed">"Intuitivo demais! Com dois cliques eu lanço minhas despesas de supermercado. Recomendo para toda a família."</p>
+            <div class="w-72 lg:w-80 shrink-0 glass rounded-xl p-4 lg:p-5 flex gap-3 items-start whitespace-normal border-t border-amber-500/30 hover-card">
+              <img src="https://i.pravatar.cc/150?img=15" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-amber-400 object-cover shrink-0" alt="Avatar">
+              <div>
+                <p class="text-xs lg:text-sm font-bold text-white flex justify-between">Ricardo M. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+                <p class="text-[11px] lg:text-xs text-slate-300 mt-1 leading-relaxed">"O facto de ter os meus dados privados na minha própria conta Google dá-me uma paz de espírito brutal."</p>
+              </div>
             </div>
           </div>
         </div>
@@ -227,253 +257,312 @@
     </div>
 
     <!-- PUBLICIDADE LOGIN -->
-    <div class="ad-block mt-8 w-full" hidden data-ad>
+    <div class="ad-block mt-8 w-full max-w-2xl mx-auto" hidden data-ad>
       <span class="ad-label">Publicidade</span>
       <div class="ad-slot w-full"></div>
     </div>
 
-    <footer class="mt-8 text-center text-[10px] md:text-xs text-slate-500 space-y-1.5 font-medium tracking-wide w-full">
+    <footer class="mt-8 text-center text-[10px] lg:text-xs text-slate-500 space-y-1.5 font-medium tracking-wide w-full">
       <p>© Direitos reservados <span class="text-cyan-400 font-bold">PlanilhaViva Pro</span>.</p>
       <p>Programador: <span class="text-slate-300 font-bold">Gilnei Laurindo</span></p>
       <p>Ideias e dedicatória: <span class="text-slate-400 font-bold">Samuel Danilo</span></p>
     </footer>
   </section>
 
-  <!-- APP INTERNO -->
-  <section id="view-app" class="hidden flex-1 flex-col w-full">
-    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 sm:px-8 py-3 md:py-4 flex items-center justify-between border-b border-cyan-500/20 shadow-lg">
-      <div class="flex items-center gap-3 min-w-0">
-        <div id="avatar" class="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-full border-2 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800"></div>
+  <!-- ==================== APP INTERNO ==================== -->
+  <section id="view-app" class="hidden flex-1 flex-col w-full pb-8">
+    
+    <!-- CABEÇALHO -->
+    <header class="sticky top-0 z-30 glass rounded-b-3xl px-5 lg:px-8 py-3 lg:py-5 flex items-center justify-between border-b border-cyan-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] lg:mb-6">
+      <div class="flex items-center gap-3 lg:gap-4 min-w-0">
+        <div id="avatar" class="w-10 h-10 lg:w-14 lg:h-14 shrink-0 rounded-full border-2 border-cyan-400 overflow-hidden flex items-center justify-center bg-slate-800 shadow-[0_0_15px_rgba(34,211,238,0.4)]"></div>
         <div class="flex flex-col min-w-0">
-          <span class="text-[9px] md:text-[10px] text-cyan-400 font-black uppercase flex items-center gap-1">
-            <i data-lucide="calendar-clock" class="w-3 h-3 md:w-4 md:h-4"></i> <span id="header-time">--/--/--, --:--</span>
+          <span class="text-[9px] lg:text-[11px] text-cyan-400 font-black uppercase flex items-center gap-1.5">
+            <i data-lucide="calendar-clock" class="w-3 h-3 lg:w-4 lg:h-4"></i> <span id="header-time">--/--/--, --:--</span>
           </span>
-          <h2 id="user-name" class="text-xs md:text-sm font-bold text-white truncate"></h2>
+          <h2 id="user-name" class="text-xs lg:text-base font-bold text-white truncate mt-0.5"></h2>
         </div>
       </div>
-      <button id="btnRefreshHeader" type="button" class="text-cyan-400 hover:text-white bg-slate-800 p-2 md:p-3 rounded-full border border-slate-700 transition-colors" aria-label="Atualizar dados">
-        <i data-lucide="refresh-ccw" class="w-4 h-4 md:w-5 md:h-5"></i>
+      <button id="btnRefreshHeader" type="button" class="text-cyan-400 hover:text-white bg-slate-800 p-2 lg:p-3 rounded-full border border-slate-700 transition-all hover:bg-slate-700 hover:scale-110 shadow-lg" aria-label="Atualizar dados">
+        <i data-lucide="refresh-ccw" class="w-4 h-4 lg:w-5 lg:h-5"></i>
       </button>
     </header>
 
-    <div class="px-5 sm:px-8 pt-6 space-y-6 w-full">
+    <div class="px-5 lg:px-8 pt-6 space-y-6 lg:space-y-8 w-full">
 
-      <!-- LANÇAR -->
-      <div id="view-fluxo" class="view active space-y-5 md:space-y-8">
+      <!-- ==================== LANÇAR (FLUXO) ==================== -->
+      <div id="view-fluxo" class="view active space-y-5 lg:space-y-0">
+        <!-- Grelha para Desktop: Formulário (Esquerda) e Histórico/Anúncio (Direita) -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
+          
+          <!-- Coluna Principal (Formulário) -->
+          <div class="lg:col-span-3">
+            <div class="glass glass-neon rounded-3xl p-6 lg:p-10 relative overflow-hidden w-full hover-card">
+              <div class="glow" id="form-glow"></div>
+
+              <h3 class="section-title mb-5 lg:mb-8 text-white text-sm lg:text-lg" id="form-title-wrap">
+                <span id="form-icon"></span> <span id="form-title">Lançar despesa</span>
+              </h3>
+
+              <div class="seg-container mb-6 lg:mb-8" role="group" aria-label="Tipo de lançamento">
+                <button type="button" class="seg-btn lg:text-sm lg:py-3" data-type="in" data-color="green" aria-pressed="false">Receita</button>
+                <button type="button" class="seg-btn lg:text-sm lg:py-3" data-type="out" data-color="red" aria-pressed="true">Despesa</button>
+                <button type="button" class="seg-btn lg:text-sm lg:py-3" data-type="invest" data-color="purple" aria-pressed="false">Investir</button>
+              </div>
+
+              <form id="txForm" class="space-y-4 lg:space-y-6 relative z-10 w-full">
+                <input type="hidden" id="type" value="out">
+
+                <div>
+                  <label class="label lg:text-[11px]" for="desc">Descrição do Lançamento</label>
+                  <input id="desc" class="input lg:text-base lg:p-4" maxlength="60" placeholder="Ex.: Supermercado, Luz, Salário..." required>
+                  <div class="flex gap-2 lg:gap-3 mt-2 lg:mt-3 overflow-x-auto no-scrollbar py-1 snap-x scroll-smooth">
+                    <button type="button" class="quick-chip quick-chip-desc lg:text-sm" data-desc="Mercado"><i data-lucide="shopping-cart" class="w-3 h-3 lg:w-4 lg:h-4 inline mr-1"></i>Mercado</button>
+                    <button type="button" class="quick-chip quick-chip-desc lg:text-sm" data-desc="Combustível"><i data-lucide="fuel" class="w-3 h-3 lg:w-4 lg:h-4 inline mr-1"></i>Gasolina</button>
+                    <button type="button" class="quick-chip quick-chip-desc lg:text-sm" data-desc="Energia Elétrica"><i data-lucide="zap" class="w-3 h-3 lg:w-4 lg:h-4 inline mr-1"></i>Energia</button>
+                    <button type="button" class="quick-chip quick-chip-desc lg:text-sm" data-desc="Internet"><i data-lucide="wifi" class="w-3 h-3 lg:w-4 lg:h-4 inline mr-1"></i>Internet</button>
+                    <button type="button" class="quick-chip quick-chip-desc lg:text-sm" data-desc="Lazer / Jantar"><i data-lucide="utensils" class="w-3 h-3 lg:w-4 lg:h-4 inline mr-1"></i>Lazer</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="label lg:text-[11px]" for="amount">Valor (R$)</label>
+                  <input id="amount" type="text" inputmode="numeric" class="input font-bold text-lg lg:text-2xl lg:p-4 text-cyan-300" placeholder="0,00" required>
+                  <div class="flex gap-2 lg:gap-3 mt-2 lg:mt-3 overflow-x-auto no-scrollbar py-1 snap-x scroll-smooth">
+                    <button type="button" class="quick-chip quick-chip-val lg:text-sm" data-amount="10">R$ 10</button>
+                    <button type="button" class="quick-chip quick-chip-val lg:text-sm" data-amount="50">R$ 50</button>
+                    <button type="button" class="quick-chip quick-chip-val lg:text-sm" data-amount="100">R$ 100</button>
+                    <button type="button" class="quick-chip quick-chip-val lg:text-sm" data-amount="500">R$ 500</button>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-6">
+                  <div>
+                    <label class="label lg:text-[11px]" for="date">Data</label>
+                    <input id="date" type="text" class="input font-bold text-center lg:text-base lg:p-4 cursor-pointer" placeholder="Data" required>
+                  </div>
+                  <div id="cat-container">
+                    <label class="label lg:text-[11px]" for="category">Categoria</label>
+                    <select id="category" class="input font-medium text-xs lg:text-base h-[42px] lg:h-[58px] cursor-pointer"></select>
+                  </div>
+                </div>
+
+                <button id="btnSave" type="submit" class="btn-primary btn-red w-full py-4 lg:py-5 rounded-xl flex items-center justify-center gap-2 mt-4 lg:mt-8 text-sm lg:text-base transition-all duration-300 shadow-xl">
+                  <i data-lucide="send" class="w-5 h-5 lg:w-6 lg:h-6"></i> <span data-label>Confirmar lançamento</span>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Coluna Secundária (Histórico e Publicidade) -->
+          <div class="lg:col-span-2 flex flex-col gap-6">
+            <div class="glass rounded-2xl p-4 lg:p-6 border border-cyan-500/20 w-full flex-1 hover-card">
+              <h3 class="text-[10px] lg:text-xs text-slate-400 font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                <i data-lucide="history" class="w-3 h-3 lg:w-4 lg:h-4"></i> Lançados nesta sessão
+              </h3>
+              <div id="local-history" class="space-y-2 lg:space-y-3 text-xs lg:text-sm overflow-y-auto max-h-[300px] pr-2 no-scrollbar">
+                <p id="empty-history" class="text-slate-500 text-center py-4 lg:py-8 italic">Nenhum lançamento nesta sessão.</p>
+              </div>
+            </div>
+
+            <div class="ad-block w-full" hidden data-ad>
+              <span class="ad-label">Publicidade</span>
+              <div class="ad-slot w-full"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== RESUMO ==================== -->
+      <div id="view-resumo" class="view space-y-5 lg:space-y-6 w-full">
+        
+        <!-- Saldo Destaque -->
+        <div class="glass rounded-3xl p-6 lg:p-12 relative overflow-hidden border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)] hover-card flex flex-col md:flex-row md:items-center md:justify-between">
+          <div class="glow"></div>
+          <div>
+            <p class="text-xs lg:text-sm uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2 mb-1 relative z-10">
+              <i data-lucide="wallet" class="w-4 h-4 lg:w-5 lg:h-5"></i> Saldo consolidado
+            </p>
+            <p id="saldo" class="text-4xl lg:text-6xl font-black tabular-nums text-white skeleton w-48 h-10 lg:w-72 lg:h-16 mt-1 relative z-10">R$ 0,00</p>
+            <p class="text-[10px] lg:text-xs font-mono text-cyan-200/70 mt-2 lg:mt-4 relative z-10">Entradas − saídas − investimentos</p>
+          </div>
+          
+          <!-- KPI: Balanço Vivo (Novo) -->
+          <div class="mt-6 md:mt-0 text-left md:text-right border-t md:border-t-0 md:border-l border-cyan-500/30 pt-4 md:pt-0 md:pl-8 relative z-10">
+            <p class="text-[9px] lg:text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Balanço do Período</p>
+            <p id="kpi-balanco" class="text-2xl lg:text-3xl font-black text-white skeleton w-32 h-8">R$ 0,00</p>
+          </div>
+        </div>
+
+        <!-- 4 KPIs Estratégicos -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          <div class="glass p-4 lg:p-5 rounded-2xl border border-emerald-500/30 flex flex-col justify-center hover-card">
+            <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-emerald-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="arrow-down-circle" class="w-3 h-3"></i> Total Entradas</p>
+            <p class="text-lg lg:text-xl font-black text-white skeleton w-20 h-6" id="txt-in-kpi">R$ 0,00</p>
+          </div>
+          <div class="glass p-4 lg:p-5 rounded-2xl border border-rose-500/30 flex flex-col justify-center hover-card">
+            <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-rose-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="arrow-up-circle" class="w-3 h-3"></i> Total Saídas</p>
+            <p class="text-lg lg:text-xl font-black text-white skeleton w-20 h-6" id="txt-out-kpi">R$ 0,00</p>
+          </div>
+          <div class="glass p-4 lg:p-5 rounded-2xl border border-purple-500/30 flex flex-col justify-center hover-card">
+            <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-purple-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="piggy-bank" class="w-3 h-3"></i> Taxa Poupança</p>
+            <p class="text-lg lg:text-xl font-black text-white skeleton w-16 h-6" id="kpi-poupanca">0%</p>
+          </div>
+          <!-- KPI: Gasto Diário (Novo) -->
+          <div class="glass p-4 lg:p-5 rounded-2xl border border-amber-500/30 flex flex-col justify-center hover-card">
+            <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-amber-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="flame" class="w-3 h-3"></i> Gasto Diário (Média)</p>
+            <p class="text-lg lg:text-xl font-black text-white skeleton w-20 h-6" id="kpi-gasto-diario">R$ 0</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 w-full">
+          <div class="glass rounded-2xl p-5 lg:p-7 space-y-4 hover-card">
+            <h3 class="section-title lg:text-sm"><i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Fluxo do período</h3>
+            <div class="relative h-56 lg:h-64"><canvas id="chartFluxo"></canvas></div>
+          </div>
+          
+          <div class="glass rounded-2xl p-5 lg:p-7 space-y-4 hover-card">
+            <h3 class="section-title lg:text-sm"><i data-lucide="donut" class="w-4 h-4 text-cyan-400"></i> Distribuição Geral</h3>
+            <div class="relative h-56 lg:h-64"><canvas id="chartDistribuicao"></canvas></div>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5 lg:p-8 space-y-4 w-full hover-card">
+          <h3 class="section-title lg:text-sm"><i data-lucide="bar-chart" class="w-4 h-4 text-cyan-400"></i> Desempenho Mensal</h3>
+          <div class="relative h-52 lg:h-80"><canvas id="chartDesempenho"></canvas></div>
+        </div>
+
         <div class="ad-block w-full" hidden data-ad>
           <span class="ad-label">Publicidade</span>
           <div class="ad-slot w-full"></div>
         </div>
-
-        <div class="glass glass-neon rounded-3xl p-6 md:p-8 relative overflow-hidden w-full">
-          <div class="glow" id="form-glow"></div>
-
-          <h3 class="section-title mb-5 md:mb-6 text-white text-sm md:text-base" id="form-title-wrap">
-            <span id="form-icon"></span> <span id="form-title">Lançar despesa</span>
-          </h3>
-
-          <div class="seg-container mb-6 md:mb-8" role="group" aria-label="Tipo de lançamento">
-            <button type="button" class="seg-btn md:text-sm md:py-3" data-type="in" data-color="green" aria-pressed="false">Receita</button>
-            <button type="button" class="seg-btn md:text-sm md:py-3" data-type="out" data-color="red" aria-pressed="true">Despesa</button>
-            <button type="button" class="seg-btn md:text-sm md:py-3" data-type="invest" data-color="purple" aria-pressed="false">Investir</button>
-          </div>
-
-          <form id="txForm" class="space-y-4 md:space-y-6 relative z-10 w-full">
-            <input type="hidden" id="type" value="out">
-
-            <div>
-              <label class="label md:text-[11px]" for="desc">Descrição do Lançamento</label>
-              <input id="desc" class="input md:text-base md:p-4" maxlength="60" placeholder="Ex.: Supermercado, Luz, Salário..." required>
-              <div class="flex gap-2 md:gap-3 mt-2 md:mt-3 overflow-x-auto no-scrollbar py-1 snap-x scroll-smooth">
-                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Mercado"><i data-lucide="shopping-cart" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Mercado</button>
-                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Combustível"><i data-lucide="fuel" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Gasolina</button>
-                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Energia Elétrica"><i data-lucide="zap" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Energia</button>
-                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Internet"><i data-lucide="wifi" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Internet</button>
-                <button type="button" class="quick-chip quick-chip-desc md:text-sm" data-desc="Lazer / Jantar"><i data-lucide="utensils" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>Lazer</button>
-              </div>
-            </div>
-
-            <div>
-              <label class="label md:text-[11px]" for="amount">Valor (R$)</label>
-              <!-- MÁSCARA APLICADA: TYPE TEXT COM INPUTMODE NUMERIC -->
-              <input id="amount" type="text" inputmode="numeric" class="input font-bold text-lg md:text-xl md:p-4" placeholder="0,00" required>
-              <div class="flex gap-2 md:gap-3 mt-2 md:mt-3 overflow-x-auto no-scrollbar py-1 snap-x scroll-smooth">
-                <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="10">R$ 10</button>
-                <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="50">R$ 50</button>
-                <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="100">R$ 100</button>
-                <button type="button" class="quick-chip quick-chip-val md:text-sm" data-amount="500">R$ 500</button>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5">
-              <div>
-                <label class="label md:text-[11px]" for="date">Data</label>
-                <!-- O input real armazena Y-m-d, mas a UI mostra DD/MM/YYYY amigável através do flatpickr altInput -->
-                <input id="date" type="text" class="input font-bold text-center md:text-base md:p-4" placeholder="Data" required>
-              </div>
-              <div id="cat-container">
-                <label class="label md:text-[11px]" for="category">Categoria</label>
-                <select id="category" class="input font-medium text-xs md:text-base h-[42px] md:h-[58px]"></select>
-              </div>
-            </div>
-
-            <button id="btnSave" type="submit" class="btn-primary btn-red w-full py-4 md:py-5 rounded-xl flex items-center justify-center gap-2 mt-4 md:mt-6 text-sm md:text-base transition-all duration-300 shadow-xl">
-              <i data-lucide="send" class="w-5 h-5 md:w-6 md:h-6"></i> <span data-label>Confirmar lançamento</span>
-            </button>
-          </form>
-        </div>
-
-        <div class="glass rounded-2xl p-4 md:p-6 border border-cyan-500/20 w-full">
-          <h3 class="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
-            <i data-lucide="history" class="w-3 h-3 md:w-4 md:h-4"></i> Lançados nesta sessão
-          </h3>
-          <div id="local-history" class="space-y-2 text-xs md:text-sm">
-            <p id="empty-history" class="text-slate-500 text-center py-2 md:py-4 italic">Nenhum lançamento nesta sessão.</p>
-          </div>
-        </div>
       </div>
 
-      <!-- RESUMO -->
-      <div id="view-resumo" class="view space-y-5 md:space-y-8 w-full">
-        <div class="glass rounded-3xl p-6 md:p-10 relative overflow-hidden border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)]">
-          <div class="glow"></div>
-          <p class="text-xs md:text-sm uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2 mb-1 relative z-10">
-            <i data-lucide="wallet" class="w-4 h-4 md:w-5 md:h-5"></i> Saldo consolidado
-          </p>
-          <p id="saldo" class="text-4xl md:text-5xl font-black tabular-nums text-white skeleton w-48 h-10 md:w-64 md:h-14 mt-1 relative z-10">R$ 0,00</p>
-          <p class="text-[10px] md:text-xs font-mono text-cyan-200/70 mt-2 md:mt-3 relative z-10">Entradas − saídas − investimentos · Out a Dez</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 md:gap-6">
-          <div class="glass p-4 md:p-6 rounded-2xl border border-emerald-500/30 flex flex-col justify-center">
-            <p class="text-[9px] md:text-[11px] uppercase tracking-widest text-emerald-400 font-bold mb-1 md:mb-2 flex items-center gap-1"><i data-lucide="piggy-bank" class="w-3 h-3 md:w-4 md:h-4"></i> Taxa Poupança</p>
-            <p class="text-xl md:text-3xl font-black text-white skeleton w-16 h-7 md:h-10" id="kpi-poupanca">0%</p>
-          </div>
-          <div class="glass p-4 md:p-6 rounded-2xl border border-rose-500/30 flex flex-col justify-center">
-            <p class="text-[9px] md:text-[11px] uppercase tracking-widest text-rose-400 font-bold mb-1 md:mb-2 flex items-center gap-1"><i data-lucide="calendar-off" class="w-3 h-3 md:w-4 md:h-4"></i> Média Saídas/mês</p>
-            <p class="text-xl md:text-3xl font-black text-white skeleton w-20 h-7 md:h-10" id="kpi-media-saidas">R$ 0</p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6 w-full">
-          <div class="glass rounded-2xl p-5 md:p-7 space-y-4">
-            <h3 class="section-title md:text-sm"><i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Fluxo do período</h3>
-            <div class="relative h-56 md:h-64"><canvas id="chartFluxo"></canvas></div>
-            <div class="flex justify-between text-xs md:text-sm font-bold font-mono">
-              <span class="text-emerald-400" id="txt-in">Entradas R$ 0,00</span>
-              <span class="text-rose-400" id="txt-out">Saídas R$ 0,00</span>
-            </div>
+      <!-- ==================== INVESTIR ==================== -->
+      <div id="view-investir" class="view space-y-5 lg:space-y-6 w-full">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
+          <div class="lg:col-span-2 glass rounded-3xl p-6 lg:p-10 relative overflow-hidden border border-purple-500/50 shadow-[0_0_40px_rgba(168,85,247,.2)] hover-card flex flex-col justify-center">
+            <div class="glow glow-purple"></div>
+            <h3 class="text-xs lg:text-sm uppercase tracking-widest text-purple-300 font-bold mb-2 lg:mb-4 flex items-center gap-2 relative z-10">
+              <i data-lucide="shield" class="w-4 h-4 lg:w-5 lg:h-5"></i> Património Investido
+            </h3>
+            <p id="invest-total" class="text-4xl lg:text-6xl font-black text-white tabular-nums skeleton w-40 h-10 lg:h-16 relative z-10">R$ 0,00</p>
           </div>
           
-          <div class="glass rounded-2xl p-5 md:p-7 space-y-4">
-            <h3 class="section-title md:text-sm"><i data-lucide="donut" class="w-4 h-4 text-cyan-400"></i> Distribuição Geral</h3>
-            <div class="relative h-56 md:h-64"><canvas id="chartDistribuicao"></canvas></div>
-          </div>
-        </div>
-
-        <div class="glass rounded-2xl p-5 md:p-7 space-y-4 w-full">
-          <h3 class="section-title md:text-sm"><i data-lucide="bar-chart" class="w-4 h-4 text-cyan-400"></i> Por mês</h3>
-          <div class="relative h-52 md:h-72"><canvas id="chartDesempenho"></canvas></div>
-        </div>
-      </div>
-
-      <!-- INVESTIR -->
-      <div id="view-investir" class="view space-y-5 md:space-y-8 w-full">
-        <div class="glass rounded-3xl p-6 md:p-10 relative overflow-hidden text-center border border-purple-500/50 shadow-[0_0_40px_rgba(168,85,247,.2)]">
-          <div class="glow glow-purple"></div>
-          <h3 class="text-xs md:text-sm uppercase tracking-widest text-purple-300 font-bold mb-2 md:mb-4 flex items-center justify-center gap-2 relative z-10">
-            <i data-lucide="shield" class="w-4 h-4 md:w-5 md:h-5"></i> Total investido no ano
-          </h3>
-          <p id="invest-total" class="text-4xl md:text-5xl font-black text-white tabular-nums skeleton w-40 h-10 md:h-14 mx-auto relative z-10">R$ 0,00</p>
-        </div>
-
-        <div class="glass rounded-2xl p-5 md:p-8 space-y-4 w-full">
-          <h3 class="section-title text-purple-400 md:text-sm"><i data-lucide="trending-up" class="w-4 h-4 md:w-5 md:h-5"></i> Evolução acumulada</h3>
-          <div class="relative h-56 md:h-80"><canvas id="chartCrescimento"></canvas></div>
-        </div>
-      </div>
-
-      <!-- PERFIL -->
-      <div id="view-config" class="view space-y-5 md:space-y-8 w-full">
-        <div class="glass rounded-3xl p-6 md:p-10 text-center relative overflow-hidden border border-cyan-500/30">
-          <div id="cfg-avatar" class="w-20 h-20 md:w-28 md:h-28 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3 md:mb-5 flex items-center justify-center bg-slate-800 relative z-10"></div>
-          <label for="pref-name" class="text-[10px] md:text-xs text-cyan-200 uppercase font-bold tracking-widest block mb-1 md:mb-2 relative z-10">Como quer ser chamado?</label>
-          <input id="pref-name" type="text" maxlength="30" class="relative z-10 bg-transparent text-2xl md:text-4xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1 transition-colors" placeholder="Seu nome">
-          <p id="cfg-email" class="text-xs md:text-sm text-slate-500 font-mono mt-2 md:mt-4 break-all relative z-10"></p>
-        </div>
-
-        <button id="btnInstallApp" hidden class="glass bg-cyan-900/40 border border-cyan-500/50 p-4 md:p-5 rounded-2xl flex items-center justify-center gap-4 w-full shadow-[0_0_20px_rgba(34,211,238,.3)] hover:bg-cyan-900/60 transition-all transform hover:scale-[1.02]">
-          <div class="p-2 rounded-full bg-cyan-500/20">
-            <i data-lucide="download-cloud" class="w-6 h-6 md:w-7 md:h-7 text-cyan-400"></i>
-          </div>
-          <div class="text-left flex-1">
-            <h3 class="font-black text-white text-sm md:text-base uppercase tracking-wide">Instalar Aplicativo</h3>
-            <p class="text-[10px] md:text-[11px] text-cyan-200/70 mt-0.5">Adicionar atalho à tela inicial</p>
-          </div>
-        </button>
-
-        <a id="link-planilha" href="#" target="_blank" rel="noopener"
-           class="glass bg-emerald-900/40 border border-emerald-500/50 p-6 md:p-8 rounded-3xl flex flex-col items-center justify-center gap-3 shadow-[0_10px_30px_rgba(16,185,129,.2)] hover:bg-emerald-900/60 transition-colors group">
-          <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(16,185,129,.6)]">
-            <i data-lucide="database" class="w-6 h-6 md:w-8 md:h-8 text-white"></i>
-          </div>
-          <div class="text-center">
-            <h3 class="font-black text-emerald-400 text-lg md:text-xl uppercase tracking-wide">Meu banco de dados</h3>
-            <p class="text-[11px] md:text-sm text-slate-300 mt-1 md:mt-2">Abrir a sua planilha privada no Google Sheets</p>
-          </div>
-        </a>
-
-        <div class="space-y-3 md:space-y-5 w-full">
-          <h3 class="section-title text-yellow-400 md:text-sm"><i data-lucide="sparkles" class="w-4 h-4 md:w-5 md:h-5"></i> Recursos</h3>
-          <div class="carousel-wrapper py-2 w-full">
-            <div id="carousel-track" class="carousel-track">
-              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-cyan-500/30">
-                <i data-lucide="shield-check" class="w-5 h-5 md:w-6 md:h-6 text-cyan-400 mb-2 md:mb-3"></i>
-                <p class="text-xs md:text-sm font-bold text-white">Dados na sua conta</p>
-                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Cada conta tem a sua planilha, com acesso privado.</p>
-              </div>
-              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-emerald-500/30">
-                <i data-lucide="cloud" class="w-5 h-5 md:w-6 md:h-6 text-emerald-400 mb-2 md:mb-3"></i>
-                <p class="text-xs md:text-sm font-bold text-white">Sincronização na nuvem</p>
-                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Lance pelo celular e veja os totais atualizados.</p>
-              </div>
-              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-purple-500/30">
-                <i data-lucide="repeat" class="w-5 h-5 md:w-6 md:h-6 text-purple-400 mb-2 md:mb-3"></i>
-                <p class="text-xs md:text-sm font-bold text-white">Contas fixas</p>
-                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Projete mensalidades e salários até dezembro.</p>
-              </div>
-              <div class="w-64 md:w-72 shrink-0 glass rounded-xl p-4 md:p-6 whitespace-normal border-t border-rose-500/30">
-                <i data-lucide="pie-chart" class="w-5 h-5 md:w-6 md:h-6 text-rose-400 mb-2 md:mb-3"></i>
-                <p class="text-xs md:text-sm font-bold text-white">Gráficos automáticos</p>
-                <p class="text-[11px] md:text-xs text-slate-400 mt-1 md:mt-2">Entradas, saídas e aportes resumidos por mês.</p>
-              </div>
+          <div class="glass p-6 lg:p-8 rounded-3xl border border-cyan-500/30 flex flex-col justify-center items-center text-center hover-card">
+            <div class="w-12 h-12 rounded-full bg-cyan-900/50 flex items-center justify-center mb-3">
+              <i data-lucide="target" class="w-6 h-6 text-cyan-400"></i>
             </div>
+            <p class="text-[10px] lg:text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Rumo à Liberdade</p>
+            <p class="text-sm text-slate-300">O segredo é a consistência. Mantenha os aportes todos os meses.</p>
           </div>
         </div>
 
-        <button id="btnLogout" type="button" class="ghost-btn w-full py-4 md:py-5 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors md:text-base">
-          <i data-lucide="log-out" class="w-4 h-4 md:w-5 md:h-5"></i> Encerrar sessão
-        </button>
+        <div class="glass rounded-2xl p-5 lg:p-8 space-y-4 w-full hover-card">
+          <h3 class="section-title text-purple-400 lg:text-sm"><i data-lucide="trending-up" class="w-4 h-4 lg:w-5 lg:h-5"></i> Evolução acumulada</h3>
+          <div class="relative h-56 lg:h-[400px]"><canvas id="chartCrescimento"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ==================== PERFIL ==================== -->
+      <div id="view-config" class="view space-y-5 lg:space-y-8 w-full">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+          
+          <!-- Lado Esquerdo -->
+          <div class="space-y-6 lg:space-y-8">
+            <div class="glass rounded-3xl p-6 lg:p-10 text-center relative overflow-hidden border border-cyan-500/30 hover-card">
+              <div id="cfg-avatar" class="w-20 h-20 lg:w-28 lg:h-28 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3 lg:mb-6 flex items-center justify-center bg-slate-800 relative z-10 shadow-xl"></div>
+              <label for="pref-name" class="text-[10px] lg:text-xs text-cyan-200 uppercase font-bold tracking-widest block mb-1 lg:mb-2 relative z-10">Como quer ser chamado?</label>
+              <input id="pref-name" type="text" maxlength="30" class="relative z-10 bg-transparent text-2xl lg:text-4xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-2 transition-colors" placeholder="Seu nome">
+              <p id="cfg-email" class="text-xs lg:text-sm text-slate-500 font-mono mt-3 lg:mt-4 break-all relative z-10"></p>
+            </div>
+
+            <button id="btnInstallApp" hidden class="glass bg-cyan-900/40 border border-cyan-500/50 p-4 lg:p-6 rounded-3xl flex items-center justify-center gap-4 w-full shadow-[0_0_20px_rgba(34,211,238,.3)] hover:bg-cyan-900/80 transition-all transform hover:-translate-y-1">
+              <div class="p-3 rounded-full bg-cyan-500/20">
+                <i data-lucide="download-cloud" class="w-6 h-6 lg:w-8 lg:h-8 text-cyan-400"></i>
+              </div>
+              <div class="text-left flex-1">
+                <h3 class="font-black text-white text-sm lg:text-lg uppercase tracking-wide">Instalar Aplicativo</h3>
+                <p class="text-[10px] lg:text-xs text-cyan-200/70 mt-1">Adicionar atalho à tela inicial</p>
+              </div>
+            </button>
+
+            <a id="link-planilha" href="#" target="_blank" rel="noopener"
+               class="glass bg-emerald-900/40 border border-emerald-500/50 p-6 lg:p-8 rounded-3xl flex flex-col items-center justify-center gap-4 shadow-[0_10px_30px_rgba(16,185,129,.2)] hover:bg-emerald-900/70 transition-all hover:-translate-y-1 group">
+              <div class="w-14 h-14 lg:w-20 lg:h-20 rounded-full bg-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(16,185,129,.6)]">
+                <i data-lucide="database" class="w-6 h-6 lg:w-10 lg:h-10 text-white"></i>
+              </div>
+              <div class="text-center">
+                <h3 class="font-black text-emerald-400 text-lg lg:text-2xl uppercase tracking-wide">Meu banco de dados</h3>
+                <p class="text-[11px] lg:text-sm text-slate-300 mt-2">Aceder à sua planilha privada e intocável no Google Sheets</p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Lado Direito -->
+          <div class="space-y-6 lg:space-y-8 flex flex-col justify-between">
+            <div class="space-y-4 lg:space-y-5 w-full glass p-6 lg:p-8 rounded-3xl border border-slate-700 hover-card">
+              <h3 class="section-title text-yellow-400 lg:text-sm"><i data-lucide="sparkles" class="w-4 h-4 lg:w-5 lg:h-5"></i> Vantagens Pro</h3>
+              <ul class="space-y-4 lg:space-y-6 mt-4">
+                <li class="flex items-start gap-3 lg:gap-4">
+                  <i data-lucide="shield-check" class="w-5 h-5 lg:w-6 lg:h-6 text-cyan-400 shrink-0 mt-0.5"></i>
+                  <div>
+                    <p class="text-xs lg:text-sm font-bold text-white">Dados 100% Seus</p>
+                    <p class="text-[11px] lg:text-xs text-slate-400 mt-1">A planilha vive no seu Google Drive. Ninguém lhe tira o acesso.</p>
+                  </div>
+                </li>
+                <li class="flex items-start gap-3 lg:gap-4">
+                  <i data-lucide="cloud" class="w-5 h-5 lg:w-6 lg:h-6 text-emerald-400 shrink-0 mt-0.5"></i>
+                  <div>
+                    <p class="text-xs lg:text-sm font-bold text-white">Sincronização Instantânea</p>
+                    <p class="text-[11px] lg:text-xs text-slate-400 mt-1">Lance no telemóvel, os gráficos atualizam sozinhos na nuvem.</p>
+                  </div>
+                </li>
+                <li class="flex items-start gap-3 lg:gap-4">
+                  <i data-lucide="pie-chart" class="w-5 h-5 lg:w-6 lg:h-6 text-rose-400 shrink-0 mt-0.5"></i>
+                  <div>
+                    <p class="text-xs lg:text-sm font-bold text-white">Visão Estratégica</p>
+                    <p class="text-[11px] lg:text-xs text-slate-400 mt-1">Acabou a confusão mental. Entenda de onde vem e para onde vai o seu dinheiro.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="ad-block w-full" hidden data-ad>
+              <span class="ad-label">Publicidade</span>
+              <div class="ad-slot w-full"></div>
+            </div>
+
+            <button id="btnLogout" type="button" class="ghost-btn w-full py-4 lg:py-6 rounded-2xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/20 transition-colors lg:text-base mt-auto">
+              <i data-lucide="log-out" class="w-4 h-4 lg:w-5 lg:h-5"></i> Encerrar sessão
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 </main>
 
-<!-- NAVEGAÇÃO -->
-<nav id="bottom-nav" class="hidden fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-[500px] md:max-w-[600px] z-40">
-  <div class="glass rounded-2xl relative grid grid-cols-4 p-1 shadow-[0_20px_40px_rgba(0,0,0,.9)] border border-slate-700">
-    <span id="nav-pill" class="absolute top-1 bottom-1 left-1 rounded-xl bg-slate-800 border border-slate-600 w-[calc((100%-0.5rem)/4)] transition-transform duration-300 ease-out shadow-lg"></span>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 md:py-4 text-white" data-view="fluxo">
-      <i data-lucide="plus-square" class="w-5 h-5 md:w-6 md:h-6"></i><span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider">Lançar</span>
+<!-- ==================== NAVEGAÇÃO INFERIOR / DOCK (DESKTOP) ==================== -->
+<!-- No Desktop, transforma-se numa "Dock" flutuante ao estilo Mac -->
+<nav id="bottom-nav" class="hidden fixed bottom-4 lg:bottom-8 left-1/2 -translate-x-1/2 w-[95%] max-w-[500px] lg:max-w-fit z-50">
+  <div class="glass lg:bg-slate-900/90 rounded-2xl lg:rounded-full relative grid grid-cols-4 lg:flex p-1 lg:p-2 shadow-[0_20px_40px_rgba(0,0,0,.9)] lg:shadow-[0_10px_40px_rgba(34,211,238,.3)] border border-slate-700 lg:border-cyan-500/30">
+    <span id="nav-pill" class="absolute top-1 lg:top-2 bottom-1 lg:bottom-2 left-1 lg:left-2 rounded-xl lg:rounded-full bg-slate-800 lg:bg-cyan-900/60 border border-slate-600 lg:border-cyan-500/50 w-[calc((100%-0.5rem)/4)] lg:w-[100px] transition-transform duration-300 ease-out shadow-lg"></span>
+    
+    <button type="button" class="nav-btn lg:w-[100px] relative z-10 flex flex-col items-center justify-center gap-1 py-3 lg:py-2 text-white" data-view="fluxo">
+      <i data-lucide="plus-square" class="w-5 h-5 lg:w-6 lg:h-6"></i><span class="text-[9px] lg:text-[10px] font-bold uppercase tracking-wider">Lançar</span>
     </button>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 md:py-4 text-slate-400" data-view="resumo">
-      <i data-lucide="layout-dashboard" class="w-5 h-5 md:w-6 md:h-6"></i><span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider">Resumo</span>
+    <button type="button" class="nav-btn lg:w-[100px] relative z-10 flex flex-col items-center justify-center gap-1 py-3 lg:py-2 text-slate-400 lg:hover:text-cyan-200 transition-colors" data-view="resumo">
+      <i data-lucide="layout-dashboard" class="w-5 h-5 lg:w-6 lg:h-6"></i><span class="text-[9px] lg:text-[10px] font-bold uppercase tracking-wider">Resumo</span>
     </button>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 md:py-4 text-slate-400" data-view="investir">
-      <i data-lucide="trending-up" class="w-5 h-5 md:w-6 md:h-6"></i><span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider">Investir</span>
+    <button type="button" class="nav-btn lg:w-[100px] relative z-10 flex flex-col items-center justify-center gap-1 py-3 lg:py-2 text-slate-400 lg:hover:text-cyan-200 transition-colors" data-view="investir">
+      <i data-lucide="trending-up" class="w-5 h-5 lg:w-6 lg:h-6"></i><span class="text-[9px] lg:text-[10px] font-bold uppercase tracking-wider">Investir</span>
     </button>
-    <button type="button" class="nav-btn relative z-10 flex flex-col items-center gap-1 py-3 md:py-4 text-slate-400" data-view="config">
-      <i data-lucide="user" class="w-5 h-5 md:w-6 md:h-6"></i><span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider">Perfil</span>
+    <button type="button" class="nav-btn lg:w-[100px] relative z-10 flex flex-col items-center justify-center gap-1 py-3 lg:py-2 text-slate-400 lg:hover:text-cyan-200 transition-colors" data-view="config">
+      <i data-lucide="user" class="w-5 h-5 lg:w-6 lg:h-6"></i><span class="text-[9px] lg:text-[10px] font-bold uppercase tracking-wider">Perfil</span>
     </button>
   </div>
 </nav>
@@ -693,11 +782,27 @@ const Nav = {
       const active = name === view; $("view-" + name).classList.toggle("active", active);
       const btn = document.querySelector(`.nav-btn[data-view="${name}"]`);
       btn.classList.toggle("text-white", active); btn.classList.toggle("text-slate-400", !active); btn.setAttribute("aria-current", active ? "page" : "false");
-      if (active) { $("nav-pill").style.transform = `translateX(${index * 100}%)`; btn.classList.remove("icon-pop"); void btn.offsetWidth; btn.classList.add("icon-pop"); }
+      
+      if (active) { 
+        // Lógica adaptada para a Dock Desktop e Mobile
+        const isDesktop = window.innerWidth >= 1024;
+        if(isDesktop) {
+          $("nav-pill").style.transform = `translateX(${index * 100}px)`; // 100px width fixed on desktop
+        } else {
+          $("nav-pill").style.transform = `translateX(${index * 100}%)`; 
+        }
+        btn.classList.remove("icon-pop"); void btn.offsetWidth; btn.classList.add("icon-pop"); 
+      }
     });
     State.particleRgb = view === "fluxo" ? TYPE_UI[$("type").value].rgb : DEFAULT_RGB; window.scrollTo(0, 0); icons();
   },
 };
+
+// Event listener extra para garantir que a pílula não desalinha no resize desktop/mobile
+window.addEventListener("resize", () => {
+  const activeView = document.querySelector('.view.active').id.replace('view-', '');
+  Nav.go(activeView);
+});
 
 const Dashboard = {
   async sync({ notify = false } = {}) {
@@ -706,22 +811,38 @@ const Dashboard = {
       const { data } = await Api.call("get_dashboard"); Dashboard.render(data); if (notify) toast("Dados atualizados.");
     } catch (err) {
       toast(err.message || "Não foi possível atualizar os dados.", "error");
-      ["saldo", "kpi-poupanca", "kpi-media-saidas", "invest-total"].forEach(id => { $(id).classList.remove("skeleton"); });
+      ["saldo", "kpi-poupanca", "kpi-media-saidas", "kpi-balanco", "txt-in-kpi", "txt-out-kpi", "invest-total"].forEach(id => { $(id).classList.remove("skeleton"); });
     } finally { btn.disabled = false; btn.classList.remove("animate-spin"); }
   },
 
   render(d) {
     $("saldo").classList.remove("skeleton"); $("saldo").textContent = brl.format(d.saldoAtual);
-    $("txt-in").textContent = `Entradas ${brl.format(d.totalEntradas)}`; $("txt-out").textContent = `Saídas ${brl.format(d.totalSaidas)}`;
+    
+    // Cards Topo
+    $("txt-in-kpi").classList.remove("skeleton"); $("txt-in-kpi").textContent = brl.format(d.totalEntradas);
+    $("txt-out-kpi").classList.remove("skeleton"); $("txt-out-kpi").textContent = brl.format(d.totalSaidas);
     $("invest-total").classList.remove("skeleton"); $("invest-total").textContent = brl.format(d.totalInvestido);
     
+    // Legendas Gráfico Fluxo
+    $("txt-in").textContent = `Entradas ${brl.format(d.totalEntradas)}`; $("txt-out").textContent = `Saídas ${brl.format(d.totalSaidas)}`;
+    
+    // Novos KPIs Inteligentes
+    $("kpi-balanco").classList.remove("skeleton"); 
+    const balanco = d.totalEntradas - d.totalSaidas;
+    $("kpi-balanco").textContent = brl.format(balanco);
+    $("kpi-balanco").className = `text-2xl lg:text-3xl font-black ${balanco < 0 ? 'text-rose-400' : 'text-emerald-400'}`;
+
     $("kpi-poupanca").classList.remove("skeleton");
     const taxaPoupanca = d.totalEntradas > 0 ? ((d.totalInvestido / d.totalEntradas) * 100).toFixed(1) : "0.0";
     $("kpi-poupanca").textContent = taxaPoupanca + "%";
     
     $("kpi-media-saidas").classList.remove("skeleton");
     const mesesComDados = d.mensal ? d.mensal.length : 1;
-    $("kpi-media-saidas").textContent = brl.format(mesesComDados > 0 ? (d.totalSaidas / mesesComDados) : 0);
+    // Aproximando 30 dias por mês para ter uma média de gasto diário
+    const mediaDiaria = mesesComDados > 0 ? (d.totalSaidas / (mesesComDados * 30)) : 0;
+    $("kpi-gasto-diario").classList.remove("skeleton");
+    $("kpi-gasto-diario").textContent = brl.format(mediaDiaria);
+
     Charts.update(d);
   },
 };
@@ -770,7 +891,6 @@ const Form = {
     CONFIG.CATEGORIES.forEach((name) => $("category").append(new Option(name, name)));
     document.querySelectorAll(".seg-btn").forEach((btn) => btn.addEventListener("click", () => Form.setType(btn.dataset.type)));
     
-    // Máscara de Moeda (Anti-Erro)
     const amountInput = $("amount");
     amountInput.addEventListener("input", (e) => applyCurrencyMask(e.target));
     
@@ -802,7 +922,6 @@ const Form = {
     event.preventDefault();
     const type = $("type").value;
     const desc = $("desc").value.trim();
-    // Conversão segura do valor com máscara
     const amountStr = $("amount").value.replace(/\./g, "").replace(",", ".");
     const amount = Math.round(Number(amountStr) * 100) / 100;
     const date = $("date").value;
@@ -871,7 +990,7 @@ function initParticles() {
 function startClock() {
   const tick = () => {
     const now = new Date();
-    const dateStr = now.toLocaleDateString("pt-BR", { day: '2-digit', month: 'short' });
+    const dateStr = now.toLocaleDateString("pt-BR", { day: '2-digit', month: 'short' }).replace(".","");
     const timeStr = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
     $("header-time").textContent = `${dateStr}, ${timeStr}`; 
   };
@@ -880,16 +999,17 @@ function startClock() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const track = $("carousel-track"); track.innerHTML += track.innerHTML;
-  const testTrack = $("testimonials-track"); if(testTrack) testTrack.innerHTML += testTrack.innerHTML;
+  // Configuração para garantir que o carrossel rola infinitamente sem quebrar
+  const track = $("testimonials-track"); if(track) track.innerHTML += track.innerHTML;
+  const track2 = $("testimonials-track-2"); if(track2) track2.innerHTML += track2.innerHTML;
+
   initParticles(); startClock(); Ads.init(); Charts.init(); Form.bind();
   
-  // Data Inteligente (Visual em DD/MM/AAAA)
   State.datePicker = flatpickr("#date", { 
     locale: "pt", 
     dateFormat: "Y-m-d", 
     altInput: true, 
-    altFormat: "d/m/Y", // Visual amigável brasileiro
+    altFormat: "d/m/Y", 
     defaultDate: new Date(), 
     disableMobile: false 
   });
