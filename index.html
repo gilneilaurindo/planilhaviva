@@ -65,10 +65,9 @@
   #welcome-splash { transition: opacity .6s ease, transform .6s ease, filter .6s ease; backdrop-filter: blur(25px); }
   #welcome-splash.hide-splash { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(15px); }
 
-  /* CARROSSEL COM FADE NAS BORDAS (DESIGN PREMIUM) */
+  /* CARROSSEL COM FADE NAS BORDAS */
   .carousel-wrapper { 
     overflow: hidden; white-space: nowrap; position: relative; width: 100%;
-    /* Máscara para desaparecer suavemente nas bordas */
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   }
@@ -377,18 +376,21 @@
       <!-- ==================== RESUMO ==================== -->
       <div id="view-resumo" class="view space-y-5 lg:space-y-6 w-full">
         
-        <!-- Saldo Destaque -->
+        <!-- Saldo Destaque COM ALINHAMENTO CORRIGIDO -->
         <div class="glass rounded-3xl p-6 lg:p-12 relative overflow-hidden border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)] hover-card flex flex-col md:flex-row md:items-center md:justify-between">
           <div class="glow"></div>
-          <div>
-            <p class="text-xs lg:text-sm uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2 mb-1 relative z-10">
+          
+          <div class="relative z-10 flex flex-col gap-2">
+            <p class="text-xs lg:text-sm uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2">
               <i data-lucide="wallet" class="w-4 h-4 lg:w-5 lg:h-5"></i> Saldo consolidado
             </p>
-            <p id="saldo" class="text-4xl lg:text-6xl font-black tabular-nums text-white skeleton w-48 h-10 lg:w-72 lg:h-16 mt-1 relative z-10">R$ 0,00</p>
-            <p class="text-[10px] lg:text-xs font-mono text-cyan-200/70 mt-2 lg:mt-4 relative z-10">Entradas − saídas − investimentos</p>
+            <div class="min-h-[40px] lg:min-h-[64px] flex items-center">
+              <p id="saldo" class="text-4xl lg:text-6xl font-black tabular-nums text-white skeleton w-48 h-10 lg:w-72 lg:h-16">R$ 0,00</p>
+            </div>
+            <p class="text-[10px] lg:text-xs font-mono text-cyan-200/70">Entradas − saídas − investimentos</p>
           </div>
           
-          <!-- KPI: Balanço Vivo (Novo) -->
+          <!-- KPI: Balanço Vivo -->
           <div class="mt-6 md:mt-0 text-left md:text-right border-t md:border-t-0 md:border-l border-cyan-500/30 pt-4 md:pt-0 md:pl-8 relative z-10">
             <p class="text-[9px] lg:text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Balanço do Período</p>
             <p id="kpi-balanco" class="text-2xl lg:text-3xl font-black text-white skeleton w-32 h-8">R$ 0,00</p>
@@ -409,7 +411,6 @@
             <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-purple-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="piggy-bank" class="w-3 h-3"></i> Taxa Poupança</p>
             <p class="text-lg lg:text-xl font-black text-white skeleton w-16 h-6" id="kpi-poupanca">0%</p>
           </div>
-          <!-- KPI: Gasto Diário (Novo) -->
           <div class="glass p-4 lg:p-5 rounded-2xl border border-amber-500/30 flex flex-col justify-center hover-card">
             <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-amber-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="flame" class="w-3 h-3"></i> Gasto Diário (Média)</p>
             <p class="text-lg lg:text-xl font-black text-white skeleton w-20 h-6" id="kpi-gasto-diario">R$ 0</p>
@@ -546,8 +547,7 @@
   </section>
 </main>
 
-<!-- ==================== NAVEGAÇÃO INFERIOR / DOCK (DESKTOP) ==================== -->
-<!-- No Desktop, transforma-se numa "Dock" flutuante ao estilo Mac -->
+<!-- ==================== NAVEGAÇÃO INFERIOR / DOCK ==================== -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 lg:bottom-8 left-1/2 -translate-x-1/2 w-[95%] max-w-[500px] lg:max-w-fit z-50">
   <div class="glass lg:bg-slate-900/90 rounded-2xl lg:rounded-full relative grid grid-cols-4 lg:flex p-1 lg:p-2 shadow-[0_20px_40px_rgba(0,0,0,.9)] lg:shadow-[0_10px_40px_rgba(34,211,238,.3)] border border-slate-700 lg:border-cyan-500/30">
     <span id="nav-pill" class="absolute top-1 lg:top-2 bottom-1 lg:bottom-2 left-1 lg:left-2 rounded-xl lg:rounded-full bg-slate-800 lg:bg-cyan-900/60 border border-slate-600 lg:border-cyan-500/50 w-[calc((100%-0.5rem)/4)] lg:w-[100px] transition-transform duration-300 ease-out shadow-lg"></span>
@@ -784,10 +784,9 @@ const Nav = {
       btn.classList.toggle("text-white", active); btn.classList.toggle("text-slate-400", !active); btn.setAttribute("aria-current", active ? "page" : "false");
       
       if (active) { 
-        // Lógica adaptada para a Dock Desktop e Mobile
         const isDesktop = window.innerWidth >= 1024;
         if(isDesktop) {
-          $("nav-pill").style.transform = `translateX(${index * 100}px)`; // 100px width fixed on desktop
+          $("nav-pill").style.transform = `translateX(${index * 100}px)`; 
         } else {
           $("nav-pill").style.transform = `translateX(${index * 100}%)`; 
         }
@@ -798,7 +797,6 @@ const Nav = {
   },
 };
 
-// Event listener extra para garantir que a pílula não desalinha no resize desktop/mobile
 window.addEventListener("resize", () => {
   const activeView = document.querySelector('.view.active').id.replace('view-', '');
   Nav.go(activeView);
@@ -818,15 +816,12 @@ const Dashboard = {
   render(d) {
     $("saldo").classList.remove("skeleton"); $("saldo").textContent = brl.format(d.saldoAtual);
     
-    // Cards Topo
     $("txt-in-kpi").classList.remove("skeleton"); $("txt-in-kpi").textContent = brl.format(d.totalEntradas);
     $("txt-out-kpi").classList.remove("skeleton"); $("txt-out-kpi").textContent = brl.format(d.totalSaidas);
     $("invest-total").classList.remove("skeleton"); $("invest-total").textContent = brl.format(d.totalInvestido);
     
-    // Legendas Gráfico Fluxo
     $("txt-in").textContent = `Entradas ${brl.format(d.totalEntradas)}`; $("txt-out").textContent = `Saídas ${brl.format(d.totalSaidas)}`;
     
-    // Novos KPIs Inteligentes
     $("kpi-balanco").classList.remove("skeleton"); 
     const balanco = d.totalEntradas - d.totalSaidas;
     $("kpi-balanco").textContent = brl.format(balanco);
@@ -838,7 +833,6 @@ const Dashboard = {
     
     $("kpi-media-saidas").classList.remove("skeleton");
     const mesesComDados = d.mensal ? d.mensal.length : 1;
-    // Aproximando 30 dias por mês para ter uma média de gasto diário
     const mediaDiaria = mesesComDados > 0 ? (d.totalSaidas / (mesesComDados * 30)) : 0;
     $("kpi-gasto-diario").classList.remove("skeleton");
     $("kpi-gasto-diario").textContent = brl.format(mediaDiaria);
@@ -999,7 +993,6 @@ function startClock() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Configuração para garantir que o carrossel rola infinitamente sem quebrar
   const track = $("testimonials-track"); if(track) track.innerHTML += track.innerHTML;
   const track2 = $("testimonials-track-2"); if(track2) track2.innerHTML += track2.innerHTML;
 
