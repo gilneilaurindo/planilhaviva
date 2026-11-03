@@ -1,15 +1,11 @@
-// sw.js - Service Worker para permitir instalação no celular
-const CACHE_NAME = 'planilhaviva-pwa-v1';
+const CACHE_NAME = 'planilhaviva-cache-v1';
 
-self.addEventListener('install', (e) => {
+self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', (e) => {
-  // Apenas passa as requisições para a frente. Cumpre o requisito do navegador para instalação.
-  e.respondWith(fetch(e.request).catch(() => new Response('Offline')));
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    fetch(event.request).catch(() => caches.match(event.request))
+  );
 });
