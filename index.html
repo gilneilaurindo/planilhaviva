@@ -63,6 +63,9 @@
   .carousel-track { display: inline-flex; gap: 1rem; animation: marquee 30s linear infinite; }
   .carousel-wrapper:hover .carousel-track { animation-play-state: paused; }
   @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - .5rem)); } }
+  
+  .carousel-track-reverse { animation: marquee-reverse 35s linear infinite; }
+  @keyframes marquee-reverse { 0% { transform: translateX(calc(-50% - .5rem)); } 100% { transform: translateX(0); } }
 
   .input {
     width: 100%; background: rgba(15,23,42,.92); border: 1px solid rgba(51,65,85,.9);
@@ -162,8 +165,8 @@
 <main class="relative z-10 max-w-md mx-auto flex flex-col min-h-screen">
 
   <!-- LOGIN -->
-  <section id="view-auth" class="flex-1 flex flex-col justify-center px-6">
-    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
+  <section id="view-auth" class="flex-1 flex flex-col justify-center px-4 py-8">
+    <div class="glass glass-neon rounded-3xl p-8 text-center space-y-6 relative overflow-hidden mb-8">
       <div class="glow"></div>
       <div class="glow-purple"></div>
 
@@ -189,7 +192,45 @@
       </div>
     </div>
 
-    <footer class="mt-10 text-center text-[10px] text-slate-500 space-y-1.5 font-medium tracking-wide">
+    <!-- CARROSSEL DE DEPOIMENTOS -->
+    <div class="text-left w-full relative z-20">
+      <h3 class="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-3 px-2 flex items-center gap-2">
+        <i data-lucide="message-square-heart" class="w-3 h-3"></i> O que dizem os utilizadores
+      </h3>
+      <div class="carousel-wrapper py-2">
+        <div id="testimonials-track" class="carousel-track carousel-track-reverse">
+          <div class="w-72 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-cyan-500/30">
+            <img src="https://i.pravatar.cc/150?img=32" class="w-10 h-10 rounded-full border border-cyan-400 object-cover shrink-0" alt="Avatar">
+            <div>
+              <p class="text-xs font-bold text-white flex justify-between">Mariana S. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+              <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">"Mudou a forma como vejo meu dinheiro! Muito fácil de usar e os gráficos atualizam na hora pelo Google Sheets."</p>
+            </div>
+          </div>
+          <div class="w-72 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-purple-500/30">
+            <img src="https://i.pravatar.cc/150?img=11" class="w-10 h-10 rounded-full border border-purple-400 object-cover shrink-0" alt="Avatar">
+            <div>
+              <p class="text-xs font-bold text-white flex justify-between">Carlos E. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+              <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">"Finalmente abandonei as dezenas de apps pagos. Ter a inteligência no Sheets e essa interface no celular é perfeito."</p>
+            </div>
+          </div>
+          <div class="w-72 shrink-0 glass rounded-xl p-4 flex gap-3 items-start whitespace-normal border-t border-emerald-500/30">
+            <img src="https://i.pravatar.cc/150?img=47" class="w-10 h-10 rounded-full border border-emerald-400 object-cover shrink-0" alt="Avatar">
+            <div>
+              <p class="text-xs font-bold text-white flex justify-between">Fernanda L. <span class="text-yellow-400 text-[10px]">★★★★★</span></p>
+              <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">"Intuitivo demais! Com dois cliques eu lanço minhas despesas de supermercado. Recomendo para toda a família."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUBLICIDADE LOGIN -->
+    <div class="ad-block mt-8" hidden data-ad>
+      <span class="ad-label">Publicidade</span>
+      <div class="ad-slot w-full"></div>
+    </div>
+
+    <footer class="mt-8 text-center text-[10px] text-slate-500 space-y-1.5 font-medium tracking-wide">
       <p>© Direitos reservados <span class="text-cyan-400 font-bold">PlanilhaViva Pro</span>.</p>
       <p>Programador: <span class="text-slate-300 font-bold">Gilnei Laurindo</span></p>
       <p>Ideias e dedicatória: <span class="text-slate-400 font-bold">Samuel Danilo</span></p>
@@ -236,22 +277,30 @@
             <button type="button" class="seg-btn" data-type="invest" data-color="purple" aria-pressed="false">Investir</button>
           </div>
 
-          <form id="txForm" class="space-y-4">
+          <form id="txForm" class="space-y-4 relative z-10">
             <input type="hidden" id="type" value="out">
 
             <div>
-              <label class="label" for="desc">Descrição</label>
-              <input id="desc" class="input" maxlength="60" placeholder="Ex.: Conta de luz, salário..." required>
+              <label class="label" for="desc">Descrição do Lançamento</label>
+              <input id="desc" class="input" maxlength="60" placeholder="Ex.: Supermercado, Luz, Salário..." required>
+              <!-- Atalhos rápidos para descrição (Nomes dos gastos) -->
+              <div class="flex gap-2 mt-2 overflow-x-auto no-scrollbar py-1">
+                <button type="button" class="quick-chip quick-chip-desc" data-desc="Mercado"><i data-lucide="shopping-cart" class="w-3 h-3 inline mr-1"></i>Mercado</button>
+                <button type="button" class="quick-chip quick-chip-desc" data-desc="Combustível"><i data-lucide="fuel" class="w-3 h-3 inline mr-1"></i>Gasolina</button>
+                <button type="button" class="quick-chip quick-chip-desc" data-desc="Energia Elétrica"><i data-lucide="zap" class="w-3 h-3 inline mr-1"></i>Energia</button>
+                <button type="button" class="quick-chip quick-chip-desc" data-desc="Internet"><i data-lucide="wifi" class="w-3 h-3 inline mr-1"></i>Internet</button>
+                <button type="button" class="quick-chip quick-chip-desc" data-desc="Lazer / Jantar"><i data-lucide="utensils" class="w-3 h-3 inline mr-1"></i>Lazer</button>
+              </div>
             </div>
 
             <div>
               <label class="label" for="amount">Valor (R$)</label>
               <input id="amount" type="number" step="0.01" min="0.01" class="input font-bold text-lg" placeholder="0,00" required>
               <div class="flex gap-2 mt-2 overflow-x-auto no-scrollbar py-1">
-                <button type="button" class="quick-chip" data-amount="10">R$ 10</button>
-                <button type="button" class="quick-chip" data-amount="50">R$ 50</button>
-                <button type="button" class="quick-chip" data-amount="100">R$ 100</button>
-                <button type="button" class="quick-chip" data-amount="500">R$ 500</button>
+                <button type="button" class="quick-chip quick-chip-val" data-amount="10">R$ 10</button>
+                <button type="button" class="quick-chip quick-chip-val" data-amount="50">R$ 50</button>
+                <button type="button" class="quick-chip quick-chip-val" data-amount="100">R$ 100</button>
+                <button type="button" class="quick-chip quick-chip-val" data-amount="500">R$ 500</button>
               </div>
             </div>
 
@@ -286,11 +335,23 @@
       <div id="view-resumo" class="view space-y-5">
         <div class="glass rounded-3xl p-6 relative overflow-hidden border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)]">
           <div class="glow"></div>
-          <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2 mb-1">
+          <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2 mb-1 relative z-10">
             <i data-lucide="wallet" class="w-4 h-4"></i> Saldo consolidado
           </p>
-          <p id="saldo" class="text-4xl font-black tabular-nums text-white">R$ 0,00</p>
-          <p class="text-[10px] font-mono text-cyan-200/70 mt-2">Entradas − saídas − investimentos · Out a Dez</p>
+          <p id="saldo" class="text-4xl font-black tabular-nums text-white skeleton w-48 h-10 mt-1 relative z-10">R$ 0,00</p>
+          <p class="text-[10px] font-mono text-cyan-200/70 mt-2 relative z-10">Entradas − saídas − investimentos · Out a Dez</p>
+        </div>
+
+        <!-- NOVOS INDICADORES ESTRATÉGICOS -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="glass p-4 rounded-2xl border border-emerald-500/30 flex flex-col justify-center">
+            <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="piggy-bank" class="w-3 h-3"></i> Taxa Poupança</p>
+            <p class="text-xl font-black text-white skeleton w-16 h-7" id="kpi-poupanca">0%</p>
+          </div>
+          <div class="glass p-4 rounded-2xl border border-rose-500/30 flex flex-col justify-center">
+            <p class="text-[9px] uppercase tracking-widest text-rose-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="calendar-off" class="w-3 h-3"></i> Média Saídas/mês</p>
+            <p class="text-xl font-black text-white skeleton w-20 h-7" id="kpi-media-saidas">R$ 0</p>
+          </div>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
@@ -300,6 +361,12 @@
             <span class="text-emerald-400" id="txt-in">Entradas R$ 0,00</span>
             <span class="text-rose-400" id="txt-out">Saídas R$ 0,00</span>
           </div>
+        </div>
+        
+        <!-- NOVO GRÁFICO: DISTRIBUIÇÃO GERAL -->
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <h3 class="section-title"><i data-lucide="donut" class="w-4 h-4 text-cyan-400"></i> Distribuição Geral</h3>
+          <div class="relative h-56"><canvas id="chartDistribuicao"></canvas></div>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
@@ -317,10 +384,10 @@
       <div id="view-investir" class="view space-y-5">
         <div class="glass rounded-3xl p-6 relative overflow-hidden text-center border border-purple-500/50 shadow-[0_0_40px_rgba(168,85,247,.2)]">
           <div class="glow glow-purple"></div>
-          <h3 class="text-xs uppercase tracking-widest text-purple-300 font-bold mb-2 flex items-center justify-center gap-2">
+          <h3 class="text-xs uppercase tracking-widest text-purple-300 font-bold mb-2 flex items-center justify-center gap-2 relative z-10">
             <i data-lucide="shield" class="w-4 h-4"></i> Total investido no ano
           </h3>
-          <p id="invest-total" class="text-4xl font-black text-white tabular-nums">R$ 0,00</p>
+          <p id="invest-total" class="text-4xl font-black text-white tabular-nums skeleton w-40 h-10 mx-auto relative z-10">R$ 0,00</p>
         </div>
 
         <div class="glass rounded-2xl p-5 space-y-4">
@@ -337,10 +404,10 @@
       <!-- PERFIL -->
       <div id="view-config" class="view space-y-5">
         <div class="glass rounded-3xl p-6 text-center relative overflow-hidden border border-cyan-500/30">
-          <div id="cfg-avatar" class="w-20 h-20 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3 flex items-center justify-center bg-slate-800"></div>
-          <label for="pref-name" class="text-[10px] text-cyan-200 uppercase font-bold tracking-widest block mb-1">Como quer ser chamado?</label>
-          <input id="pref-name" type="text" maxlength="30" class="bg-transparent text-2xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1 transition-colors" placeholder="Seu nome">
-          <p id="cfg-email" class="text-xs text-slate-500 font-mono mt-2 break-all"></p>
+          <div id="cfg-avatar" class="w-20 h-20 mx-auto rounded-full border-4 border-cyan-400 overflow-hidden mb-3 flex items-center justify-center bg-slate-800 relative z-10"></div>
+          <label for="pref-name" class="text-[10px] text-cyan-200 uppercase font-bold tracking-widest block mb-1 relative z-10">Como quer ser chamado?</label>
+          <input id="pref-name" type="text" maxlength="30" class="relative z-10 bg-transparent text-2xl font-black text-white text-center w-full border-b border-dashed border-slate-600 focus:border-cyan-400 outline-none pb-1 transition-colors" placeholder="Seu nome">
+          <p id="cfg-email" class="text-xs text-slate-500 font-mono mt-2 break-all relative z-10"></p>
         </div>
 
         <a id="link-planilha" href="#" target="_blank" rel="noopener"
@@ -358,33 +425,38 @@
           <h3 class="section-title text-yellow-400"><i data-lucide="sparkles" class="w-4 h-4"></i> Recursos</h3>
           <div class="carousel-wrapper py-2">
             <div id="carousel-track" class="carousel-track">
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-cyan-500/30">
                 <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400 mb-2"></i>
                 <p class="text-xs font-bold text-white">Dados na sua conta</p>
                 <p class="text-[11px] text-slate-400 mt-1">Cada conta tem a sua planilha, com acesso privado.</p>
               </div>
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
-                <i data-lucide="cloud" class="w-5 h-5 text-cyan-400 mb-2"></i>
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-emerald-500/30">
+                <i data-lucide="cloud" class="w-5 h-5 text-emerald-400 mb-2"></i>
                 <p class="text-xs font-bold text-white">Sincronização na nuvem</p>
                 <p class="text-[11px] text-slate-400 mt-1">Lance pelo celular e veja os totais atualizados.</p>
               </div>
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-purple-500/30">
                 <i data-lucide="repeat" class="w-5 h-5 text-purple-400 mb-2"></i>
                 <p class="text-xs font-bold text-white">Contas fixas</p>
                 <p class="text-[11px] text-slate-400 mt-1">Projete mensalidades e salários até dezembro.</p>
               </div>
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
-                <i data-lucide="pie-chart" class="w-5 h-5 text-emerald-400 mb-2"></i>
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-rose-500/30">
+                <i data-lucide="pie-chart" class="w-5 h-5 text-rose-400 mb-2"></i>
                 <p class="text-xs font-bold text-white">Gráficos automáticos</p>
                 <p class="text-[11px] text-slate-400 mt-1">Entradas, saídas e aportes resumidos por mês.</p>
               </div>
-              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal">
+              <div class="w-64 shrink-0 glass rounded-xl p-4 whitespace-normal border-t border-amber-500/30">
                 <i data-lucide="tag" class="w-5 h-5 text-amber-400 mb-2"></i>
                 <p class="text-xs font-bold text-white">Categorias prontas</p>
                 <p class="text-[11px] text-slate-400 mt-1">Organize dízimo, saúde, dívidas e outros gastos.</p>
               </div>
             </div>
           </div>
+        </div>
+        
+        <div class="ad-block" hidden data-ad>
+          <span class="ad-label">Publicidade</span>
+          <div class="ad-slot w-full"></div>
         </div>
 
         <button id="btnLogout" type="button" class="ghost-btn w-full py-4 rounded-xl flex items-center justify-center gap-2 border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-colors">
@@ -421,12 +493,12 @@
 const CONFIG = Object.freeze({
   GOOGLE_CLIENT_ID: "546894329579-fui2cv5rv322fus6qmqdd4ojusi1vidm.apps.googleusercontent.com",
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzCJfyUM7VH4tshO5z5vwHh31ufnlN5ORsqWl2oC1MiD1-CTP4Hh-nQFgdMCRMZQbkphw/exec",
-  // Deixe vazio para ocultar os anúncios. Preencha com o ID real do AdSense quando estiver aprovado.
+  // Preencha com o ID real do AdSense quando estiver aprovado.
   ADSENSE_CLIENT: "",
   ADSENSE_SLOT: "",
   STORAGE_USER: "planilhaviva_user_v7",
   STORAGE_NAME_PREFIX: "pv_pref_name_",
-  CATEGORIES: Object.freeze(["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Outros"]),
+  CATEGORIES: Object.freeze(["Pessoal", "Saúde", "Dívidas", "Fixos", "Dízimo", "Moradia", "Transporte", "Educação", "Lazer", "Outros"]),
   INCOME_CATEGORY: "Receita",
   INVEST_CATEGORY: "Investimento",
   VIEWS: Object.freeze(["fluxo", "resumo", "investir", "config"]),
@@ -453,7 +525,7 @@ const State = {
   sheetUrl: null,
   datePicker: null,
   tokenClient: null,
-  charts: { fluxo: null, mensal: null, investido: null },
+  charts: { fluxo: null, distribuicao: null, mensal: null, investido: null },
   particleRgb: DEFAULT_RGB,
 };
 
@@ -535,7 +607,6 @@ const Api = {
     try {
       res = await fetch(CONFIG.SCRIPT_URL, {
         method: "POST",
-        // text/plain evita o preflight de CORS no Apps Script
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ action, email: State.user.email, name: State.user.name, ...payload }),
       });
@@ -552,7 +623,7 @@ const Api = {
 
     if (json.status !== "success") throw new Error(json.message || "Erro no servidor.");
     return json;
-  },
+  }
 };
 
 // ============================================================================
@@ -656,7 +727,6 @@ const Session = {
 
     let online = true;
     try {
-      // init_user é idempotente: cria a planilha na primeira vez e devolve o link nas seguintes
       const res = await Api.call("init_user");
       State.sheetUrl = res.sheetUrl;
       Splash.status("Tudo pronto!");
@@ -709,7 +779,7 @@ const Nav = {
       if (active) {
         $("nav-pill").style.transform = `translateX(${index * 100}%)`;
         btn.classList.remove("icon-pop");
-        void btn.offsetWidth; // reinicia a animação
+        void btn.offsetWidth;
         btn.classList.add("icon-pop");
       }
     });
@@ -736,6 +806,9 @@ const Dashboard = {
     } catch (err) {
       console.error(err);
       toast(err.message || "Não foi possível atualizar os dados.", "error");
+      ["saldo", "kpi-poupanca", "kpi-media-saidas", "invest-total"].forEach(id => {
+         $(id).classList.remove("skeleton");
+      });
     } finally {
       btn.disabled = false;
       btn.classList.remove("animate-spin");
@@ -743,10 +816,26 @@ const Dashboard = {
   },
 
   render(d) {
+    $("saldo").classList.remove("skeleton"); 
     $("saldo").textContent = brl.format(d.saldoAtual);
+    
     $("txt-in").textContent = `Entradas ${brl.format(d.totalEntradas)}`;
     $("txt-out").textContent = `Saídas ${brl.format(d.totalSaidas)}`;
+    
+    $("invest-total").classList.remove("skeleton"); 
     $("invest-total").textContent = brl.format(d.totalInvestido);
+
+    // KPI: Taxa de Poupança (Investimentos em relação às Entradas)
+    $("kpi-poupanca").classList.remove("skeleton");
+    const taxaPoupanca = d.totalEntradas > 0 ? ((d.totalInvestido / d.totalEntradas) * 100).toFixed(1) : "0.0";
+    $("kpi-poupanca").textContent = taxaPoupanca + "%";
+
+    // KPI: Média Mensal de Saídas
+    $("kpi-media-saidas").classList.remove("skeleton");
+    const mesesComDados = d.mensal ? d.mensal.length : 1;
+    const mediaSaidas = mesesComDados > 0 ? (d.totalSaidas / mesesComDados) : 0;
+    $("kpi-media-saidas").textContent = brl.format(mediaSaidas);
+
     Charts.update(d);
   },
 };
@@ -769,6 +858,21 @@ const Charts = {
         plugins: { legend: { display: false } },
       },
     });
+    
+    // Novo Gráfico: Distribuição Geral (Entradas Restantes, Saídas, Investimentos)
+    State.charts.distribuicao = new Chart($("chartDistribuicao"), {
+      type: "doughnut",
+      data: {
+        labels: ["Saldo", "Saídas", "Investido"],
+        datasets: [{ data: [0, 0, 0], backgroundColor: ["#38bdf8", "#f43f5e", "#a855f7"], borderWidth: 0 }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "65%",
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
+      }
+    });
 
     State.charts.mensal = new Chart($("chartDesempenho"), {
       type: "bar",
@@ -786,7 +890,7 @@ const Charts = {
           x: { grid: { display: false } },
           y: { ticks: { callback: (v) => brl.format(v) } },
         },
-        plugins: { legend: { position: "bottom" } },
+        plugins: { legend: { position: "bottom", labels: { boxWidth: 12 } } },
       },
     });
 
@@ -813,12 +917,16 @@ const Charts = {
     });
   },
 
-  update({ totalEntradas, totalSaidas, mensal = [] }) {
-    const { fluxo, mensal: bar, investido } = State.charts;
+  update({ totalEntradas, totalSaidas, totalInvestido, mensal = [] }) {
+    const { fluxo, distribuicao, mensal: bar, investido } = State.charts;
     const labels = mensal.map((m) => m.mes);
 
     fluxo.data.datasets[0].data = [totalEntradas, totalSaidas];
     fluxo.update();
+    
+    const saldoRestante = totalEntradas - totalSaidas - totalInvestido;
+    distribuicao.data.datasets[0].data = [saldoRestante > 0 ? saldoRestante : 0, totalSaidas, totalInvestido];
+    distribuicao.update();
 
     bar.data.labels = labels;
     bar.data.datasets[0].data = mensal.map((m) => m.entradas);
@@ -865,8 +973,13 @@ const Form = {
       btn.addEventListener("click", () => Form.setType(btn.dataset.type))
     );
 
-    document.querySelectorAll(".quick-chip").forEach((chip) =>
+    document.querySelectorAll(".quick-chip-val").forEach((chip) =>
       chip.addEventListener("click", () => { $("amount").value = chip.dataset.amount; })
+    );
+    
+    // Quick chips para descrições de gastos
+    document.querySelectorAll(".quick-chip-desc").forEach((chip) =>
+      chip.addEventListener("click", () => { $("desc").value = chip.dataset.desc; })
     );
 
     $("txForm").addEventListener("submit", Form.submit);
@@ -917,7 +1030,7 @@ const Form = {
     const payload = {
       desc,
       amount,
-      type: type === "in" ? "in" : "out", // "invest" é gravado como saída na categoria Investimento
+      type: type === "in" ? "in" : "out",
       category,
       date,
     };
@@ -929,7 +1042,6 @@ const Form = {
       Form.reset();
       Dashboard.sync();
     } catch (err) {
-      // Os dados do formulário permanecem preenchidos para o utilizador tentar de novo
       toast(err.message, "error");
     }
   },
@@ -948,7 +1060,7 @@ function savePrefName(event) {
 }
 
 // ============================================================================
-// ANÚNCIOS (só carregam se ADSENSE_CLIENT e ADSENSE_SLOT estiverem preenchidos)
+// ANÚNCIOS
 // ============================================================================
 const Ads = {
   init() {
@@ -1043,9 +1155,12 @@ function startClock() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Duplica os cards do carrossel para o loop contínuo
+  // Duplica os cards dos carrosséis para o loop contínuo
   const track = $("carousel-track");
   track.innerHTML += track.innerHTML;
+  
+  const testTrack = $("testimonials-track");
+  if(testTrack) testTrack.innerHTML += testTrack.innerHTML;
 
   initParticles();
   startClock();
