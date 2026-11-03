@@ -291,7 +291,6 @@
 
       <!-- ==================== LANÇAR (FLUXO) ==================== -->
       <div id="view-fluxo" class="view active space-y-5 lg:space-y-0">
-        <!-- Grelha para Desktop: Formulário (Esquerda) e Histórico/Anúncio (Direita) -->
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
           
           <!-- Coluna Principal (Formulário) -->
@@ -376,24 +375,22 @@
       <!-- ==================== RESUMO ==================== -->
       <div id="view-resumo" class="view space-y-5 lg:space-y-6 w-full">
         
-        <!-- Saldo Destaque COM ALINHAMENTO CORRIGIDO -->
-        <div class="glass rounded-3xl p-6 lg:p-12 relative overflow-hidden border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)] hover-card flex flex-col md:flex-row md:items-center md:justify-between">
+        <!-- Saldo Destaque (Correção de Sobreposição Aplicada Aqui) -->
+        <div class="glass rounded-3xl p-6 lg:p-12 relative overflow-hidden border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,.2)] hover-card flex flex-col md:flex-row md:items-start md:justify-between">
           <div class="glow"></div>
           
-          <div class="relative z-10 flex flex-col gap-2">
+          <div class="relative z-10 flex flex-col gap-1">
             <p class="text-xs lg:text-sm uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2">
               <i data-lucide="wallet" class="w-4 h-4 lg:w-5 lg:h-5"></i> Saldo consolidado
             </p>
-            <div class="min-h-[40px] lg:min-h-[64px] flex items-center">
-              <p id="saldo" class="text-4xl lg:text-6xl font-black tabular-nums text-white skeleton w-48 h-10 lg:w-72 lg:h-16">R$ 0,00</p>
-            </div>
-            <p class="text-[10px] lg:text-xs font-mono text-cyan-200/70">Entradas − saídas − investimentos</p>
+            <p id="saldo" class="text-4xl lg:text-6xl font-black tabular-nums text-white skeleton rounded min-w-[150px] inline-block mt-1">R$ 0,00</p>
+            <p class="text-[10px] lg:text-xs font-mono text-cyan-200/70 mt-1">Entradas − saídas − investimentos</p>
           </div>
           
           <!-- KPI: Balanço Vivo -->
           <div class="mt-6 md:mt-0 text-left md:text-right border-t md:border-t-0 md:border-l border-cyan-500/30 pt-4 md:pt-0 md:pl-8 relative z-10">
             <p class="text-[9px] lg:text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Balanço do Período</p>
-            <p id="kpi-balanco" class="text-2xl lg:text-3xl font-black text-white skeleton w-32 h-8">R$ 0,00</p>
+            <p id="kpi-balanco" class="text-2xl lg:text-3xl font-black text-white skeleton rounded min-w-[100px] inline-block">R$ 0,00</p>
           </div>
         </div>
 
@@ -401,19 +398,19 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           <div class="glass p-4 lg:p-5 rounded-2xl border border-emerald-500/30 flex flex-col justify-center hover-card">
             <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-emerald-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="arrow-down-circle" class="w-3 h-3"></i> Total Entradas</p>
-            <p class="text-lg lg:text-xl font-black text-white skeleton w-20 h-6" id="txt-in-kpi">R$ 0,00</p>
+            <p class="text-lg lg:text-xl font-black text-white skeleton rounded min-w-[80px] inline-block" id="txt-in-kpi">R$ 0,00</p>
           </div>
           <div class="glass p-4 lg:p-5 rounded-2xl border border-rose-500/30 flex flex-col justify-center hover-card">
             <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-rose-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="arrow-up-circle" class="w-3 h-3"></i> Total Saídas</p>
-            <p class="text-lg lg:text-xl font-black text-white skeleton w-20 h-6" id="txt-out-kpi">R$ 0,00</p>
+            <p class="text-lg lg:text-xl font-black text-white skeleton rounded min-w-[80px] inline-block" id="txt-out-kpi">R$ 0,00</p>
           </div>
           <div class="glass p-4 lg:p-5 rounded-2xl border border-purple-500/30 flex flex-col justify-center hover-card">
             <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-purple-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="piggy-bank" class="w-3 h-3"></i> Taxa Poupança</p>
-            <p class="text-lg lg:text-xl font-black text-white skeleton w-16 h-6" id="kpi-poupanca">0%</p>
+            <p class="text-lg lg:text-xl font-black text-white skeleton rounded min-w-[60px] inline-block" id="kpi-poupanca">0%</p>
           </div>
           <div class="glass p-4 lg:p-5 rounded-2xl border border-amber-500/30 flex flex-col justify-center hover-card">
             <p class="text-[9px] lg:text-[10px] uppercase tracking-widest text-amber-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="flame" class="w-3 h-3"></i> Gasto Diário (Média)</p>
-            <p class="text-lg lg:text-xl font-black text-white skeleton w-20 h-6" id="kpi-gasto-diario">R$ 0</p>
+            <p class="text-lg lg:text-xl font-black text-white skeleton rounded min-w-[80px] inline-block" id="kpi-gasto-diario">R$ 0</p>
           </div>
         </div>
 
@@ -449,7 +446,7 @@
             <h3 class="text-xs lg:text-sm uppercase tracking-widest text-purple-300 font-bold mb-2 lg:mb-4 flex items-center gap-2 relative z-10">
               <i data-lucide="shield" class="w-4 h-4 lg:w-5 lg:h-5"></i> Património Investido
             </h3>
-            <p id="invest-total" class="text-4xl lg:text-6xl font-black text-white tabular-nums skeleton w-40 h-10 lg:h-16 relative z-10">R$ 0,00</p>
+            <p id="invest-total" class="text-4xl lg:text-6xl font-black text-white tabular-nums skeleton rounded min-w-[150px] inline-block relative z-10">R$ 0,00</p>
           </div>
           
           <div class="glass p-6 lg:p-8 rounded-3xl border border-cyan-500/30 flex flex-col justify-center items-center text-center hover-card">
@@ -547,7 +544,7 @@
   </section>
 </main>
 
-<!-- ==================== NAVEGAÇÃO INFERIOR / DOCK ==================== -->
+<!-- ==================== NAVEGAÇÃO INFERIOR / DOCK (DESKTOP) ==================== -->
 <nav id="bottom-nav" class="hidden fixed bottom-4 lg:bottom-8 left-1/2 -translate-x-1/2 w-[95%] max-w-[500px] lg:max-w-fit z-50">
   <div class="glass lg:bg-slate-900/90 rounded-2xl lg:rounded-full relative grid grid-cols-4 lg:flex p-1 lg:p-2 shadow-[0_20px_40px_rgba(0,0,0,.9)] lg:shadow-[0_10px_40px_rgba(34,211,238,.3)] border border-slate-700 lg:border-cyan-500/30">
     <span id="nav-pill" class="absolute top-1 lg:top-2 bottom-1 lg:bottom-2 left-1 lg:left-2 rounded-xl lg:rounded-full bg-slate-800 lg:bg-cyan-900/60 border border-slate-600 lg:border-cyan-500/50 w-[calc((100%-0.5rem)/4)] lg:w-[100px] transition-transform duration-300 ease-out shadow-lg"></span>
@@ -809,7 +806,12 @@ const Dashboard = {
       const { data } = await Api.call("get_dashboard"); Dashboard.render(data); if (notify) toast("Dados atualizados.");
     } catch (err) {
       toast(err.message || "Não foi possível atualizar os dados.", "error");
-      ["saldo", "kpi-poupanca", "kpi-media-saidas", "kpi-balanco", "txt-in-kpi", "txt-out-kpi", "invest-total"].forEach(id => { $(id).classList.remove("skeleton"); });
+      
+      // Matriz corrigida de IDs para o bloco de captura de erros (Evita o erro da imagem)
+      ["saldo", "kpi-poupanca", "kpi-gasto-diario", "kpi-balanco", "txt-in-kpi", "txt-out-kpi", "invest-total"].forEach(id => { 
+        const el = $(id); if (el) el.classList.remove("skeleton"); 
+      });
+      
     } finally { btn.disabled = false; btn.classList.remove("animate-spin"); }
   },
 
@@ -820,8 +822,6 @@ const Dashboard = {
     $("txt-out-kpi").classList.remove("skeleton"); $("txt-out-kpi").textContent = brl.format(d.totalSaidas);
     $("invest-total").classList.remove("skeleton"); $("invest-total").textContent = brl.format(d.totalInvestido);
     
-    $("txt-in").textContent = `Entradas ${brl.format(d.totalEntradas)}`; $("txt-out").textContent = `Saídas ${brl.format(d.totalSaidas)}`;
-    
     $("kpi-balanco").classList.remove("skeleton"); 
     const balanco = d.totalEntradas - d.totalSaidas;
     $("kpi-balanco").textContent = brl.format(balanco);
@@ -831,10 +831,9 @@ const Dashboard = {
     const taxaPoupanca = d.totalEntradas > 0 ? ((d.totalInvestido / d.totalEntradas) * 100).toFixed(1) : "0.0";
     $("kpi-poupanca").textContent = taxaPoupanca + "%";
     
-    $("kpi-media-saidas").classList.remove("skeleton");
+    $("kpi-gasto-diario").classList.remove("skeleton");
     const mesesComDados = d.mensal ? d.mensal.length : 1;
     const mediaDiaria = mesesComDados > 0 ? (d.totalSaidas / (mesesComDados * 30)) : 0;
-    $("kpi-gasto-diario").classList.remove("skeleton");
     $("kpi-gasto-diario").textContent = brl.format(mediaDiaria);
 
     Charts.update(d);
